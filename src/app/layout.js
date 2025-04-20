@@ -1,10 +1,11 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../styles/globals.css";
 import Image from 'next/image';
+import Header from '@/components/Header';
 
 export const metadata = {
   title: "SmartRest",
-  description: "",
+  description: "Sistema moderno para restaurantes",
 };
 
 export default function RootLayout({ children }) {
@@ -12,16 +13,11 @@ export default function RootLayout({ children }) {
     <html lang="pt-br">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"></link>
-        <link rel="icon" type="image/png" sizes="32x32" href="/img/favicon-32x32.png"></link>
-        <link rel="icon" type="image/png" sizes="16x16" href="/img/favicon-16x16.png"></link>
-        <link rel="manifest" href="/site.webmanifest"></link>
+        <link rel="icon" href="/img/favicon-32x32.png" />
       </head>
       <body>
         <div className="background-overlay">
-          <header className="app-header ">
-            <Image className='logo' src="/logo.png" alt='Logo' width={200} height={200}/>
-          </header>
+          <Header/>
           <main>{children}</main>
         </div>
       </body>
