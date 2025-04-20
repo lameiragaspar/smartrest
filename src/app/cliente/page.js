@@ -1,99 +1,43 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
-import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
 
-export default function ClienteInicio() {
+export default function ClientePage() {
   const [mesa, setMesa] = useState('');
-  const [configurandoMesa, setConfigurandoMesa] = useState(false);
-  const [mesaDigitada, setMesaDigitada] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     const mesaSalva = localStorage.getItem('mesa');
     if (mesaSalva) {
-      setMesa(mesaSalva);
-    } else {
-      setConfigurandoMesa(true);
+      // Se já tiver mesa salva, redireciona direto pro cardápio
+      router.push('/cliente/cardapio');
     }
   }, []);
 
-  const salvarNumeroDaMesa = () => {
-    if (!mesaDigitada.trim()) {
-      alert('Digite um número de mesa válido.');
+  const handleSalvar = () => {
+    if (!mesa || isNaN(mesa)) {
+      alert('Digite um número válido de mesa.');
       return;
     }
 
-    localStorage.setItem('mesa', mesaDigitada);
-    setMesa(mesaDigitada);
-    setConfigurandoMesa(false);
+    localStorage.setItem('mesa', mesa);
+    router.push('/cliente/cardapio');
   };
 
-  if (configurandoMesa) {
-    return (
-      <motion.div
-        initial={{ opacity: 0, y: 50 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease:'easeOut' }}
-      >
-        <Container className="py-5 d-flex justify-content-center align-items-center" style={{ minHeight: '70vh' }}>
-          <Row className="w-100 justify-content-center">
-            <Col xs={12} md={6} lg={4}>
-              <Card className="p-4 shadow card-fancy">
-                <h4 className="text-center mb-3">Configurar Número da Mesa</h4>
-                <Form.Group className="mb-3">
-                  <Form.Label>Número da Mesa</Form.Label>
-                  <Form.Control
-                    type="number"
-                    min="1" max="10"
-                    placeholder="Ex: 7"
-                    value={mesaDigitada}
-                    onChange={(e) => setMesaDigitada(e.target.value)}
-                  />
-                </Form.Group>
-                <Button variant="success" className="w-100 btn-fancy" onClick={salvarNumeroDaMesa}>
-                  Salvar
-                </Button>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </motion.div>
-    );
-  }
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-    >
-      <Container className="py-5 justify-content-center align-items-center" style={{ minHeight: '70vh' }}>
-        <Row className="justify-content-center">
-          <Col className="w-100 form-boas-vindas">
-            <Card className="shadow p-4 card-fancy">
-              <h2 className="text-center mb-4">
-                Bem-vindo à <span className="text-mesa fw-bold display-6">Mesa {mesa}</span> 🍷
-              </h2>
-              <Form>
-                <Form.Group className="mb-3">
-                  <Form.Label>Quantas pessoas?</Form.Label>
-                  <Form.Control type="number" min="1" max="10" />
-                </Form.Group>
-
-                <Form.Group className="mb-3">
-                  <Form.Label>Nomes</Form.Label>
-                  <Form.Control as="textarea" rows={2} />
-                </Form.Group>
-
-                <Button variant="primary" className="w-100 btn-fancy">
-                  Iniciar Conta
-                </Button>
-              </Form>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-    </motion.div>
+    <div className="container mt-5 text-center">
+      <h2 className="mb-4">Informe o número da mesa</h2>
+      <input
+        type="number"
+        className="form-control mb-3 w-50 mx-auto"
+        value={mesa}
+        onChange={(e) => setMesa(e.target.value)}
+        placeholder="Ex: 12"
+      />
+      <button className="btn btn-primary" onClick={handleSalvar}>
+        Confirmar
+      </button>
+    </div>
   );
 }

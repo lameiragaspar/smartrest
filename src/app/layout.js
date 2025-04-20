@@ -1,6 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../styles/globals.css";
-import Image from 'next/image';
 import Header from '@/components/Header';
 
 export const metadata = {
