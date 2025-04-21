@@ -10,8 +10,8 @@ export default function ClientePage() {
   useEffect(() => {
     const mesaSalva = localStorage.getItem('mesa');
     if (mesaSalva) {
-      // Se já tiver mesa salva, redireciona direto pro cardápio
-      router.push('/cliente/cardapio');
+      // Se já tiver mesa salva, redireciona direto para quantidade
+      router.push('/cliente/quantidade');
     }
   }, []);
 
