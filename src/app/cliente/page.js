@@ -22,7 +22,7 @@ export default function ClientePage() {
     }
 
     localStorage.setItem('mesa', mesa);
-    router.push('/cliente/cardapio');
+    router.push('/cliente/quantidade');
   };
 
   return (
@@ -35,7 +35,7 @@ export default function ClientePage() {
         onChange={(e) => setMesa(e.target.value)}
         placeholder="Ex: 12"
       />
-      <button className="btn btn-primary" onClick={() => router.push('/cliente/quantidade')}>
+      <button className="btn btn-primary" onClick={handleSalvar}>
         Confirmar
       </button>
     </div>

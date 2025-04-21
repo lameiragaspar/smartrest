@@ -22,7 +22,7 @@ export default function QuantidadePessoasPage() {
     }
 
     // Envia para API
-    const res = await fetch('/api/mesa', {
+    const res = await fetch('../../api/mesa', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mesa, quantidade }),
@@ -51,7 +51,7 @@ export default function QuantidadePessoasPage() {
                 onChange={(e) => setQuantidade(e.target.value)}
               />
             </Form.Group>
-            <Button variant="success" className="w-100" onClick={handleSubmit} >
+            <Button variant="success" className="w-100" onClick={handleSubmit}>
               Continuar
             </Button>
           </Card>

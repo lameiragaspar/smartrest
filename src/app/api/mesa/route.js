@@ -1,4 +1,4 @@
-import { db } from '@/lib/db'; // conexão com MySQL
+import { db } from '@/lib/bd'; // conexão com MySQL
 
 export async function POST(req) {
   try {
@@ -7,11 +7,10 @@ export async function POST(req) {
     if (!mesa || !quantidade) {
       return new Response(JSON.stringify({ error: 'Dados incompletos' }), {
         status: 400,
-        headers: { 'Content-Type': 'application/json' }
+        headers: { 'Content-Type': 'application/json' },
       });
     }
 
-    // Salva ou atualiza mesa no banco
     await db.query(
       'INSERT INTO mesa (numero, quantidade_pessoas) VALUES (?, ?) ON DUPLICATE KEY UPDATE quantidade_pessoas = ?',
       [mesa, quantidade, quantidade]
@@ -20,9 +19,9 @@ export async function POST(req) {
     return new Response(JSON.stringify({ message: 'Mesa registrada com sucesso' }), {
       headers: { 'Content-Type': 'application/json' },
     });
-  } catch (err) {
-    console.error(err);
-    return new Response(JSON.stringify({ error: 'Erro interno' }), {
+  } catch (error) {
+    console.error(error);
+    return new Response(JSON.stringify({ error: 'Erro ao registrar no banco' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });
