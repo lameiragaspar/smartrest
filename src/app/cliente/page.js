@@ -35,7 +35,7 @@ export default function ClientePage() {
         onChange={(e) => setMesa(e.target.value)}
         placeholder="Ex: 12"
       />
-      <button className="btn btn-primary" onClick={handleSalvar}>
+      <button className="btn btn-primary" onClick={() => router.push('/cliente/quantidade')}>
         Confirmar
       </button>
     </div>
