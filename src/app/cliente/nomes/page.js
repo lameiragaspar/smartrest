@@ -78,7 +78,7 @@ export default function NomesPage() {
     );
   }
 
-  const mensagem = quantidade === 1 ? "Informe seu nome" : `Informe os nomes dos ${quantidade} integrantes`
+  const mensagem = quantidade === 1 ? "Informe seu nome" : `Informe os nomes dos ${quantidade} clientes`
 
   return (
     <>

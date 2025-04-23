@@ -1,14 +1,21 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Animate from '@/components/Motion';
 
 export default function QuantidadePessoasPage() {
   const [quantidade, setQuantidade] = useState('');
   const router = useRouter();
 
+  const [mesa, setMesa] = useState(null);
+  
+  useEffect(() => {
+    const mesaStorage = localStorage.getItem('mesa');
+    setMesa(mesaStorage);
+  }, []);
+
   const handleContinuar = async () => {
-    const mesa = localStorage.getItem('mesa');
 
     if (!mesa) {
       alert('Mesa não configurada!');
@@ -39,22 +46,27 @@ export default function QuantidadePessoasPage() {
   };
 
   return (
-    <div className="container d-flex align-items-center justify-content-center ">
-      <div className="bg-dark bg-opacity-75 rounded-4 p-5 shadow-lg text-center">
-        <h2 className="mb-4 text-white">Quantas pessoas há na mesa?</h2>
-        <input
-          type="number"
-          className="form-control mb-3"
-          value={quantidade}
-          onChange={(e) => setQuantidade(e.target.value)}
-          placeholder="Ex: 4"
-          min={1}
-          max={10}
-        />
-        <button className="btn btn-warning w-100 fw-bold rounded-pill" onClick={handleContinuar}>
-          Continuar
-        </button>
+    <div className="container mt-4 text-center">
+      <Animate>
+      <h3 className="display-4 mb-4 fw-bold">Bem-vindos a Mesa {mesa} </h3>
+      <div className="container d-flex align-items-center justify-content-center ">
+        <div className="bg-dark bg-opacity-75 rounded-4 p-5 shadow-lg text-center">
+          <h2 className="mb-4 text-white">Quantas pessoas há na mesa?</h2>
+          <input
+            type="number"
+            className="form-control mb-3"
+            value={quantidade}
+            onChange={(e) => setQuantidade(e.target.value)}
+            placeholder="Ex: 4"
+            min={1}
+            max={10}
+          />
+          <button className="btn btn-warning w-100 fw-bold rounded-pill" onClick={handleContinuar}>
+            Continuar
+          </button>
+        </div>
       </div>
+      </Animate>
     </div>
   );
 }

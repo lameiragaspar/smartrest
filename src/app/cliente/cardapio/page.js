@@ -2,11 +2,18 @@
 
 import { useEffect, useState } from 'react';
 import Animate from '@/components/Motion';
-import Spinner from 'react-bootstrap/Spinner'
+import Spinner from 'react-bootstrap/Spinner';
+import style from '../cliente.module.css'
 
 export default function CardapioPage() {
   const [produtos, setProdutos] = useState([]);
   const [carregando, setCarregando] = useState(true);
+  const [mesa, setMesa] = useState(null);
+  
+  useEffect(() => {
+    const mesaStorage = localStorage.getItem('mesa');
+    setMesa(mesaStorage);
+  }, []);
 
   useEffect(() => {
     async function fetchProdutos() {
@@ -32,9 +39,9 @@ export default function CardapioPage() {
     );
   }
   return (
+    <Animate>
     <div className="container mt-4">
       <h2 className="text-center mb-4">Cardápio</h2>
-      <Animate>
       <div className="row">
         {produtos.length === 0 ? (
           <p className="text-center text-light">Nenhum produto encontrado</p>
@@ -51,7 +58,7 @@ export default function CardapioPage() {
                   />
                 )}
                 <div className="card-body d-flex flex-column">
-                  <h5 className="card-title fw-bold">{produto.nome}</h5>
+                    <h5 className="card-title fw-bold">{produto.nome} <span className={style.numMesa}>#{mesa}</span></h5>
                   <p className="card-text text-secondary flex-grow-1">{produto.descricao}</p>
                   <div className="mt-3">
                     <span className="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill">
@@ -64,9 +71,8 @@ export default function CardapioPage() {
           ))
         )}
       </div>
-
-      </Animate>
     </div>
+    </Animate>
   );
 }
 
