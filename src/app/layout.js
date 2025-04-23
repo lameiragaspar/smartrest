@@ -1,25 +1,31 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import "../styles/globals.css";
+import Animate from '@/components/Motion';
 import Header from '@/components/Header';
 
 export const metadata = {
   title: "SmartRest",
   description: "Sistema moderno para restaurantes",
+  icons: {
+    icon: "/img/favicon-32x32.png",
+  },
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="pt-br">
-      <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/img/favicon-32x32.png" />
-      </head>
       <body>
-        <div className="background-overlay">
-          <Header/>
-          <main>{children}</main>
+        <div className="app-container">
+          -<div className="overlay"></div>
+          <Header />
+          <main>
+            <Animate>
+              {children}
+            </Animate>
+          </main>
         </div>
       </body>
     </html>
   );
 }
+

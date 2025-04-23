@@ -1,33 +1,29 @@
-'use client';
+'use client'
+import { useRouter } from 'next/navigation'
 
-import { useRouter } from 'next/navigation';
-import { Container, Row, Col, Card, Button } from 'react-bootstrap';
-import { motion } from 'framer-motion';
-
-export default function HomePage() {
-  const router = useRouter();
+export default function Home() {
+  const router = useRouter()
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.6 }}
-    >
-      <Container className="py-5 d-flex justify-content-center align-items-center" style={{ minHeight: '70vh' }}>
-        <Row>
-          <Col>
-            <Card className="p-4 shadow text-center card-fancy">
-              <h3 className="mb-4">Quem está acessando?</h3>
-              <Button variant="primary" className="mb-3 btn-fancy" onClick={() => router.push('/cliente')}>
-                Sou Cliente
-              </Button>
-              <Button variant="secondary" className="btn-fancy" onClick={() => router.push('/admin')}>
-                Sou Administrador
-              </Button>
-            </Card>
-          </Col>
-        </Row>
-      </Container>
-    </motion.div>
-  );
+    <div className="d-flex justify-content-center align-items-center text-white text-center">
+      <div className="bg-dark bg-opacity-75 rounded-4 p-5 shadow-lg">
+        <h1 className="display-4 mb-4 fw-bold">Bem-vindo ao Restaurante</h1>
+        <p className="lead mb-5">Escolha seu tipo de acesso para continuar</p>
+        <div className="d-flex gap-3 justify-content-center">
+          <button
+            className="btn btn-outline-light btn-lg px-4 rounded-pill"
+            onClick={() => router.push('/cliente')}
+          >
+            Acessar como Cliente
+          </button>
+          <button
+            className="btn btn-outline-warning btn-lg px-4 rounded-pill"
+            onClick={() => router.push('/admin')}
+          >
+            Acessar como Admin
+          </button>
+        </div>
+      </div>
+    </div>
+  )
 }

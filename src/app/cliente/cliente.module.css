@@ -1,0 +1,5 @@
+  .inputCustom::placeholder {
+    color: #6c757d; /* cor de placeholder padrão do Bootstrap */
+    opacity: 1;
+  }
+  

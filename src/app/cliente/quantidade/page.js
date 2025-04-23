@@ -2,13 +2,12 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Container, Row, Col, Card, Form, Button } from 'react-bootstrap';
 
 export default function QuantidadePessoasPage() {
   const [quantidade, setQuantidade] = useState('');
   const router = useRouter();
 
-  const handleSubmit = async () => {
+  const handleContinuar = async () => {
     const mesa = localStorage.getItem('mesa');
 
     if (!mesa) {
@@ -20,6 +19,10 @@ export default function QuantidadePessoasPage() {
       alert('Digite uma quantidade válida');
       return;
     }
+    if(parseInt(quantidade) >= 10){
+      alert('Limite máximo de 10 pessoas por mesa');
+      return;
+    }
 
     // Envia para API
     const res = await fetch('../../api/mesa', {
@@ -29,34 +32,29 @@ export default function QuantidadePessoasPage() {
     });
 
     if (res.ok) {
-      router.push('/cliente/nomes'); // próxima etapa
+      router.push('/cliente/nomes');
     } else {
       alert('Erro ao registrar número de pessoas');
     }
   };
 
   return (
-    <Container className="py-5 d-flex justify-content-center align-items-center" style={{ minHeight: '70vh' }}>
-      <Row className="w-100 justify-content-center">
-        <Col xs={12} md={6} lg={4}>
-          <Card className="p-4 shadow">
-            <h4 className="text-center mb-3">Quantas pessoas estão na mesa?</h4>
-            <Form.Group className="mb-3">
-              <Form.Control
-                type="number"
-                min="1"
-                max="20"
-                placeholder="Ex: 4"
-                value={quantidade}
-                onChange={(e) => setQuantidade(e.target.value)}
-              />
-            </Form.Group>
-            <Button variant="success" className="w-100" onClick={handleSubmit}>
-              Continuar
-            </Button>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+    <div className="container d-flex align-items-center justify-content-center ">
+      <div className="bg-dark bg-opacity-75 rounded-4 p-5 shadow-lg text-center">
+        <h2 className="mb-4 text-white">Quantas pessoas há na mesa?</h2>
+        <input
+          type="number"
+          className="form-control mb-3"
+          value={quantidade}
+          onChange={(e) => setQuantidade(e.target.value)}
+          placeholder="Ex: 4"
+          min={1}
+          max={10}
+        />
+        <button className="btn btn-warning w-100 fw-bold rounded-pill" onClick={handleContinuar}>
+          Continuar
+        </button>
+      </div>
+    </div>
   );
 }

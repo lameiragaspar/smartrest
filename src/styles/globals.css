@@ -5,44 +5,51 @@
   margin: 0;
 }
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-  height: 100%;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #f8f5f0;
-}
-
-/* Link clean */
 a {
   color: inherit;
   text-decoration: none;
 }
 
-/* Fundo com overlay e espaçamento bonito */
-.background-overlay {
+html,
+body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #000;
+  color: white;
+}
+
+/* Container principal com imagem de fundo */
+.app-container {
+  position: relative;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background-image: url('/bg-restaurante.jpg');
   background-size: cover;
   background-position: center;
-  backdrop-filter: blur(20px);
-  padding-top: 140px; /* espaço ideal para logo */
+  background-repeat: no-repeat;
 }
 
-/* Header fixo e clean */
-.app-header {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  text-align: center;
-  z-index: 1000;
-  padding: 10px 0;
-  background: rgba(255, 255, 255, 0); /* leve transparência */
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+/* Camada escura sobre o fundo */
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.658);
+  backdrop-filter: blur(1px);
+  z-index: 0;
 }
 
-/* Logo moderna e responsiva */
+/* Header fixo no topo */
+header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Logo responsiva */
 .logo {
   width: 120px;
   height: auto;
@@ -51,9 +58,23 @@ a {
 
 @media screen and (max-width: 576px) {
   .logo {
-    width: 80px;
+    width: 100px;
   }
 }
+
+/* Conteúdo principal centralizado */
+main {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 50px;
+  margin: 0px;
+}
+
 
 /* Card visual elegante */
 .card-fancy {
@@ -63,27 +84,4 @@ a {
   transition: transform 0.3s ease;
 }
 
-/* Botão estilizado */
-.btn-fancy {
-  background-color: #8B0000;
-  border: none;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-  transition: all 0.3s ease;
-}
 
-.btn-fancy:hover {
-  background-color: #a41c1c;
-  transform: scale(1.01);
-  box-shadow: 0 0 10px rgba(139, 0, 0, 0.4);
-}
-
-/* Destaque do número da mesa */
-.text-mesa {
-  color: #8B0000;
-}
-
-/* Formulário com largura limitada */
-.form-boas-vindas {
-  max-width: 500px;
-}

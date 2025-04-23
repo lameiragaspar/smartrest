@@ -3,6 +3,8 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Container, Row, Col, Card, Form, Button, Spinner } from 'react-bootstrap';
+import Animate from '@/components/Motion';
+import styles from '../cliente.module.css'
 
 export default function NomesPage() {
   const [quantidade, setQuantidade] = useState(0);
@@ -14,7 +16,7 @@ export default function NomesPage() {
     const mesa = localStorage.getItem('mesa');
     if (!mesa) {
       alert('Mesa não configurada!');
-      router.push('/cliente'); // Redireciona de volta
+      router.push('/cliente');
       return;
     }
 
@@ -71,34 +73,51 @@ export default function NomesPage() {
   if (carregando) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '70vh' }}>
-        <Spinner animation="border" />
+        <Spinner animation="border" variant="light" />
       </div>
     );
   }
 
+  const mensagem = quantidade === 1 ? "Informe seu nome" : `Informe os nomes dos ${quantidade} integrantes`
+
   return (
-    <Container className="py-5 d-flex justify-content-center align-items-center" style={{ minHeight: '70vh' }}>
-      <Row className="w-100 justify-content-center">
-        <Col xs={12} md={8} lg={6}>
-          <Card className="p-4 shadow">
-            <h4 className="text-center mb-4">Informe os nomes das {quantidade} pessoas</h4>
-            {nomes.map((nome, index) => (
-              <Form.Group className="mb-3" key={index}>
-                <Form.Label>Pessoa {index + 1}</Form.Label>
-                <Form.Control
-                  type="text"
-                  placeholder={`Nome da pessoa ${index + 1}`}
-                  value={nome}
-                  onChange={(e) => handleNomeChange(index, e.target.value)}
-                />
-              </Form.Group>
-            ))}
-            <Button variant="primary" className="w-100" onClick={salvarNomes}>
-              Confirmar Nomes
-            </Button>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+    <>
+      {carregando ? (
+        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '70vh' }}>
+          <Spinner animation="border" />
+        </div>
+      ) : (
+        <Animate>
+          <div className="container d-flex align-items-center justify-content-center">
+            <div className="row w-100 justify-content-center">
+              <div className="col-12 col-md-8 col-lg-6">
+                <div className="p-4 rounded-4 shadow-lg bg-dark bg-opacity-75">
+                  <h4 className="text-center mb-4">{mensagem}</h4>
+                  {nomes.map((nome, index) => {
+                    const label = quantidade === 1 ? 'Nome' : `${index + 1}º Cliente`;
+                    return (
+                      <div className="mb-3" key={index}>
+                        <label className="form-label text-light">{label}</label>
+                        <input
+                          type="text"
+                          className={`form-control bg-dark text-white border-secondary ${styles.inputCustom}`}
+                          placeholder={`nome..*`}
+                          value={nome}
+                          onChange={(e) => handleNomeChange(index, e.target.value)}
+                        />
+                      </div>
+                    );
+                  })}
+                  <button className="btn btn-warning w-100 fw-bold rounded-pill mt-2" onClick={salvarNomes}>
+                    Confirmar Nomes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </Animate>
+      )}
+    </>
   );
+  
 }
