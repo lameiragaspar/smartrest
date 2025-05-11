@@ -9,18 +9,18 @@ export default function QuantidadePessoasPage() {
   const router = useRouter();
 
   const [mesa, setMesa] = useState(null);
-  
+
   useEffect(() => {
+    //Verica se há mesa salva na memória do navegador
     const mesaStorage = localStorage.getItem('mesa');
-    setMesa(mesaStorage);
+    if(!mesaStorage){
+      router.push('/cliente')
+    }else{
+      setMesa(mesaStorage);
+    }
   }, []);
 
-  const handleContinuar = async () => {
-
-    if (!mesa) {
-      alert('Mesa não configurada!');
-      return;
-    }
+  const handleSalvarQuatidade = async () => {
 
     if (!quantidade || parseInt(quantidade) <= 0) {
       alert('Digite uma quantidade válida');
@@ -32,10 +32,10 @@ export default function QuantidadePessoasPage() {
     }
 
     // Envia para API
-    const res = await fetch('../../api/mesa', {
+    const res = await fetch(`/api/insetquantidade?table=${mesa}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ mesa, quantidade }),
+      body: JSON.stringify({ quantidade }),
     });
 
     if (res.ok) {
@@ -61,7 +61,7 @@ export default function QuantidadePessoasPage() {
             min={1}
             max={10}
           />
-          <button className="btn btn-warning w-100 fw-bold rounded-pill" onClick={handleContinuar}>
+          <button className="btn btn-warning w-100 fw-bold rounded-pill" onClick={handleSalvarQuatidade}>
             Continuar
           </button>
         </div>

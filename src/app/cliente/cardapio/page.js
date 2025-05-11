@@ -4,12 +4,17 @@ import { useEffect, useState } from 'react';
 import Animate from '@/components/Motion';
 import Spinner from 'react-bootstrap/Spinner';
 import style from '../cliente.module.css'
+import Pagination from '@/components/Pagination';
 
 export default function CardapioPage() {
   const [produtos, setProdutos] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [mesa, setMesa] = useState(null);
-  
+  const [paginaAtual, setPaginaAtual] = useState(1);
+  const CardPorPagina = 9;
+
+
+
   useEffect(() => {
     const mesaStorage = localStorage.getItem('mesa');
     setMesa(mesaStorage);
@@ -24,13 +29,18 @@ export default function CardapioPage() {
         setProdutos(data);
       } catch (err) {
         console.error('Erro ao carregar produtos:', err);
-      }finally {
+      } finally {
         setCarregando(false);
       }
     }
 
     fetchProdutos();
   }, []);
+
+    const totalPaginas = Math.ceil(produtos.length / CardPorPagina);
+    const indexInicio = (paginaAtual - 1) * CardPorPagina;
+    const cursosPaginados = produtos.slice(indexInicio, indexInicio + CardPorPagina);
+
   if (carregando) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '70vh' }}>
@@ -38,40 +48,57 @@ export default function CardapioPage() {
       </div>
     );
   }
+
   return (
     <Animate>
-    <div className="container mt-4">
-      <h2 className="text-center mb-4">Cardápio</h2>
-      <div className="row">
+      <div className="container mt-4">
+        <h2 className="text-center mb-4">Cardápio</h2>
         {produtos.length === 0 ? (
-          <p className="text-center text-light">Nenhum produto encontrado</p>
+          <div className="text-center my-5">
+            <img
+              src="/img/illustrations/no-courses.svg"
+              alt="Sem produtos"
+              style={{ maxWidth: '300px' }}
+              className="mb-3"
+            />
+            <h5 className="mb-2 text-white">🍽️ Nenhum produto encontrado</h5>
+            <p className="text-secondary text-white">O cardápio está vazio no momento. Por favor, aguarde atualizações.</p>
+          </div>
         ) : (
-          produtos.map((produto) => (
-            <div className="col-md-6 col-lg-4 mb-4" key={produto.id}>
-              <div className="card h-100 bg-dark text-white shadow-lg border-0 rounded-4 overflow-hidden">
-                {produto.imagem && (
-                  <img
-                    src={produto.imagem}
-                    alt={produto.nome}
-                    className="card-img-top"
-                    style={{ height: 200, objectFit: 'cover', borderBottom: '4px solid #ffc107' }}
-                  />
-                )}
-                <div className="card-body d-flex flex-column">
-                    <h5 className="card-title fw-bold">{produto.nome} <span className={style.numMesa}>#{mesa}</span></h5>
-                  <p className="card-text text-secondary flex-grow-1">{produto.descricao}</p>
-                  <div className="mt-3">
-                    <span className="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill">
-                      Kz {Number(produto.preco).toFixed(2)}
-                    </span>
+          <div className="row">
+            {cursosPaginados.map((produto) => (
+              <div className="col-md-6 col-lg-4 mb-4" key={produto.id}>
+                <div className="card h-100 bg-dark text-white shadow-lg border-0 rounded-4 overflow-hidden">
+                  {produto.image_url && (
+                    <img
+                      src={`img/${produto.imagem}`}
+                      alt={produto.name}
+                      className="card-img-top"
+                      style={{ height: 200, objectFit: 'cover', borderBottom: '4px solid #ffc107' }}
+                    />
+                  )}
+                  <div className="card-body d-flex flex-column">
+                    <h5 className="card-title fw-bold">
+                      {produto.name} <span className={style.numMesa}>#{mesa}</span>
+                    </h5>
+                    <p className="card-text text-secondary flex-grow-1">{produto.description}</p>
+                    <div className="mt-3">
+                      <span className="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill">
+                        Kz {Number(produto.price).toFixed(2)}
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          ))
+            ))}
+          </div>
         )}
       </div>
-    </div>
+      <Pagination
+          totalPages={totalPaginas}
+          currentPage={paginaAtual}
+          setCurrentPage={setPaginaAtual}
+      />
     </Animate>
   );
 }

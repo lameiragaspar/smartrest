@@ -1,29 +1,24 @@
-import { db } from '@/lib/bd'; // conexão com MySQL
+import { db } from '@/lib/conetc';
 
-export async function POST(req) {
+export async function POST(request) {
+  const { mesa } = await request.json();
+
+  if (!mesa || isNaN(mesa)) {
+    return Response.json({ error: 'Digite um número válido da mesa' }, { status: 400 });
+  }
+
   try {
-    const { mesa, quantidade } = await req.json();
+    // Verifica se a mesa já existe
+    const [existe] = await db.query('SELECT id FROM tables WHERE table_number = ?', [mesa]);
 
-    if (!mesa || !quantidade) {
-      return new Response(JSON.stringify({ error: 'Dados incompletos' }), {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      });
+    // Se não existe, insere
+    if (existe.length === 0) {
+      await db.query('INSERT INTO tables (table_number) VALUES (?)', [mesa]);
     }
 
-    await db.query(
-      'INSERT INTO mesa (numero, quantidade_pessoas) VALUES (?, ?) ON DUPLICATE KEY UPDATE quantidade_pessoas = ?',
-      [mesa, quantidade, quantidade]
-    );
-
-    return new Response(JSON.stringify({ message: 'Mesa registrada com sucesso' }), {
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return Response.json({ success: true });
   } catch (error) {
-    console.error(error);
-    return new Response(JSON.stringify({ error: 'Erro ao registrar no banco' }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    console.error('Erro ao salvar mesa:', error);
+    return Response.json({ error: 'Erro ao salvar mesa' }, { status: 500 });
   }
 }

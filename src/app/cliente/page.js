@@ -8,14 +8,15 @@ export default function ClientePage() {
   const [mesa, setMesa] = useState('');
   const router = useRouter();
 
-  useEffect(() => {
+  useEffect(() => { 
+    //Verica se há mesa salva na memória do navegador
     const mesaSalva = localStorage.getItem('mesa');
     if (mesaSalva) {
       router.push('/cliente/quantidade');
     }
   }, []);
 
-  const handleSalvar = () => {
+  const handleSalvarMesa =  async () => {
     if (!mesa || isNaN(mesa) || parseInt(mesa) <= 0) {
       alert('Digite um número de mesa válido!');
       return;
@@ -24,9 +25,19 @@ export default function ClientePage() {
       alert('Limite máximo de 10 mesas no restaurante!');
       return;
     }
-
+    //Salva a mesa na memória do navegar
     localStorage.setItem('mesa', mesa);
-    router.push('/cliente/quantidade');
+
+    const res = await fetch('/api/mesa', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mesa }),
+    });
+    if (res.ok) {
+      router.push('/cliente/quantidade');
+    } else {
+      alert('Erro ao salvar númedo da mesa');
+    }
   };
 
   return (
@@ -43,7 +54,7 @@ export default function ClientePage() {
           onChange={(e) => setMesa(e.target.value)}
           placeholder="Ex: 12"
         />
-        <button className="btn btn-warning px-4 w-100 fw-bold rounded-pill" onClick={handleSalvar}>
+        <button className="btn btn-warning px-4 w-100 fw-bold rounded-pill" onClick={handleSalvarMesa}>
           Confirmar
         </button>
       </div>

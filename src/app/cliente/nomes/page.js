@@ -22,7 +22,7 @@ export default function NomesPage() {
 
     async function buscarQuantidade() {
       try {
-        const res = await fetch(`/api/quantnomes?mesa=${mesa}`);
+        const res = await fetch(`/api/buscaquantidade?mesa=${mesa}`);
         const data = await res.json();
         if (res.ok && data.quantidade_pessoas) {
           setQuantidade(data.quantidade_pessoas);
@@ -48,15 +48,16 @@ export default function NomesPage() {
   };
 
   const salvarNomes = async () => {
-    const mesa = localStorage.getItem('mesa');
-    if (!mesa) return;
+  const mesa = localStorage.getItem('mesa');
+  if (!mesa) return;
 
-    const nomesValidos = nomes.filter((nome) => nome.trim().length > 0);
-    if (nomesValidos.length < quantidade) {
-      alert('Preencha todos os nomes.');
-      return;
-    }
+  const nomesValidos = nomes.filter((nome) => nome.trim().length > 0);
+  if (nomesValidos.length < quantidade) {
+    alert('Preencha todos os nomes.');
+    return;
+  }
 
+  try {
     const res = await fetch('/api/nomes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -68,15 +69,11 @@ export default function NomesPage() {
     } else {
       alert('Erro ao salvar nomes');
     }
-  };
-
-  if (carregando) {
-    return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '70vh' }}>
-        <Spinner animation="border" variant="light" />
-      </div>
-    );
+  } catch (error) {
+    console.error('Erro na requisição:', error);
+    alert('Erro de conexão com o servidor.');
   }
+};
 
   const mensagem = quantidade === 1 ? "Informe seu nome" : `Informe os nomes dos ${quantidade} clientes`
 
@@ -119,5 +116,4 @@ export default function NomesPage() {
       )}
     </>
   );
-  
 }

@@ -1,5 +1,4 @@
-
-import { db } from '@/lib/bd';
+import { db } from '@/lib/conetc';
 
 export async function POST(request) {
   const { mesa, nomes } = await request.json();
@@ -9,11 +8,12 @@ export async function POST(request) {
   }
 
   try {
+    // Remove nomes antigos da mesa (evita duplicação)
+    await db.execute('DELETE FROM clients WHERE table_number = ?', [mesa]);
+
+    // Insere os novos nomes
     const insertPromises = nomes.map((nome) => {
-      return db.execute(
-        'INSERT INTO nomes (mesa, nome) VALUES (?, ?)',
-        [mesa, nome]
-      );
+      return db.execute('INSERT INTO clients (table_number, name) VALUES (?, ?)', [mesa, nome]);
     });
 
     await Promise.all(insertPromises);
