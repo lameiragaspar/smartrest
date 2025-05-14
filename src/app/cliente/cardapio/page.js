@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Animate from '@/components/Motion';
 import Spinner from 'react-bootstrap/Spinner';
+import { inView } from 'framer-motion';
 import style from '../cliente.module.css'
 import Pagination from '@/components/Pagination';
 
@@ -10,10 +11,19 @@ export default function CardapioPage() {
   const [produtos, setProdutos] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [mesa, setMesa] = useState(null);
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState('0'); // 0 = Todas
   const [paginaAtual, setPaginaAtual] = useState(1);
   const CardPorPagina = 9;
 
-
+  const categorias = [
+  { id: '0', nome: 'Todas' },
+  { id: '1', nome: 'Lanches' },
+  { id: '2', nome: 'Massas' },
+  { id: '3', nome: 'Pratos Principais' },
+  { id: '4', nome: 'Entradas' },
+  { id: '5', nome: 'Sobremesas' },
+  { id: '6', nome: 'Bebidas' }
+];
 
   useEffect(() => {
     const mesaStorage = localStorage.getItem('mesa');
@@ -37,9 +47,14 @@ export default function CardapioPage() {
     fetchProdutos();
   }, []);
 
-    const totalPaginas = Math.ceil(produtos.length / CardPorPagina);
-    const indexInicio = (paginaAtual - 1) * CardPorPagina;
-    const cursosPaginados = produtos.slice(indexInicio, indexInicio + CardPorPagina);
+    const produtosFiltrados = categoriaSelecionada === '0'
+  ? produtos
+  : produtos.filter(p => p.category_id?.toString() === categoriaSelecionada);
+
+const totalPaginas = Math.ceil(produtosFiltrados.length / CardPorPagina);
+const indexInicio = (paginaAtual - 1) * CardPorPagina;
+const produtosPaginados = produtosFiltrados.slice(indexInicio, indexInicio + CardPorPagina);
+
 
   if (carregando) {
     return (
@@ -53,6 +68,40 @@ export default function CardapioPage() {
     <Animate>
       <div className="container mt-4">
         <h2 className="text-center mb-4">Cardápio</h2>
+        <div className="mb-4 text-center">
+          {/* Botões (Desktop) */}
+          <div className="d-none d-md-flex justify-content-center flex-wrap gap-2">
+            {categorias.map(cat => (
+              <button
+                key={cat.id}
+                className={`btn btn-sm ${categoriaSelecionada === cat.id ? 'btn-warning' : 'btn-outline-light'}`}
+                onClick={() => {
+                  setCategoriaSelecionada(cat.id);
+                  setPaginaAtual(1); // reinicia a paginação
+                }}
+              >
+                {cat.nome}
+              </button>
+            ))}
+          </div>
+
+          {/* Select (Mobile) */}
+          <div className="d-md-none">
+            <select
+              className="form-select"
+              value={categoriaSelecionada}
+              onChange={(e) => {
+                setCategoriaSelecionada(e.target.value);
+                setPaginaAtual(1);
+              }}
+            >
+              {categorias.map(cat => (
+                <option key={cat.id} value={cat.id}>{cat.nome}</option>
+              ))}
+            </select>
+          </div>
+        </div>
+
         {produtos.length === 0 ? (
           <div className="text-center my-5">
             <img
@@ -66,7 +115,7 @@ export default function CardapioPage() {
           </div>
         ) : (
           <div className="row">
-            {cursosPaginados.map((produto) => (
+            {produtosPaginados.map((produto) => (
               <div className="col-md-6 col-lg-4 mb-4" key={produto.id}>
                 <div className="card h-100 bg-dark text-white shadow-lg border-0 rounded-4 overflow-hidden">
                   {produto.image_url && (
