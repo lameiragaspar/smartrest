@@ -1,8 +1,20 @@
 import { db } from '@/lib/conetc';
 
-export async function GET() {
+export async function GET(req) {
+  const { searchParams } = new URL(req.url);
+  const categoria = searchParams.get('categoria');
+
   try {
-    const [rows] = await db.query('SELECT * FROM products');
+    let query = 'SELECT * FROM products';
+    let values = [];
+
+    // Verifica se foi passada uma categoria (diferente de 0)
+    if (categoria && categoria !== '0') {
+      query += ' WHERE category = ?';
+      values.push(categoria);
+    }
+
+    const [rows] = await db.query(query, values);
 
     return new Response(JSON.stringify(rows), {
       status: 200,
