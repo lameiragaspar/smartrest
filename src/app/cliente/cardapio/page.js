@@ -9,6 +9,7 @@ import Pagination from '@/components/Pagination';
 import { FaCartPlus } from 'react-icons/fa';
 import { useRouter } from 'next/navigation';
 import { OverlayTrigger, Tooltip, Modal, Button } from 'react-bootstrap';
+import { adicionarOuAtualizarPedido } from '../pedido_temp'
 
 export default function CardapioPage() {
   const [produtos, setProdutos] = useState([]);
@@ -75,29 +76,30 @@ export default function CardapioPage() {
     setTimeout(() => setShowToast(false), 3000);
   };
 
-  const adicionarPedido = (mesa, clienteId, produto, nomeCliente) => {
-    const dados = JSON.parse(localStorage.getItem('pedidos')) || {};
+const adicionarPedido = (clienteId, produto) => {
+  const nomeCliente = clientes.find(c => c.id === Number(clienteId))?.name || '';
 
-    if (!dados[mesa]) dados[mesa] = {};
+  const resultado = adicionarOuAtualizarPedido({
+    mesa,
+    clienteId,
+    nomeCliente,
+    produto
+  });
 
-    if (!dados[mesa][clienteId]) {
-      dados[mesa][clienteId] = {
-        nome: nomeCliente || '',
-        produtos: []
-      };
-    }
+  if (!resultado) {
+    console.error('Erro: resultado inválido ao adicionar pedido');
+    return;
+  }
 
-    if (!Array.isArray(dados[mesa][clienteId].produtos)) {
-      dados[mesa][clienteId].produtos = [];
-    }
+  if (resultado.status === 'novo') {
+    console.log('✅ Pedido novo adicionado');
+  } else {
+    console.log('♻️ Pedido existente atualizado');
+  }
 
-    dados[mesa][clienteId].produtos.push(produto);
-    localStorage.setItem('pedidos', JSON.stringify(dados));
-    mostrarToastTemporario();
-    setMostrarModal(false);
-  };
-
-
+  mostrarToastTemporario();
+  setMostrarModal(false);
+};
 
 
   const produtosFiltrados = categoriaSelecionada === '0'

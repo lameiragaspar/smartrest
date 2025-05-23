@@ -1,30 +1,53 @@
-'use client'
+'use client';
 
 import { useEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import style from './Confirmar.module.css';
+import { getPedidos, limparPedidos, removerProdutoTemp } from '../pedido_temp';
 
 export default function ConfirmarPage() {
     const [pedidosPorCliente, setPedidosPorCliente] = useState({});
     const router = useRouter();
 
     useEffect(() => {
-        const pedidos = JSON.parse(localStorage.getItem('pedidos')) || {};
-        const mesa = localStorage.getItem('mesa');
+        const pedidosTemporarios = getPedidos();
+        const agrupados = {};
 
-        // garante que os dados estejam organizados como: { mesa: { clienteId: [...] } }
-        if (mesa && pedidos[mesa]) {
-            setPedidosPorCliente(pedidos[mesa]);
-        }
+        pedidosTemporarios.forEach(pedido => {
+            if (!agrupados[pedido.clienteId]) {
+                agrupados[pedido.clienteId] = {
+                    nome: pedido.nomeCliente || `#${pedido.clienteId}`,
+                    pedidos: {}
+                };
+            }
+
+            for (const categoria in pedido.pedidos) {
+                if (!agrupados[pedido.clienteId].pedidos[categoria]) {
+                    agrupados[pedido.clienteId].pedidos[categoria] = [];
+                }
+                agrupados[pedido.clienteId].pedidos[categoria].push(...pedido.pedidos[categoria]);
+            }
+        });
+
+        setPedidosPorCliente(agrupados);
     }, []);
+
+    const calcularTotal = (cliente) => {
+        let total = 0;
+        Object.values(cliente.pedidos).forEach(produtos => {
+            produtos.forEach(p => {
+                total += parseFloat(p.price || 0) * (p.quantidade || 1);
+            });
+        });
+        return total.toFixed(2);
+    };
+
 
     const enviarPedidos = async () => {
         const mesa = localStorage.getItem('mesa');
         if (!mesa || Object.keys(pedidosPorCliente).length === 0) return;
 
-        const payload = {
-            [mesa]: pedidosPorCliente
-        };
+        const payload = { [mesa]: pedidosPorCliente };
 
         try {
             const res = await fetch('/api/pedido/enviar', {
@@ -34,6 +57,7 @@ export default function ConfirmarPage() {
             });
 
             if (res.ok) {
+                limparPedidos(); // << AQUI: limpa os pedidos temporários da memória
                 localStorage.removeItem('pedidos');
                 router.push('/cliente/finalizado');
             } else {
@@ -54,12 +78,71 @@ export default function ConfirmarPage() {
 
             {Object.entries(pedidosPorCliente).map(([clienteId, cliente]) => (
                 <div key={clienteId} className={style.cardCliente}>
-                    <h5>{cliente.nome ? `Cliente ${cliente.nome}` : `Cliente #${clienteId}`}</h5>
-                    <ul>
-                        {(cliente.produtos || []).map((p, i) => (
-                            <li key={i}>{p.name} - Kz {Number(p.price).toFixed(2)}</li>
-                        ))}
-                    </ul>
+                    <h5>Cliente: {cliente.nome} </h5>
+
+                    {Object.entries(cliente.pedidos).map(([categoria, produtos]) => (
+                        <div key={categoria} className="mb-3">
+                            <h6 className="text-white">{categoria}</h6>
+                            <ul className="list-group">
+                                {produtos.map((p, i) => (
+                                    <li key={i} className="list-group-item">
+                                        <div className="d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <input
+                                                    type="number"
+                                                    min="1"
+                                                    value={p.quantidade || 1}
+                                                    className="form-control form-control-sm d-inline-block ms-2"
+                                                    style={{ width: '60px', marginRight:'30px', textAlign: 'center' }}
+                                                    onChange={(e) => {
+                                                        const novaQtd = parseInt(e.target.value) || 1;
+                                                        setPedidosPorCliente(prev => {
+                                                            const novo = { ...prev };
+                                                            novo[clienteId].pedidos[categoria][i].quantidade = novaQtd;
+                                                            return { ...novo };
+                                                        });
+                                                    }}
+                                                />
+                                                {p.name} - Kz {Number(p.price).toFixed(2)}
+
+                                            </div>
+                                            <button
+                                                className="btn btn-sm btn-danger"
+                                                onClick={() => {
+                                                    removerProdutoTemp(clienteId, categoria, i);
+                                                    setPedidosPorCliente(() => {
+                                                        const atualizados = getPedidos().reduce((map, p) => {
+                                                            if (!map[p.clienteId]) {
+                                                                map[p.clienteId] = {
+                                                                    nome: p.nomeCliente,
+                                                                    pedidos: {}
+                                                                };
+                                                            }
+                                                            for (const cat in p.pedidos) {
+                                                                if (!map[p.clienteId].pedidos[cat]) {
+                                                                    map[p.clienteId].pedidos[cat] = [];
+                                                                }
+                                                                map[p.clienteId].pedidos[cat].push(...p.pedidos[cat]);
+                                                            }
+                                                            return map;
+                                                        }, {});
+                                                        return atualizados;
+                                                    });
+                                                }}
+                                            >
+                                                Remover
+                                            </button>
+                                        </div>
+                                    </li>
+                                ))}
+
+                            </ul>
+                        </div>
+                    ))}
+                    <p className="mt-2 fw-bold text-light">
+                        Total: Kz {calcularTotal(cliente)}
+                    </p>
+
                     <button
                         className={`btn btn-sm btn-outline-warning ${style.adicionarBtn}`}
                         onClick={() => router.push(`/cliente/cardapio?cliente=${clienteId}`)}
@@ -68,8 +151,6 @@ export default function ConfirmarPage() {
                     </button>
                 </div>
             ))}
-
-
 
             <div className="text-center mt-4">
                 <button className={`btn btn-success ${style.confirmarBtn}`} onClick={enviarPedidos}>
