@@ -43,3 +43,50 @@
   border-radius: 6px;
   margin-bottom: 0.5rem;
 }
+.listCardProdutos{
+  background-color: #444;
+  border: none;
+  border-bottom: 1px solid #8b8b8b;
+}
+
+.cardProduto {
+  color: #f2f2f2;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.cardProduto button {
+  white-space: nowrap;
+}
+
+@media (max-width: 576px) {
+  .cardProduto {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cardProduto > div{
+    width: 100%;
+  }
+  
+  .cardProduto button {
+    width: 100%;
+    margin-top: 0.5rem;
+    font-weight: bold;
+  }
+}
+
+.botaoFlutuante {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  z-index: 1050;
+  border-radius: 50px;
+  padding: 12px 24px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+  font-weight: bold;
+  font-size: 1.1rem;
+}

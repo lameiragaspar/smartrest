@@ -2,18 +2,21 @@ import { db } from '@/lib/conetc';
 
 export async function POST(req) {
   try {
-    const { mesa, cliente_id, produto_id } = await req.json();
+    const data = await req.json();
 
-    if (!mesa || !cliente_id || !produto_id) {
+    const mesa = Object.keys(data)[0];
+    const clientes = data[mesa];
+
+    if (!mesa || !clientes || Object.keys(clientes).length === 0) {
       return new Response(
         JSON.stringify({ error: 'Dados incompletos' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
       );
     }
 
-    // Procura se já existe um request em aberto para a mesa
+    // Verifica pedido existente
     const [existing] = await db.query(
-      "SELECT id FROM request WHERE mesa_id = ? AND status != 'entregue' ORDER BY criado_em DESC LIMIT 1",
+      "SELECT id FROM request WHERE table_id = ? AND status != 'entregue' ORDER BY created_at DESC LIMIT 1",
       [mesa]
     );
 
@@ -22,19 +25,33 @@ export async function POST(req) {
     if (existing.length > 0) {
       pedidoId = existing[0].id;
     } else {
-      // Cria um novo pedido (request)
       const [result] = await db.query(
-        'INSERT INTO request (mesa_id, status) VALUES (?, ?)',
+        'INSERT INTO request (table_id, status) VALUES (?, ?)',
         [mesa, 'pendente']
       );
       pedidoId = result.insertId;
     }
 
-    // Adiciona item ao pedido
-    await db.query(
-      'INSERT INTO request_itens (pedido_id, produto_id, cliente_id, quantidade) VALUES (?, ?, ?, ?)',
-      [pedidoId, produto_id, cliente_id, 1]
-    );
+    // Loop pelos clientes
+    for (const clienteId in clientes) {
+      const cliente = clientes[clienteId];
+
+      for (const categoria in cliente.pedidos) {
+        const produtos = cliente.pedidos[categoria];
+
+        for (const produto of produtos) {
+          await db.query(
+            'INSERT INTO request_itens (request_id, product_id, cliente_id, quantity) VALUES (?, ?, ?, ?)',
+            [
+              pedidoId,
+              produto.id,
+              clienteId,
+              produto.quantidade || 1
+            ]
+          );
+        }
+      }
+    }
 
     return new Response(
       JSON.stringify({ success: true, pedido_id: pedidoId }),
@@ -49,3 +66,4 @@ export async function POST(req) {
     );
   }
 }
+

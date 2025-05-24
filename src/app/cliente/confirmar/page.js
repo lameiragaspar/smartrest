@@ -50,14 +50,14 @@ export default function ConfirmarPage() {
         const payload = { [mesa]: pedidosPorCliente };
 
         try {
-            const res = await fetch('/api/pedido/enviar', {
+            const res = await fetch('/api/pedido/adicionar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
 
             if (res.ok) {
-                limparPedidos(); // << AQUI: limpa os pedidos temporários da memória
+                //limparPedidos(); // << AQUI: limpa os pedidos temporários da memória
                 localStorage.removeItem('pedidos');
                 router.push('/cliente/finalizado');
             } else {
@@ -85,8 +85,8 @@ export default function ConfirmarPage() {
                             <h6 className="text-white">{categoria}</h6>
                             <ul className="list-group">
                                 {produtos.map((p, i) => (
-                                    <li key={i} className="list-group-item">
-                                        <div className="d-flex justify-content-between align-items-center">
+                                    <li key={i} className={`list-group-item ${style.listCardProdutos}`}>
+                                        <div className={`d-flex justify-content-between align-items-center ${style.cardProduto}`}>
                                             <div>
                                                 <input
                                                     type="number"
@@ -103,8 +103,7 @@ export default function ConfirmarPage() {
                                                         });
                                                     }}
                                                 />
-                                                {p.name} - Kz {Number(p.price).toFixed(2)}
-
+                                                <span>{p.name} - Kz {Number(p.price).toFixed(2)}</span>
                                             </div>
                                             <button
                                                 className="btn btn-sm btn-danger"
@@ -152,7 +151,7 @@ export default function ConfirmarPage() {
                 </div>
             ))}
 
-            <div className="text-center mt-4">
+            <div className={style.botaoFlutuante}>
                 <button className={`btn btn-success ${style.confirmarBtn}`} onClick={enviarPedidos}>
                     Confirmar e Enviar Pedido
                 </button>

@@ -1,44 +1,88 @@
-'use client'
+// pasta: finalizado/FinalizadoPage.jsx
+'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
+import StatusSection from './StatusSection';
+import AvaliacaoSection from './AvaliacaoSection';
+import PagamentoSection from './PagamentoSection';
+import styles from './finalizado.module.css';
 
 export default function FinalizadoPage() {
   const router = useRouter();
+  const [etapa, setEtapa] = useState('status');
+  const [status, setStatus] = useState(null);
+  const [mensagem, setMensagem] = useState('Aguardando status do pedido...');
+  const [loading, setLoading] = useState(true);
+  const [mesaId, setMesaId] = useState(null);
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      router.push('/');
-    }, 6000);
+    const mesa = localStorage.getItem('mesa');
+    if (!mesa) {
+      setMensagem('Mesa não encontrada. Redirecionando...');
+      setTimeout(() => router.push('/'), 3000);
+      return;
+    }
 
-    return () => clearTimeout(timeout);
+    setMesaId(mesa);
+    fetchStatus(mesa);
+    const interval = setInterval(() => fetchStatus(mesa), 5000);
+    return () => clearInterval(interval);
   }, [router]);
 
+  const fetchStatus = async (mesa) => {
+    try {
+      const res = await fetch(`/api/pedido/status?mesa=${mesa}`);
+      if (!res.ok) throw new Error('Resposta inválida da API');
+      const data = await res.json();
+
+      if (data?.status) {
+        setStatus(data.status);
+        setLoading(false);
+
+        const mensagens = {
+          pendente: 'Seu pedido foi enviado e está aguardando confirmação.',
+          'em preparo': '👨‍🍳 A cozinha está preparando seus pratos...',
+          pronto: '🚀 Seu pedido está pronto para ser servido!',
+          entregue: '🍽️ Seu pedido foi entregue. Bom apetite!',
+        };
+
+        setMensagem(mensagens[data.status] || 'Aguardando atualização do pedido...');
+        if (data.status === 'entregue' && !localStorage.getItem(`avaliado-${mesa}`)) {
+          setEtapa('avaliacao');
+        }
+      } else {
+        setTimeout(() => {
+          setMensagem('Nenhum pedido encontrado para esta mesa.');
+          setLoading(false);
+        }, 2000);
+      }
+    } catch (err) {
+      console.error('Erro ao buscar status:', err);
+      setMensagem('Erro ao buscar status. Tente novamente.');
+      setLoading(false);
+    }
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      transition={{ duration: 0.5 }}
-      className="container d-flex flex-column align-items-center justify-content-center text-center"
-      style={{ minHeight: '80vh' }}
-    >
-      <img
-        src="/img/illustrations/order-complete.svg"
-        alt="Pedido finalizado"
-        style={{ maxWidth: '280px', marginBottom: '20px' }}
-      />
-
-      <h2 className="text-success mb-3 fw-bold">✅ Pedido enviado com sucesso!</h2>
-
-      <p className="text-white mb-4 fs-5">
-        A cozinha já está preparando seus pratos.<br />Você será redirecionado em instantes...
-      </p>
-
-      <button className="btn btn-outline-light px-4 py-2" onClick={() => router.push('/')}>
-        Voltar ao início
-      </button>
-    </motion.div>
+    <div className={`container py-5 ${styles.finalizadoContainer}`}>
+      {etapa === 'status' && (
+        <StatusSection
+          status={status}
+          mensagem={mensagem}
+          loading={loading}
+          onTerminar={() => setEtapa('avaliacao')}
+          onNovoPedido={() => router.push('/cardapio')}
+        />
+      )}
+      {etapa === 'avaliacao' && (
+        <AvaliacaoSection
+          mesaId={mesaId}
+          onFinalizar={() => setEtapa('pagamento')}
+        />
+      )}
+      {etapa === 'pagamento' && <PagamentoSection mesaId={mesaId} />}
+    </div>
   );
-}
-
+} 

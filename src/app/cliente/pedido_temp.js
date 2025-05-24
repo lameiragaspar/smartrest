@@ -17,14 +17,19 @@ export function getPedidos() {
 
 export function adicionarOuAtualizarPedido({ mesa, clienteId, nomeCliente, produto }) {
   const categoria = produto.category_id || 'outros';
-  let pedido = pedidosTemporarios.find(p => p.mesa === mesa && p.clienteId === clienteId && p.nomeCliente === nomeCliente);
+
+  let pedido = pedidosTemporarios.find(
+    p => p.mesa === mesa && p.clienteId === clienteId && p.nomeCliente === nomeCliente
+  );
 
   if (!pedido) {
     pedido = {
       mesa,
       clienteId,
       nomeCliente,
-      pedidos: { [categoria]: [{ ...produto, quantidade: 1 }] }
+      pedidos: {
+        [categoria]: [{ ...produto, quantidade: 1 }]
+      }
     };
     pedidosTemporarios.push(pedido);
     salvar();
@@ -35,10 +40,20 @@ export function adicionarOuAtualizarPedido({ mesa, clienteId, nomeCliente, produ
     pedido.pedidos[categoria] = [];
   }
 
-  pedido.pedidos[categoria].push({ ...produto, quantidade: 1 });
-  salvar();
-  return { status: 'atualizado' };
+  // Verifica se o produto já está na lista
+  const produtoExistente = pedido.pedidos[categoria].find(p => p.id === produto.id);
+
+  if (produtoExistente) {
+    produtoExistente.quantidade += 1;
+    salvar();
+    return { status: 'quantidade_atualizada' };
+  } else {
+    pedido.pedidos[categoria].push({ ...produto, quantidade: 1 });
+    salvar();
+    return { status: 'adicionado' };
+  }
 }
+
 
 export function removerProdutoTemp(clienteId, categoria, index) {
   const pedido = pedidosTemporarios.find(p => p.clienteId === clienteId);

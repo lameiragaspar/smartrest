@@ -213,7 +213,7 @@ const adicionarPedido = (clienteId, produto) => {
         )}
 
         {/* Botão Flutuante */}
-        <div className={style.botaoFlutuante}>
+        <div className={styles.botaoFlutuante}>
           <button className="btn btn-success btn-lg shadow" onClick={() => router.push('/cliente/confirmar')}>
             Iniciar Conta
           </button>
@@ -252,22 +252,7 @@ const adicionarPedido = (clienteId, produto) => {
               disabled={!clienteSelecionado}
               onClick={async () => {
                 adicionarPedido(clienteSelecionado, produtoSelecionado);
-                {/*try {
-                  await fetch('/api/pedido/adicionar', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                      produto_id: produtoSelecionado.id,
-                      cliente_id: clienteSelecionado,
-                      mesa
-                    })
-                  });
-
-                } catch (err) {
-                  alert('Erro ao adicionar pedido.');
-                } finally {
-                  setMostrarModal(false);
-                }*/}
+                
               }}
             >
               Adicionar Pedido

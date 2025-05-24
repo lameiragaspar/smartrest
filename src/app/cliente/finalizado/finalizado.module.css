@@ -1,0 +1,56 @@
+/* pasta: finalizado/finalizado.module.css */
+
+.finalizadoContainer {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.image {
+  max-width: 240px;
+}
+
+.noResize {
+  resize: none;
+}
+
+.bg-dark {
+  background-color: #1f1f1f !important;
+}
+
+.text-light {
+  color: #f8f9fa !important;
+}
+
+.text-info {
+  color: #17a2b8 !important;
+}
+
+.btn-outline-info:hover {
+  background-color: #17a2b8;
+  color: #fff;
+}
+
+.btn-outline-success:hover {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.btn-outline-light:hover {
+  background-color: #f8f9fa;
+  color: #000;
+}
+
+.list-unstyled li {
+  padding-left: 0.5rem;
+}
+
+@media (max-width: 576px) {
+  .finalizadoContainer {
+    padding: 1rem;
+  }
+
+  .image {
+    max-width: 180px;
+  }
+}
