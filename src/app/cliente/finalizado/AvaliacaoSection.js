@@ -1,4 +1,3 @@
-// pasta: finalizado/AvaliacaoSection.jsx
 import { useState } from 'react';
 import styles from './finalizado.module.css';
 
