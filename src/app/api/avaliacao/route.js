@@ -2,9 +2,9 @@ import { db } from '@/lib/conetc';
 
 export async function POST(req) {
   try {
-    const { mesa_id, nota } = await req.json();
+    const { mesa_id, nota, comentario } = await req.json();
 
-    if (!mesa_id || !nota) {
+    if (!mesa_id || !nota ) {
       return new Response(
         JSON.stringify({ error: 'Dados incompletos' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
@@ -12,8 +12,8 @@ export async function POST(req) {
     }
 
     await db.query(
-      'INSERT INTO assessment (table_id, stars, created_at) VALUES (?, ?, NOW())',
-      [mesa_id, nota]
+      'INSERT INTO assessment (table_id, stars,comment, created_at) VALUES (?, ?, NOW())',
+      [mesa_id, nota, comentario]
     );
 
     return new Response(

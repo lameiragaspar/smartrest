@@ -13,7 +13,7 @@ export default function AvaliacaoSection({ mesaId, onFinalizar }) {
             await fetch('/api/avaliacao', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ mesa_id: mesaId, nota: avaliacao, comentario }),
+                body: JSON.stringify({ mesa_id: mesaId, nota: avaliacao, comentario: comentario }),
             });
 
             localStorage.setItem(`avaliado-${mesaId}`, 'true');

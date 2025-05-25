@@ -13,7 +13,7 @@ export async function GET(req) {
     }
 
     const [result] = await db.query(
-      "SELECT status FROM request WHERE table_id = ? ORDER BY created_at DESC LIMIT 1",
+      "SELECT status FROM orders WHERE table_id = ? ORDER BY created_at DESC LIMIT 1",
       [mesa]
     );
 

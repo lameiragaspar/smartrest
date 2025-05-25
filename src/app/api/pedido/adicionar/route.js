@@ -16,7 +16,7 @@ export async function POST(req) {
 
     // Verifica pedido existente
     const [existing] = await db.query(
-      "SELECT id FROM request WHERE table_id = ? AND status != 'entregue' ORDER BY created_at DESC LIMIT 1",
+      "SELECT id FROM orders WHERE table_id = ? AND status != 'entregue' ORDER BY created_at DESC LIMIT 1",
       [mesa]
     );
 
@@ -26,7 +26,7 @@ export async function POST(req) {
       pedidoId = existing[0].id;
     } else {
       const [result] = await db.query(
-        'INSERT INTO request (table_id, status) VALUES (?, ?)',
+        'INSERT INTO orders (table_id, status) VALUES (?, ?)',
         [mesa, 'pendente']
       );
       pedidoId = result.insertId;
@@ -41,7 +41,7 @@ export async function POST(req) {
 
         for (const produto of produtos) {
           await db.query(
-            'INSERT INTO request_itens (request_id, product_id, cliente_id, quantity) VALUES (?, ?, ?, ?)',
+            'INSERT INTO order_items (order_id, product_id, cliente_id, quantity) VALUES (?, ?, ?, ?)',
             [
               pedidoId,
               produto.id,

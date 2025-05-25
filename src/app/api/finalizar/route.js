@@ -17,12 +17,14 @@ export async function POST(req) {
         const method = formData.get('method') || 'cash';
         const comprovativo = formData.get('comprovativo'); // tipo: File
 
-        if (!order_id || !amount || !comprovativo) {
+        if (!order_id || !amount || (!comprovativo && method !== 'cash' && method !== 'mcexpress')) {
+
             return NextResponse.json({ erro: 'Dados obrigatórios ausentes.' }, { status: 400 });
         }
 
         // Gera nome único para o comprovativo
-        const fileExt = comprovativo.name.split('.').pop();
+        const fileExt = comprovativo.name.includes('.') ? comprovativo.name.split('.').pop() : 'pdf';
+
         const now = new Date();
         const timestamp = now.toISOString().replace(/[:.]/g, '-');
         const fileName = `comprovativo-${timestamp}.${fileExt}`;

@@ -1,4 +1,3 @@
-// pasta: finalizado/StatusSection.jsx
 import { motion } from 'framer-motion';
 import styles from './finalizado.module.css';
 
@@ -11,11 +10,35 @@ export default function StatusSection({ status, mensagem, loading, onTerminar, o
       className="d-flex flex-column align-items-center justify-content-center text-center"
       style={{ minHeight: '80vh' }}
     >
-      <img
-        src="/img/illustrations/order-complete.svg"
+
+      {status === 'pendente' && (
+        <img
+        src="/img/illustrations/pendente.svg"
         alt="Pedido finalizado"
         className={`mb-4 ${styles.image}`}
       />
+      )}
+      {status === 'em preparo' && (
+        <img
+        src="/img/illustrations/em_preparo.svg"
+        alt="Pedido finalizado"
+        className={`mb-4 ${styles.image}`}
+      />
+      )}
+      {status === 'pronto' && (
+        <img
+        src="/img/illustrations/pronto.svg"
+        alt="Pedido finalizado"
+        className={`mb-4 ${styles.image}`}
+      />
+      )}
+      {status === 'entregue' && (
+        <img
+        src="/img/illustrations/entregue.svg"
+        alt="Pedido finalizado"
+        className={`mb-4 ${styles.image}`}
+      />
+      )}
 
       <h2 className="text-success mb-3 fw-bold">
         ✅ Pedido enviado com sucesso!
