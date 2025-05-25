@@ -8,6 +8,16 @@ import { getPedidos, limparPedidos, removerProdutoTemp } from '../pedido_temp';
 export default function ConfirmarPage() {
     const [pedidosPorCliente, setPedidosPorCliente] = useState({});
     const router = useRouter();
+    const categoriasMap = {
+        "1": 'Todas',
+        "2": 'Lanches',
+        "3": 'Massas',
+        "4": 'Pratos Principais',
+        "5": 'Entradas',
+        "6": 'Sobremesas',
+        "7": 'Bebidas'
+    };
+
 
     useEffect(() => {
         const pedidosTemporarios = getPedidos();
@@ -82,7 +92,7 @@ export default function ConfirmarPage() {
 
                     {Object.entries(cliente.pedidos).map(([categoria, produtos]) => (
                         <div key={categoria} className="mb-3">
-                            <h6 className="text-white">{categoria}</h6>
+                            <h6 className="text-white">{categoriasMap[Number(categoria)] || categoria}</h6>
                             <ul className="list-group">
                                 {produtos.map((p, i) => (
                                     <li key={i} className={`list-group-item ${style.listCardProdutos}`}>
@@ -93,7 +103,7 @@ export default function ConfirmarPage() {
                                                     min="1"
                                                     value={p.quantidade || 1}
                                                     className="form-control form-control-sm d-inline-block ms-2"
-                                                    style={{ width: '60px', marginRight:'30px', textAlign: 'center' }}
+                                                    style={{ width: '60px', marginRight: '30px', textAlign: 'center' }}
                                                     onChange={(e) => {
                                                         const novaQtd = parseInt(e.target.value) || 1;
                                                         setPedidosPorCliente(prev => {

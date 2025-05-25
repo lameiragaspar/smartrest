@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { getPedidos, limparPedidos } from '../pedido_temp';
 import ClienteCard from './ClienteCard';
 import QRCode from 'react-qr-code';
@@ -8,45 +8,12 @@ export default function PagamentoSection({ mesaId }) {
     const telefone = '+244934557024';
     const pedidos = getPedidos();
     const [clientesPagos, setClientesPagos] = useState([]);
-    const [mensagemPagamento, setMensagemPagamento] = useState(null);
-    const [pagandoTotal, setPagandoTotal] = useState(false);
-    const [mostrarModalQR, setMostrarModalQR] = useState(false);
-    const [mostrarModalGarcom, setMostrarModalGarcom] = useState(false);
-    const [comprovativo, setComprovativo] = useState(null);
+    const [mensagem, setMensagem] = useState(null);
     const [confirmando, setConfirmando] = useState(false);
-    const [mensagemFinal, setMensagemFinal] = useState(null);
-
-    const confirmarPagamento = async () => {
-        if (!comprovativo) {
-            setMensagemFinal('Por favor, envie o comprovativo antes de confirmar.');
-            return;
-        }
-
-        const formData = new FormData();
-        formData.append('mesa_id', mesaId);
-        formData.append('comprovativo', comprovativo);
-
-        setConfirmando(true);
-        setMensagemFinal(null);
-
-        try {
-            const res = await fetch('../api/finalizar', {
-                method: 'POST',
-                body: formData,
-            });
-
-            if (!res.ok) throw new Error('Erro na finalização');
-            const data = await res.json();
-            limparPedidos()
-            setMensagemFinal(data.mensagem || 'Pagamento confirmado e mesa liberada!');
-            setMensagemPagamento('Pagamento total da mesa confirmado!');
-        } catch (err) {
-            console.error(err);
-            setMensagemFinal('Erro ao confirmar o pagamento.');
-        }
-
-        setConfirmando(false);
-    };
+    const [comprovativo, setComprovativo] = useState(null);
+    const [metodoPagamento, setMetodoPagamento] = useState('cash');
+    const [mostrarQR, setMostrarQR] = useState(false);
+    const [mostrarGarcom, setMostrarGarcom] = useState(false);
 
     const totaisClientes = pedidos.map((cliente) => {
         const itens = [];
@@ -60,111 +27,118 @@ export default function PagamentoSection({ mesaId }) {
     });
 
     const totalMesa = totaisClientes.reduce((soma, c) => soma + c.subtotal, 0);
-
     const urlQrCode = `https://app.appypay.co.ao/qrcode?phone=${telefone}&amount=${totalMesa}&reference=Mesa:${mesaId}`;
 
+    const confirmarPagamento = async () => {
+        if (!comprovativo && metodoPagamento !== 'cash' && metodoPagamento !== 'mcexpress') {
+            setMensagem('Por favor, envie o comprovativo antes de confirmar.');
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append('order_id', mesaId);
+        formData.append('amount', totalMesa);
+        formData.append('method', metodoPagamento);
+        if (comprovativo) formData.append('comprovativo', comprovativo);
+
+        setConfirmando(true);
+        setMensagem(null);
+
+        try {
+            const res = await fetch('../api/finalizar', {
+                method: 'POST',
+                body: formData,
+            });
+
+            if (!res.ok) throw new Error('Erro na finalização');
+            const data = await res.json();
+            limparPedidos();
+            setMensagem(data.mensagem || 'Pagamento confirmado com sucesso!');
+        } catch (err) {
+            setMensagem('Erro ao confirmar o pagamento. Tente novamente.');
+        } finally {
+            setConfirmando(false);
+        }
+    };
+
     return (
-        <div className="text-white">
+        <div className="container text-white">
             <h4 className="text-center mb-4">💳 Pagamento da Mesa</h4>
 
-            {totaisClientes.map((cliente, i) => (
-                <ClienteCard
-                    key={i}
-                    cliente={cliente}
-                    telefone={telefone}
-                    mesaId={mesaId}
-                    clientesPagos={clientesPagos}
-                    setClientesPagos={setClientesPagos}
-                />
-            ))}
+            <div className="container" style={{ maxWidth: '1024px' }}>
+                <div className="d-flex flex-column flex-md-row align-items-start gap-4">
+                    <div className="flex-fill">
+                        {totaisClientes.map((cliente, i) => (
+                            <ClienteCard
+                                key={i}
+                                cliente={cliente}
+                                telefone={telefone}
+                                mesaId={mesaId}
+                                clientesPagos={clientesPagos}
+                                setClientesPagos={setClientesPagos}
+                            />
+                        ))}
+                    </div>
 
-            <div className="mt-4 text-center">
-                <h5>Total da mesa: <strong>{totalMesa.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</strong></h5>
+                    {metodoPagamento === 'mcexpress' && (
+                        <div className="text-center">
+                            <QRCode value={urlQrCode} size={180} />
+                            <p className="mt-2 text-muted">Escaneie o QR Code com o Multicaixa Express</p>
+                        </div>
+                    )}
+                    {metodoPagamento !== 'mcexpress' && (
+                        <div className="text-center">
+                            <button className="btn btn-warning" onClick={() => setMostrarGarcom(true)}>Chamar Garçom</button>
+                        </div>
+                    )}
 
-                <div className="d-flex justify-content-center gap-3 mt-3 flex-wrap">
-                    <button className="btn btn-primary" onClick={() => setMostrarModalQR(true)} disabled={pagandoTotal}>
-                        {pagandoTotal ? 'Processando...' : 'Pagar Total com Multicaixa Express'}
-                    </button>
-                    <button className="btn btn-warning" onClick={() => setMostrarModalGarcom(true)}>
-                        Chamar Garçom
-                    </button>
                 </div>
 
-                {mensagemPagamento && <p className="text-success mt-3">{mensagemPagamento}</p>}
             </div>
-            <div className="mt-5">
-                <h5 className="mb-2">📤 Enviar comprovativo e finalizar</h5>
+
+            <div className="text-center mt-4">
+                <h5>Total da mesa: <strong>{totalMesa.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</strong></h5>
+            </div>
+
+            <div className="mt-4">
+                <label className="form-label">Método de Pagamento</label>
+                <select
+                    className="form-select mb-3 w-auto"
+                    value={metodoPagamento}
+                    onChange={(e) => setMetodoPagamento(e.target.value)}
+                >
+                    <option value="cash">Dinheiro</option>
+                    <option value="mcexpress">Multicaixa Express</option>
+                    <option value="transfer">Transferência Bancária</option>
+                    <option value="cartao">Cartão Multicaixa/TPA</option>
+                </select>
+
                 <input
                     type="file"
                     accept="image/*,.pdf"
-                    className="form-control mb-2"
-                    onChange={e => setComprovativo(e.target.files[0])}
+                    className="form-control mb-3 w-auto"
+                    onChange={(e) => setComprovativo(e.target.files[0])}
                 />
-                <button className="btn btn-success" onClick={confirmarPagamento} disabled={confirmando}>
+
+
+                <button
+                    className="btn btn-success mt-2"
+                    disabled={confirmando}
+                    onClick={confirmarPagamento}
+                >
                     {confirmando ? 'Enviando...' : 'Confirmar Pagamento'}
                 </button>
-                {mensagemFinal && <p className="mt-2 text-info">{mensagemFinal}</p>}
+
+                {mensagem && <div className="alert alert-info mt-3 text-center">{mensagem}</div>}
             </div>
 
-
-            {/* Modal QR Code */}
-            {mostrarModalQR && (
-                <div
-                    style={{
-                        position: 'fixed',
-                        top: 0, left: 0,
-                        width: '100vw', height: '100vh',
-                        backgroundColor: 'rgba(0,0,0,0.7)',
-                        display: 'flex', justifyContent: 'center', alignItems: 'center',
-                        zIndex: 1000
-                    }}
-                    onClick={() => setMostrarModalQR(false)}
-                >
-                    <div
-                        style={{
-                            background: '#fff',
-                            padding: 30,
-                            borderRadius: 10,
-                            textAlign: 'center',
-                            maxWidth: 300,
-                            width: '90%'
-                        }}
-                        onClick={e => e.stopPropagation()}
-                    >
-                        <h5 className="mb-3">Escaneie para pagar a mesa</h5>
-                        <QRCode value={urlQrCode} size={200} />
-                        <button className="btn btn-secondary mt-3" onClick={() => setMostrarModalQR(false)}>Fechar</button>
-                    </div>
-                </div>
-            )}
-
             {/* Modal Garçom */}
-            {mostrarModalGarcom && (
-                <div
-                    style={{
-                        position: 'fixed',
-                        top: 0, left: 0,
-                        width: '100vw', height: '100vh',
-                        backgroundColor: 'rgba(0,0,0,0.7)',
-                        display: 'flex', justifyContent: 'center', alignItems: 'center',
-                        zIndex: 1000
-                    }}
-                    onClick={() => setMostrarModalGarcom(false)}
-                >
-                    <div
-                        style={{
-                            background: '#fff',
-                            padding: 30,
-                            borderRadius: 10,
-                            textAlign: 'center',
-                            maxWidth: 300,
-                            width: '90%'
-                        }}
-                        onClick={e => e.stopPropagation()}
-                    >
+            {mostrarGarcom && (
+                <div className={styles.modalOverlay} onClick={() => setMostrarGarcom(false)}>
+                    <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
                         <h5 className="mb-3 text-muted">✅ Garçom foi notificado</h5>
-                        <p className='text-muted'>Por favor, aguarde. Em breve alguém irá até sua mesa.</p>
-                        <button className="btn btn-secondary mt-3" onClick={() => setMostrarModalGarcom(false)}>Fechar</button>
+                        <p className="text-muted">Por favor, aguarde. Em breve alguém irá até sua mesa.</p>
+                        <button className="btn btn-secondary mt-3" onClick={() => setMostrarGarcom(false)}>Fechar</button>
                     </div>
                 </div>
             )}

@@ -5,40 +5,43 @@ import { db } from '@/lib/conetc';
 
 export const config = {
     api: {
-        bodyParser: false, // desabilita o bodyParser padrão
+        bodyParser: false,
     },
 };
 
 export async function POST(req) {
     try {
         const formData = await req.formData();
-        const mesa_id = formData.get('mesa_id');
+        const order_id = formData.get('order_id');
+        const amount = formData.get('amount');
+        const method = formData.get('method') || 'cash';
         const comprovativo = formData.get('comprovativo'); // tipo: File
 
-        if (!mesa_id || !comprovativo) {
-            return NextResponse.json({ erro: 'Comprovativo ausente.' }, { status: 400 });
+        if (!order_id || !amount || !comprovativo) {
+            return NextResponse.json({ erro: 'Dados obrigatórios ausentes.' }, { status: 400 });
         }
 
-        // Gera nome único para o arquivo
+        // Gera nome único para o comprovativo
         const fileExt = comprovativo.name.split('.').pop();
         const now = new Date();
         const timestamp = now.toISOString().replace(/[:.]/g, '-');
         const fileName = `comprovativo-${timestamp}.${fileExt}`;
         const filePath = path.join(process.cwd(), 'public/comprovativos', fileName);
 
-        // Salva o arquivo localmente (em /public/comprovativos/)
+        // Salva o comprovativo localmente
         const bytes = await comprovativo.arrayBuffer();
         await writeFile(filePath, Buffer.from(bytes));
 
-        // Zera status da mesa
-        await db.execute('UPDATE tables SET status = ? WHERE id = ?', ['available', mesa_id]);
+        // Insere pagamento com comprovativo
+        await db.execute(
+            `INSERT INTO payments (order_id, amount, method, comprovativo_arquivo, paid_at) VALUES (?, ?, ?, ?, NOW())`,
+            [order_id, amount, method, `/comprovativos/${fileName}`]
+        );
 
-        await db.execute(`INSERT INTO comprovaty (table_id, caminho_arquivo, created_at) VALUES (?, ?, NOW())`, [mesa_id, `/comprovativos/${fileName}`]);
-
-        return NextResponse.json({ mensagem: 'Pagamento confirmado e mesa liberada!' });
+        return NextResponse.json({ mensagem: 'Pagamento registrado com sucesso!' });
 
     } catch (error) {
-        console.error('Erro ao finalizar:', error);
-        return NextResponse.json({ erro: 'Erro interno ao finalizar.' }, { status: 500 });
+        console.error('Erro ao registrar pagamento:', error);
+        return NextResponse.json({ erro: 'Erro interno.' }, { status: 500 });
     }
 }

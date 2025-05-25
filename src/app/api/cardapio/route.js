@@ -10,7 +10,7 @@ export async function GET(req) {
 
     // Verifica se foi passada uma categoria (diferente de 0)
     if (categoria && categoria !== '0') {
-      query += ' WHERE category = ?';
+      query += ' WHERE categories = ?';
       values.push(categoria);
     }
 
