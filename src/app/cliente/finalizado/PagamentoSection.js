@@ -1,8 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { getPedidos, limparPedidos } from '../pedido_temp';
 import ClienteCard from './ClienteCard';
+import { useRouter } from 'next/navigation';
 import QRCode from 'react-qr-code';
-import styles from './finalizado.module.css';
+import styles from './pagamento.module.css';
 
 export default function PagamentoSection({ mesaId }) {
     const telefone = '+244934557024';
@@ -12,8 +13,8 @@ export default function PagamentoSection({ mesaId }) {
     const [confirmando, setConfirmando] = useState(false);
     const [comprovativo, setComprovativo] = useState(null);
     const [metodoPagamento, setMetodoPagamento] = useState('cash');
-    const [mostrarQR, setMostrarQR] = useState(false);
-    const [mostrarGarcom, setMostrarGarcom] = useState(false);
+    const [modalGarcom, setModalGarcom] = useState(false);
+    const router = useRouter()
 
     const totaisClientes = pedidos.map((cliente) => {
         const itens = [];
@@ -58,90 +59,132 @@ export default function PagamentoSection({ mesaId }) {
             setMensagem('Erro ao confirmar o pagamento. Tente novamente.');
         } finally {
             setConfirmando(false);
+            router.push('/')
+
         }
     };
 
     return (
-        <div className="container text-white">
-            <h4 className="text-center mb-4">💳 Pagamento da Mesa</h4>
+        <div className="container text-white py-4">
+            <h4 className={`${styles.sectionTitulo} mb-4`}>💳 Pagamento da Mesa</h4>
 
-            <div className="container" style={{ maxWidth: '1024px' }}>
-                <div className="d-flex flex-column flex-md-row align-items-start gap-4">
-                    <div className="flex-fill">
-                        {totaisClientes.map((cliente, i) => (
-                            <ClienteCard
-                                key={i}
-                                cliente={cliente}
-                                telefone={telefone}
-                                mesaId={mesaId}
-                                clientesPagos={clientesPagos}
-                                setClientesPagos={setClientesPagos}
+            <div className="row gx-4">
+                <div className="col-12 col-lg-8">
+                    {totaisClientes.map((cliente, i) => (
+                        <ClienteCard
+                            key={i}
+                            cliente={cliente}
+                            telefone={telefone}
+                            mesaId={mesaId}
+                            clientesPagos={clientesPagos}
+                            setClientesPagos={setClientesPagos}
+                        />
+                    ))}
+                </div>
+
+                <div className="col-12 col-lg-4 mt-4 mt-lg-0">
+                    <div className={`bg-dark border rounded p-3 mb-4 text-center`}>
+                        <h5 className="text-white mb-3">Total da Mesa</h5>
+                        <p className="fs-5 fw-bold text-success">
+                            {totalMesa.toLocaleString('pt-AO', {
+                                style: 'currency',
+                                currency: 'AOA'
+                            })}
+                        </p>
+
+                        {metodoPagamento === 'mcexpress' ? (
+                            <>
+                                <QRCode value={urlQrCode} size={180} />
+                                <p className="text-light mt-2">Escaneie com o Multicaixa Express</p>
+                            </>
+                        ) : (
+                            metodoPagamento !== 'mcexpress' && (
+                                <div className="text-center">
+                                    <button
+                                        className="btn btn-warning"
+                                        onClick={() => setModalGarcom(true)}
+                                    >
+                                        Chamar Garçom
+                                    </button>
+                                </div>
+                            )
+
+                        )}
+                    </div>
+
+                    <div className="bg-dark rounded p-3">
+                        <div className="mb-3">
+                            <label className="form-label">Método de Pagamento</label>
+                            <select
+                                className="form-select"
+                                value={metodoPagamento}
+                                onChange={(e) => setMetodoPagamento(e.target.value)}
+                            >
+                                <option value="cash">Dinheiro</option>
+                                <option value="mcexpress">Multicaixa Express</option>
+                                <option value="transfer">Transferência Bancária</option>
+                                <option value="cartao">Cartão Multicaixa/TPA</option>
+                            </select>
+                        </div>
+
+                        <div className="mb-3">
+                            <label className="form-label">Comprovativo (opcional)</label>
+                            <input
+                                type="file"
+                                accept="image/*,.pdf"
+                                className="form-control"
+                                onChange={(e) => setComprovativo(e.target.files[0])}
                             />
-                        ))}
-                    </div>
-
-                    {metodoPagamento === 'mcexpress' && (
-                        <div className="text-center">
-                            <QRCode value={urlQrCode} size={180} />
-                            <p className="mt-2 text-muted">Escaneie o QR Code com o Multicaixa Express</p>
                         </div>
-                    )}
-                    {metodoPagamento !== 'mcexpress' && (
-                        <div className="text-center">
-                            <button className="btn btn-warning" onClick={() => setMostrarGarcom(true)}>Chamar Garçom</button>
-                        </div>
-                    )}
 
-                </div>
+                        <button
+                            className="btn btn-success w-100"
+                            disabled={confirmando}
+                            onClick={confirmarPagamento}
+                        >
+                            {confirmando ? 'Enviando...' : 'Confirmar Pagamento'}
+                        </button>
 
-            </div>
+                        {mensagem && (
+                            <div className="alert alert-info mt-3" role="alert">
+                                {mensagem}
+                            </div>
+                        )}
+                        {/* Modal Garçom Notificado */}
+                        {modalGarcom && (
+                            <div className="modal fade show d-block" tabIndex="-1" role="dialog">
+                                <div className="modal-dialog modal-dialog-centered" role="document">
+                                    <div className=" shadow-lg modal-content  bg-dark text-white">
+                                        <div className="modal-header border-0">
+                                            <h5 className="modal-title">✅ Garçom Notificado</h5>
+                                            <button
+                                                type="button"
+                                                className="btn-close btn-close-white"
+                                                onClick={() => setModalGarcom(false)}
+                                            ></button>
+                                        </div>
+                                        <div className="modal-body">
+                                            <p>O garçom foi informado. Por favor, aguarde na mesa.</p>
+                                        </div>
+                                        <div className="modal-footer border-0">
+                                            <button
+                                                type="button"
+                                                className="btn btn-outline-light"
+                                                onClick={() => setModalGarcom(false)}
+                                            >
+                                                Fechar
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                {/*
+                                <div className="modal-backdrop fade show"></div>*/}
+                            </div>
+                        )}
 
-            <div className="text-center mt-4">
-                <h5>Total da mesa: <strong>{totalMesa.toLocaleString('pt-AO', { style: 'currency', currency: 'AOA' })}</strong></h5>
-            </div>
-
-            <div className="mt-4">
-                <label className="form-label">Método de Pagamento</label>
-                <select
-                    className="form-select mb-3 w-auto"
-                    value={metodoPagamento}
-                    onChange={(e) => setMetodoPagamento(e.target.value)}
-                >
-                    <option value="cash">Dinheiro</option>
-                    <option value="mcexpress">Multicaixa Express</option>
-                    <option value="transfer">Transferência Bancária</option>
-                    <option value="cartao">Cartão Multicaixa/TPA</option>
-                </select>
-
-                <input
-                    type="file"
-                    accept="image/*,.pdf"
-                    className="form-control mb-3 w-auto"
-                    onChange={(e) => setComprovativo(e.target.files[0])}
-                />
-
-
-                <button
-                    className="btn btn-success mt-2"
-                    disabled={confirmando}
-                    onClick={confirmarPagamento}
-                >
-                    {confirmando ? 'Enviando...' : 'Confirmar Pagamento'}
-                </button>
-
-                {mensagem && <div className="alert alert-info mt-3 text-center">{mensagem}</div>}
-            </div>
-
-            {/* Modal Garçom */}
-            {mostrarGarcom && (
-                <div className={styles.modalOverlay} onClick={() => setMostrarGarcom(false)}>
-                    <div className={styles.modalBox} onClick={(e) => e.stopPropagation()}>
-                        <h5 className="mb-3 text-muted">✅ Garçom foi notificado</h5>
-                        <p className="text-muted">Por favor, aguarde. Em breve alguém irá até sua mesa.</p>
-                        <button className="btn btn-secondary mt-3" onClick={() => setMostrarGarcom(false)}>Fechar</button>
                     </div>
                 </div>
-            )}
+            </div>
         </div>
     );
 }

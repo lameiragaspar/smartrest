@@ -16,7 +16,7 @@ export default function RootLayout({ children }) {
     <html lang="pt-br">
       <body>
         <div className="app-container">
-          -<div className="overlay"></div>
+          <div className="overlay"></div>
           <Header />
           <main>
             <Animate>

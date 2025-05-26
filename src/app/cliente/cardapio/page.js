@@ -1,15 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Animate from '@/components/Motion';
 import Spinner from 'react-bootstrap/Spinner';
 import styles from './cardapio.module.css';
-import style from '../cliente.module.css';
 import Pagination from '@/components/Pagination';
-import { FaCartPlus } from 'react-icons/fa';
+import { motion } from 'framer-motion';
 import { useRouter } from 'next/navigation';
-import { OverlayTrigger, Tooltip, Modal, Button } from 'react-bootstrap';
-import { adicionarOuAtualizarPedido } from '../pedido_temp'
+import { Modal, Button } from 'react-bootstrap';
+import CardItem from './CardItem';
+import MensagensBoasVindas from './MensagensBoasVindas';
+import { adicionarOuAtualizarPedido } from '../pedido_temp';
 
 export default function CardapioPage() {
   const [produtos, setProdutos] = useState([]);
@@ -24,7 +25,6 @@ export default function CardapioPage() {
   const [showToast, setShowToast] = useState(false);
 
   const router = useRouter();
-
   const CARD_POR_PAGINA = 9;
 
   const categorias = [
@@ -53,8 +53,9 @@ export default function CardapioPage() {
 
   useEffect(() => {
     async function fetchProdutos() {
+      setCarregando(true);
       try {
-        const res = await fetch(`/api/cardapio?categoria=${categoriaSelecionada}`);
+        const res = await fetch(`/api/cardapio?categoria=0`); // Carrega todos uma vez só
         const data = await res.json();
         setProdutos(data);
       } catch (err) {
@@ -64,51 +65,53 @@ export default function CardapioPage() {
       }
     }
     fetchProdutos();
-  }, [categoriaSelecionada]);
+  }, []);
+
+  useEffect(() => {
+    if (!showToast) return;
+    const timer = setTimeout(() => setShowToast(false), 3000);
+    return () => clearTimeout(timer);
+  }, [showToast]);
 
   const abrirModal = (produto) => {
-    setProdutoSelecionado(produto);
-    setMostrarModal(true);
+    if (clientes.length === 1) {
+      adicionarPedido(clientes[0].id, produto);
+    } else {
+      setProdutoSelecionado(produto);
+      setMostrarModal(true);
+    }
   };
 
-  const mostrarToastTemporario = () => {
+  const adicionarPedido = (clienteId, produto) => {
+    const nomeCliente = clientes.find(c => c.id === Number(clienteId))?.name || '';
+
+    const resultado = adicionarOuAtualizarPedido({
+      mesa,
+      clienteId,
+      nomeCliente,
+      produto
+    });
+
+    if (!resultado) {
+      console.error('Erro: resultado inválido ao adicionar pedido');
+      return;
+    }
+
+    setMostrarModal(false);
     setShowToast(true);
-    setTimeout(() => setShowToast(false), 3000);
   };
 
-const adicionarPedido = (clienteId, produto) => {
-  const nomeCliente = clientes.find(c => c.id === Number(clienteId))?.name || '';
-
-  const resultado = adicionarOuAtualizarPedido({
-    mesa,
-    clienteId,
-    nomeCliente,
-    produto
-  });
-
-  if (!resultado) {
-    console.error('Erro: resultado inválido ao adicionar pedido');
-    return;
-  }
-
-  if (resultado.status === 'novo') {
-    console.log('✅ Pedido novo adicionado');
-  } else {
-    console.log('♻️ Pedido existente atualizado');
-  }
-
-  mostrarToastTemporario();
-  setMostrarModal(false);
-};
-
-
-  const produtosFiltrados = categoriaSelecionada === '0'
-    ? produtos
-    : produtos.filter(p => p.category_id?.toString() === categoriaSelecionada);
+  const produtosFiltrados = useMemo(() => (
+    categoriaSelecionada === '0'
+      ? produtos
+      : produtos.filter(p => p.category_id?.toString() === categoriaSelecionada)
+  ), [produtos, categoriaSelecionada]);
 
   const totalPaginas = Math.ceil(produtosFiltrados.length / CARD_POR_PAGINA);
   const indexInicio = (paginaAtual - 1) * CARD_POR_PAGINA;
-  const produtosPaginados = produtosFiltrados.slice(indexInicio, indexInicio + CARD_POR_PAGINA);
+  const produtosPaginados = useMemo(() => (
+    produtosFiltrados.slice(indexInicio, indexInicio + CARD_POR_PAGINA)
+  ), [produtosFiltrados, indexInicio]);
 
   if (carregando) {
     return (
@@ -121,15 +124,16 @@ const adicionarPedido = (clienteId, produto) => {
   return (
     <Animate>
       <div className="container mt-4">
-        <h2 className="text-center mb-4">Cardápio</h2>
+        <MensagensBoasVindas />
 
-        {/* Filtro por categoria */}
         <div className="mb-4 text-center">
           <div className="d-none d-md-flex justify-content-center flex-wrap gap-2">
             {categorias.map(cat => (
               <button
                 key={cat.id}
-                className={`btn btn-sm ${categoriaSelecionada === cat.id ? 'btn-warning' : 'btn-outline-light'}`}
+                className={`btn btn-sm px-4 py-2 fw-bold rounded-pill shadow-sm transition-all ${categoriaSelecionada === cat.id ? 'btn-warning text-dark' : 'btn-outline-light'
+                  }`}
+                style={{ minWidth: '120px' }}
                 onClick={() => {
                   setCategoriaSelecionada(cat.id);
                   setPaginaAtual(1);
@@ -155,87 +159,43 @@ const adicionarPedido = (clienteId, produto) => {
           </div>
         </div>
 
-        {/* Produtos */}
         {produtos.length === 0 ? (
           <div className="text-center my-5">
-            <img
-              src="/img/illustrations/no-courses.svg"
-              alt="Sem produtos"
-              style={{ maxWidth: '300px' }}
-              className="mb-3"
-            />
+            <img src="/img/illustrations/no-courses.svg" alt="Sem produtos" style={{ maxWidth: '300px' }} className="mb-3" />
             <h5 className="mb-2 text-white">🍽️ Nenhum produto encontrado</h5>
             <p className="text-secondary text-white">O cardápio está vazio no momento. Por favor, aguarde atualizações.</p>
           </div>
         ) : (
           <div className="row">
-            {produtosPaginados.map(produto => (
-              <div className="col-md-6 col-lg-4 mb-4" key={produto.id}>
-                <div className={`card h-100 bg-dark text-white shadow-lg border-0 rounded-4 overflow-hidden ${styles.card}`}>
-
-                  {produto.image_url && (
-                    <img
-                      src={produto.image_url.startsWith('http') ? produto.image_url : `/img/${produto.image_url}`}
-                      alt={produto.name}
-                      className="card-img-top"
-                      style={{ height: 200, objectFit: 'cover', borderBottom: '4px solid #ffc107' }}
-                    />
-                  )}
-
-                  <div className="card-body d-flex flex-column">
-                    <h5 className={`card-title fw-bold ${styles.cardTitle}`}>
-                      {produto.name} <span className={style.numMesa}>#{mesa}</span>
-                    </h5>
-                    <p className="card-text text-secondary flex-grow-1">{produto.description}</p>
-                    <div className="mt-3">
-                      <span className="badge bg-warning text-dark fs-6 px-3 py-2 rounded-pill">
-                        Kz {Number(produto.price).toFixed(2)}
-                      </span>
-                    </div>
-                    <div className="position-absolute bottom-0 end-0 m-3">
-                      <OverlayTrigger
-                        placement="top"
-                        overlay={<Tooltip>Adicionar ao pedido</Tooltip>}
-                      >
-                        <button
-                          className={`btn btn-warning btn-sm shadow rounded-circle ${styles.carrinhoBtn}`}
-                          onClick={() => abrirModal(produto)}
-                        >
-                          <FaCartPlus size={20} />
-                        </button>
-                      </OverlayTrigger>
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {produtosPaginados.map((produto, index) => (
+              <CardItem
+                key={produto.id}
+                produto={produto}
+                index={index}
+                mesa={mesa}
+                abrirModal={abrirModal}
+              />
             ))}
           </div>
         )}
 
-        {/* Botão Flutuante */}
         <div className={styles.botaoFlutuante}>
           <button className="btn btn-success btn-lg shadow" onClick={() => router.push('/cliente/confirmar')}>
             Iniciar Conta
           </button>
         </div>
 
-        {/* Paginação */}
         <Pagination totalPages={totalPaginas} currentPage={paginaAtual} setCurrentPage={setPaginaAtual} />
 
-        {/* Modal de Adição */}
         <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} centered>
-          <Modal.Header closeButton>
+          <Modal.Header closeButton className="bg-warning text-dark">
             <Modal.Title>Adicionar Pedido</Modal.Title>
           </Modal.Header>
-          <Modal.Body>
+          <Modal.Body className="bg-dark text-white">
             <p className="fw-bold">Produto: {produtoSelecionado?.name}</p>
             <div className="mb-3">
               <label className="form-label">Escolha o cliente:</label>
-              <select
-                className="form-select"
-                value={clienteSelecionado}
-                onChange={e => setClienteSelecionado(e.target.value)}
-              >
+              <select className="form-select" value={clienteSelecionado} onChange={e => setClienteSelecionado(e.target.value)}>
                 <option value="">Selecione</option>
                 {clientes.map(c => (
                   <option key={c.id} value={c.id}>{c.name}</option>
@@ -243,27 +203,21 @@ const adicionarPedido = (clienteId, produto) => {
               </select>
             </div>
           </Modal.Body>
-          <Modal.Footer>
+          <Modal.Footer className="bg-dark">
             <Button variant="secondary" onClick={() => setMostrarModal(false)}>
               Cancelar
             </Button>
             <Button
               variant="warning"
               disabled={!clienteSelecionado}
-              onClick={async () => {
-                adicionarPedido(clienteSelecionado, produtoSelecionado);
-                
-              }}
+              onClick={() => adicionarPedido(clienteSelecionado, produtoSelecionado)}
             >
               Adicionar Pedido
             </Button>
           </Modal.Footer>
         </Modal>
-        {
-          showToast && (
-            <div className={styles.toast}>✅ Pedido adicionado!</div>
-          )
-        }
+
+        {showToast && <div className={styles.toast}>✅ Pedido adicionado!</div>}
       </div>
     </Animate>
   );

@@ -12,7 +12,7 @@ export async function POST(req) {
     }
 
     await db.query(
-      'INSERT INTO assessment (table_id, stars,comment, created_at) VALUES (?, ?, NOW())',
+      'INSERT INTO assessment (table_id, stars,comment, created_at) VALUES (?, ?, ?, NOW())',
       [mesa_id, nota, comentario]
     );
 

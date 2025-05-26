@@ -3,7 +3,6 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
 import StatusSection from './StatusSection';
 import AvaliacaoSection from './AvaliacaoSection';
 import PagamentoSection from './PagamentoSection';
@@ -43,9 +42,9 @@ export default function FinalizadoPage() {
 
         const mensagens = {
           pendente: 'Seu pedido foi enviado e está aguardando confirmação.',
-          'em preparo': '👨‍🍳 A cozinha está preparando seus pratos...',
-          pronto: '🚀 Seu pedido está pronto para ser servido!',
-          entregue: '🍽️ Seu pedido foi entregue. Bom apetite!',
+          'em preparo': 'A cozinha está preparando seus pratos...',
+          pronto: 'Seu pedido está pronto para ser servido!',
+          entregue: 'Seu pedido foi entregue. Bom apetite!',
         };
 
         setMensagem(mensagens[data.status] || 'Aguardando atualização do pedido...');
@@ -74,6 +73,7 @@ export default function FinalizadoPage() {
           loading={loading}
           onTerminar={() => setEtapa('avaliacao')}
           onNovoPedido={() => router.push('/cardapio')}
+          mesa = {mesaId}
         />
       )}
       {etapa === 'avaliacao' && (

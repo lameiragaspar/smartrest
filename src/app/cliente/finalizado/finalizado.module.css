@@ -180,3 +180,12 @@
   color: #ffc107;
   font-weight: bold;
 }
+.image {
+  max-width: 560px;
+  height: auto;
+  transition: transform 0.3s ease;
+}
+
+.image:hover {
+  transform: scale(1.03);
+}
