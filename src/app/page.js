@@ -25,7 +25,7 @@ export default function Home() {
           </button>
           <button
             className="btn btn-outline-warning btn-lg px-4 rounded-pill"
-            onClick={() => router.push('/admin')}
+            onClick={() => router.push('/adm/login')}
           >
             Acessar como Admin
           </button>
