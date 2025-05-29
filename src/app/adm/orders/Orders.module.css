@@ -1,0 +1,32 @@
+/* app/adm/orders/Orders.module.css */
+.orderRow td {
+    vertical-align: middle;
+}
+
+.orderRow .btn {
+    transition: all 0.2s ease-in-out;
+}
+
+.orderRow .btn:hover {
+    transform: scale(1.1);
+}
+
+/* Estilo para botões outline no tema escuro */
+.btn-outline-primary {
+    color: #ffc107;
+    border-color: #ffc107;
+}
+.btn-outline-primary:hover {
+    color: #1f1f1f;
+    background-color: #ffc107;
+    border-color: #ffc107;
+}
+
+.btn-outline-light { color: #ccc; border-color: #ccc; }
+.btn-outline-light:hover { color: #1f1f1f; background-color: #ccc; border-color: #ccc; }
+
+.btn-outline-warning { color: #ffc107; border-color: #ffc107; }
+.btn-outline-warning:hover { color: #1f1f1f; background-color: #ffc107; border-color: #ffc107; }
+
+.btn-outline-danger { color: #dc3545; border-color: #dc3545; }
+.btn-outline-danger:hover { color: #fff; background-color: #dc3545; border-color: #dc3545; }

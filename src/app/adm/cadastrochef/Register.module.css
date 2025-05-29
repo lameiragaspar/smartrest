@@ -1,0 +1,41 @@
+/* app/adm/users/register-chef/RegisterChef.module.css */
+
+.formCard {
+    max-width: 700px; /* Limita a largura do formulário */
+    margin: 0 auto; /* Centraliza */
+}
+
+.formInput {
+    background-color: #444;
+    border: 1px solid #555;
+    color: #fff;
+    border-radius: 5px;
+}
+
+.formInput:focus {
+    background-color: #555;
+    border-color: #ffc107;
+    color: #fff;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+}
+
+.formInput::placeholder {
+    color: #888;
+}
+
+.form-label {
+    color: #ccc;
+    font-weight: 500;
+}
+
+/* Alerta customizado para tema escuro */
+.alert-danger {
+    background-color: #5a1a21;
+    color: #f8d7da;
+    border-color: #721c24;
+}
+.alert-success {
+    background-color: #155724;
+    color: #d4edda;
+    border-color: #155724;
+}

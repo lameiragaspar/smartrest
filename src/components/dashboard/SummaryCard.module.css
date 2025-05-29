@@ -1,0 +1,41 @@
+.summaryCard {
+  color: #fff; /* Texto padrão branco */
+  border: none;
+  border-radius: 8px;
+  transition: transform 0.2s ease-in-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.summaryCard:hover {
+    transform: translateY(-5px);
+}
+
+.cardTitle {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #ccc; /* Tonalidade mais clara para o título */
+  margin-bottom: 0.5rem;
+}
+
+.cardValue {
+  font-size: 2.5rem;
+  font-weight: bold;
+  color: #fff; /* Valor em branco */
+  margin-bottom: 1rem;
+}
+
+.cardIcon {
+    opacity: 0.7;
+}
+
+.cardLink {
+  font-weight: bold;
+  border: none;
+  padding: 0.3rem 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.cardLink:hover {
+  filter: brightness(0.9);
+  color: #000;
+}

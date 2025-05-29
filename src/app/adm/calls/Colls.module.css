@@ -1,0 +1,24 @@
+/* app/adm/calls/Calls.module.css */
+.callList {
+    max-height: 400px; /* Limita altura para rolagem */
+    overflow-y: auto;
+}
+
+.pendingItem {
+    border-left: 5px solid #ffc107 !important; /* Destaque amarelo */
+    background-color: #383838 !important; /* Fundo um pouco diferente */
+}
+
+.resolvedItem {
+    border-left: 5px solid #28a745 !important; /* Destaque verde */
+    opacity: 0.7;
+}
+
+.resolvedItem strong, .resolvedItem small {
+    text-decoration: line-through;
+}
+
+.btn-success {
+    background-color: #28a745;
+    border-color: #28a745;
+}

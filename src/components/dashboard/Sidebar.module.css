@@ -1,0 +1,81 @@
+.sidebar {
+  width: 260px; /* Largura da sidebar */
+  background-color: #1f1f1f; /* Cor de fundo principal */
+  color: #ccc; /* Cor do texto padrão */
+  padding: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  position: fixed; /* Fixa a sidebar */
+  left: 0;
+  top: 0;
+  transition: width 0.3s ease;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+}
+
+.brand {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #ffc107; /* Cor de destaque amarela */
+  text-align: center;
+  margin-bottom: 2.5rem;
+  padding: 0 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  color: #ccc;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  border-left: 4px solid transparent; /* Borda para indicar link ativo */
+}
+
+.navLink:hover {
+  background-color: #333;
+  color: #fff;
+}
+
+.navIcon {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+  width: 20px; /* Garante alinhamento */
+  text-align: center;
+}
+
+.activeLink {
+  background-color: #333;
+  color: #ffc107 !important; /* Cor de destaque para o link ativo */
+  font-weight: bold;
+  border-left: 4px solid #ffc107;
+}
+
+.sidebarFooter {
+    margin-top: auto; /* Empurra para o final */
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.8rem;
+    color: #666;
+}
+
+/* Adicionar responsividade se necessário */
+@media (max-width: 768px) {
+  /* .sidebar {
+    width: 80px;
+  }
+  .brand span, .navLink span {
+    display: none;
+  } */
+}

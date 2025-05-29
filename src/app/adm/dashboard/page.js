@@ -1,64 +1,176 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import SummaryCard from '@/components/dashboard/SummaryCard';
+import styles from './Dashboard.module.css';
 
-export default function Dashboard() {
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [feedback, setFeedback] = useState('');
+// Componente Principal da Página
+export default function DashboardPage() {
+    const [summary, setSummary] = useState(null);
+    const [orders, setOrders] = useState([]);
+    const [calls, setCalls] = useState([]);
 
-  const cadastrarCozinheiro = async (e) => {
-    e.preventDefault();
-    setFeedback('');
+    const [loadingSummary, setLoadingSummary] = useState(true);
+    const [loadingOrders, setLoadingOrders] = useState(true);
+    const [loadingCalls, setLoadingCalls] = useState(true);
 
-    try {
-      const res = await fetch('/api/admin/cozinheiros', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ nome, email, senha })
-      });
+    // Carrega Resumo
+    useEffect(() => {
+        async function fetchSummary() {
+            try {
+                const res = await fetch('/api/admin/sumary');
+                const data = await res.json();
+                setSummary(data ?? {});
+            } catch (err) {
+                //console.error('Erro ao buscar resumo:', err);
+                setSummary({});
+            } finally {
+                setLoadingSummary(false);
+            }
+        }
+        fetchSummary();
+    }, []);
 
-      const data = await res.json();
-      if (res.ok) {
-        setFeedback('✅ Cozinheiro cadastrado com sucesso!');
-        setNome('');
-        setEmail('');
-        setSenha('');
-      } else {
-        setFeedback(data.message || 'Erro ao cadastrar cozinheiro');
-      }
-    } catch (error) {
-      console.error(error);
-      setFeedback('Erro interno ao cadastrar');
-    }
-  };
+    // Carrega Pedidos
+    useEffect(() => {
+        async function fetchOrders() {
+            try {
+                const res = await fetch('/api/admin/orders');
+                const data = await res.json();
+                setOrders(Array.isArray(data) ? data : []);
+            } catch (err) {
+                //console.error('Erro ao buscar pedidos:', err);
+                setOrders([]);
+            } finally {
+                setLoadingOrders(false);
+            }
+        }
+        fetchOrders();
+    }, []);
 
-  return (
-    <div className="container py-5">
-      <h2 className="text-center text-warning mb-4">Painel Administrativo</h2>
+    // Carrega Chamados
+    useEffect(() => {
+        async function fetchCalls() {
+            try {
+                const res = await fetch('/api/admin/call');
+                const data = await res.json();
+                setCalls(Array.isArray(data) ? data : []);
+            } catch (err) {
+                //console.error('Erro ao buscar chamados:', err);
+                setCalls([]);
+            } finally {
+                setLoadingCalls(false);
+            }
+        }
+        fetchCalls();
+    }, []);
 
-      <div className="card mx-auto" style={{ maxWidth: 500 }}>
-        <div className="card-body">
-          <h5 className="card-title">Cadastrar Cozinheiro</h5>
-          {feedback && <div className="alert alert-info">{feedback}</div>}
-          <form onSubmit={cadastrarCozinheiro}>
-            <div className="mb-3">
-              <label className="form-label">Nome</label>
-              <input type="text" className="form-control" value={nome} onChange={(e) => setNome(e.target.value)} required />
+    return (
+        <div className="container-fluid">
+            <h2 className={`mb-4 ${styles.pageTitle}`}>Visão Geral do Restaurante</h2>
+
+            {/* Linha dos Summary Cards */}
+            <div className="row g-4 mb-5">
+                <div className="col-12 col-sm-6 col-lg-3">
+                    <SummaryCard
+                        title="Pedidos Ativos"
+                        value={loadingSummary ? '...' : summary?.activeOrders}
+                        link="/adm/orders"
+                        icon={<i className="bi bi-basket-fill fs-1"></i>}
+                    />
+                </div>
+                <div className="col-12 col-sm-6 col-lg-3">
+                    <SummaryCard
+                        title="Mesas Ocupadas"
+                        value={loadingSummary ? '...' : summary?.occupiedTables}
+                        link="/adm/tables"
+                        icon={<i className="bi bi-people-fill fs-1"></i>}
+                    />
+                </div>
+                <div className="col-12 col-sm-6 col-lg-3">
+                    <SummaryCard
+                        title="Chamados Pendentes"
+                        value={loadingSummary ? '...' : summary?.pendingCalls}
+                        link="/adm/calls"
+                        icon={<i className="bi bi-bell-fill fs-1"></i>}
+                        bgColor="#5a3e00"
+                    />
+                </div>
+                <div className="col-12 col-sm-6 col-lg-3">
+                    <SummaryCard
+                        title="Mesas Livres"
+                        value={loadingSummary ? '...' : summary?.availableTables}
+                        link="/adm/tables"
+                        icon={<i className="bi bi-door-open-fill fs-1"></i>}
+                        bgColor="#444"
+                    />
+                </div>
             </div>
-            <div className="mb-3">
-              <label className="form-label">Email</label>
-              <input type="email" className="form-control" value={email} onChange={(e) => setEmail(e.target.value)} required />
+
+            {/* Linha das Tabelas/Listas */}
+            <div className="row g-4">
+                <div className="col-12 col-lg-7">
+                    <div className={`card ${styles.cardDark}`}>
+                        <div className="card-body">
+                            <h5 className={`card-title ${styles.cardTitle}`}>Últimos Pedidos Entregues</h5>
+                            {loadingOrders ? (
+                                <p>Carregando pedidos...</p>
+                            ) : (
+                                <div className="table-responsive">
+                                    <table className={`table table-dark table-hover ${styles.dataTable}`}>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Pedido ID</th>
+                                                <th scope="col">Mesa</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Total (Kz)</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {orders.map(order => (
+                                                <tr key={order.id}>
+                                                    <td>{order.id}</td>
+                                                    <td>{order.table}</td>
+                                                    <td>
+                                                        <span className="badge bg-success">{order.status}</span>
+                                                    </td>
+                                                    <td>{Number(order.total).toFixed(2)}</td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
+                <div className="col-12 col-lg-5">
+                    <div className={`card ${styles.cardDark}`}>
+                        <div className="card-body">
+                            <h5 className={`card-title ${styles.cardTitle}`}>Chamados Pendentes ({calls.length})</h5>
+                            {loadingCalls ? (
+                                <p>Carregando chamados...</p>
+                            ) : calls.length > 0 ? (
+                                <ul className="list-group list-group-flush">
+                                    {calls.map(call => (
+                                        <li key={call.id} className={`list-group-item ${styles.listItem}`}>
+                                            <div className="d-flex justify-content-between">
+                                                <span>
+                                                    <strong>Mesa {call.table}:</strong> {call.reason}
+                                                </span>
+                                                <small className="text-muted">{call.time}</small>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p className={styles.noData}>Nenhum chamado pendente.</p>
+                            )}
+                        </div>
+                    </div>
+                </div>
             </div>
-            <div className="mb-3">
-              <label className="form-label">Senha</label>
-              <input type="password" className="form-control" value={senha} onChange={(e) => setSenha(e.target.value)} required />
-            </div>
-            <button className="btn btn-success w-100">Cadastrar</button>
-          </form>
         </div>
-      </div>
-    </div>
-  );
+    );
 }

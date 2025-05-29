@@ -1,0 +1,80 @@
+/* app/adm/menu/Menu.module.css */
+.categoryTitle {
+    color: #ffc107;
+    margin: 0;
+    font-size: 1.5rem;
+    padding: 0.5rem 0;
+}
+
+.menuItemCard {
+    background-color: #2a2a2a;
+    border: 1px solid #444;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    color: #fff;
+    border-radius: 8px; /* Cantos arredondados */
+    /* A altura é controlada por h-100, mas podemos definir min-height */
+    min-height: 400px; /* Aumenta a altura mínima */
+}
+
+.menuItemCard:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+}
+
+.menuItemImage {
+    height: 200px; /* Aumenta um pouco a altura da imagem */
+    object-fit: cover;
+    filter: brightness(0.9);
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.menuItemName {
+    font-size: 1.15rem; /* Ajusta tamanho do nome */
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: 0.5rem;
+}
+
+.menuItemDescription {
+    font-size: 0.85rem; /* Tamanho menor para descrição */
+    color: #b0b0b0;
+    flex-grow: 1; /* Faz a descrição ocupar espaço, empurrando o preço/botões */
+    line-height: 1.4;
+    margin-bottom: 1rem;
+}
+
+.priceTag {
+    font-size: 1.3rem; /* Preço maior */
+    font-weight: bold;
+    color: #ffc107;
+    display: block; /* Garante que fica em sua linha */
+    margin-bottom: 1rem; /* Espaço antes dos botões */
+}
+
+.unavailable .menuItemImage {
+    filter: grayscale(100%) brightness(0.6);
+}
+
+.unavailable .card-title,
+.unavailable .priceTag {
+    text-decoration: line-through;
+    color: #6c757d;
+}
+
+.card-header {
+    background-color: #1f1f1f;
+    border-bottom: 1px solid #444;
+}
+
+.buttonGroup .btn {
+    font-size: 0.8rem;
+    padding: 0.3rem 0.8rem;
+}
+
+/* Reutiliza estilos de botões da página de Pedidos */
+.btn-outline-warning { color: #ffc107; border-color: #ffc107; }
+.btn-outline-warning:hover { color: #1f1f1f; background-color: #ffc107; border-color: #ffc107; }
+.btn-outline-danger { color: #dc3545; border-color: #dc3545; }
+.btn-outline-danger:hover { color: #fff; background-color: #dc3545; border-color: #dc3545; }
+

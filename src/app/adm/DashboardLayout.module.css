@@ -1,0 +1,33 @@
+.dashboardContainer {
+  display: flex;
+  background-color: #2a2a2a; /* Fundo geral um pouco mais claro que a sidebar */
+  min-height: 100vh;
+}
+
+.mainContentArea {
+  flex: 1; /* Ocupa todo o espaço restante */
+  margin-left: 260px; /* A mesma largura da sidebar */
+  display: flex;
+  flex-direction: column;
+  transition: margin-left 0.3s ease; /* Para futuras animações de 'encolher' */
+}
+
+.main {
+  flex: 1; /* Ocupa o espaço restante após a Navbar */
+  overflow-y: auto; /* Permite scroll apenas no conteúdo */
+  padding: 1.5rem; /* Espaçamento geral */
+  background-color: #252525; /* Um fundo ainda mais escuro para o conteúdo */
+}
+
+.contentWrapper {
+  max-width: 1800px;
+  margin: 0 auto; /* Centraliza o conteúdo */
+  width: 100%;
+}
+
+/* Ajustes para telas menores se a sidebar for escondida/encolhida */
+@media (max-width: 768px) {
+  /* .mainContentArea {
+    margin-left: 80px;
+  } */
+}

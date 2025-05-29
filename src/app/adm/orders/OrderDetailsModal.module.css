@@ -1,0 +1,15 @@
+/* Adicione a um CSS global ou crie .module.css para cada modal */
+.modalHeader, .modalFooter {
+    background-color: #1f1f1f;
+    border-color: #444;
+    color: #ffc107;
+}
+
+.modalHeader .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.modalBody {
+    background-color: #333;
+    color: #fff;
+}

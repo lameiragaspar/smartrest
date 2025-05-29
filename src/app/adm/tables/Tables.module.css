@@ -1,0 +1,48 @@
+/* app/adm/tables/Tables.module.css */
+.tableCard {
+    border-width: 4px;
+    border-style: solid;
+    border-radius: 10px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.tableCard:hover {
+    transform: scale(1.03);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+}
+
+.tableNumber {
+    font-size: 3.5rem;
+    font-weight: bold;
+    color: #ffc107;
+    line-height: 1;
+    margin-bottom: 0.5rem;
+}
+
+.tableStatus {
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-bottom: 1rem;
+    padding: 0.3rem 0;
+    border-radius: 4px;
+}
+
+/* Status Colors */
+.tableFree { border-color: #28a745; }
+.tableFree .tableStatus { background-color: #28a745; color: #fff; }
+
+.tableOccupied { border-color: #dc3545; }
+.tableOccupied .tableStatus { background-color: #dc3545; color: #fff; }
+
+.tableReserved { border-color: #007bff; }
+.tableReserved .tableStatus { background-color: #007bff; color: #fff; }
+
+.tableCleaning { border-color: #fd7e14; }
+.tableCleaning .tableStatus { background-color: #fd7e14; color: #fff; }
+
+.tableCard p {
+    color: #ccc;
+}
+
+.btn-outline-light { color: #ccc; border-color: #ccc; }
+.btn-outline-light:hover { color: #1f1f1f; background-color: #ccc; border-color: #ccc; }

@@ -1,0 +1,43 @@
+/* components/admin/MenuItemModal.module.css */
+.modalHeader, .modalFooter {
+    background-color: #1f1f1f;
+    border-color: #444;
+    color: #ffc107;
+}
+
+.modalHeader .btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%); /* Torna o 'X' branco */
+}
+
+.modalBody {
+    background-color: #333;
+    color: #fff;
+}
+
+.formInput, .formInput:focus {
+    background-color: #444;
+    border: 1px solid #555;
+    color: #fff;
+}
+
+.formInput:focus {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+}
+
+.formInput::placeholder {
+    color: #888;
+}
+
+.form-label {
+    color: #ccc;
+}
+
+.formSwitch .form-check-input:checked {
+  background-color: #ffc107;
+  border-color: #ffc107;
+}
+.formSwitch .form-check-label {
+    color: #ccc;
+    margin-left: 0.5rem;
+}

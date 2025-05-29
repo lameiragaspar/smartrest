@@ -1,6 +1,7 @@
 'use client'
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import Header from '@/components/Header';
 
 export default function Home() {
   const router = useRouter()
@@ -12,6 +13,8 @@ export default function Home() {
   }, []);
 
   return (
+    <>
+    <Header />
     <div className="d-flex justify-content-center align-items-center text-white text-center">
       <div className="bg-dark bg-opacity-75 rounded-4 p-5 shadow-lg">
         <h1 className="display-4 mb-4 fw-bold">Bem-vindos ao Restaurante</h1>
@@ -32,5 +35,6 @@ export default function Home() {
         </div>
       </div>
     </div>
+    </>
   )
 }
