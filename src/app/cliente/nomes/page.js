@@ -22,7 +22,7 @@ export default function NomesPage() {
 
     async function buscarQuantidade() {
       try {
-        const res = await fetch(`/api/buscaquantidade?mesa=${mesa}`);
+        const res = await fetch(`/api/cliente/buscaquantidade?mesa=${mesa}`);
         const data = await res.json();
         if (res.ok && data.quantidade_pessoas) {
           setQuantidade(data.quantidade_pessoas);
@@ -58,7 +58,7 @@ export default function NomesPage() {
   }
 
   try {
-    const res = await fetch('/api/nomes', {
+    const res = await fetch('/api/cliente/nomes', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mesa, nomes: nomesValidos }),

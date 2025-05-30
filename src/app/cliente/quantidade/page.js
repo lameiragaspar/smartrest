@@ -32,7 +32,7 @@ export default function QuantidadePessoasPage() {
     }
 
     // Envia para API
-    const res = await fetch(`/api/insetquantidade?table=${mesa}`, {
+    const res = await fetch(`/api/cliente/insetquantidade?table=${mesa}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ quantidade }),

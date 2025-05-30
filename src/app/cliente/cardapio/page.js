@@ -44,7 +44,7 @@ export default function CardapioPage() {
 
   useEffect(() => {
     if (mesa) {
-      fetch(`/api/clientes?mesa=${mesa}`)
+      fetch(`/api/cliente/clientes?mesa=${mesa}`)
         .then(res => res.json())
         .then(data => setClientes(data))
         .catch(err => console.error('Erro ao carregar clientes:', err));
@@ -55,7 +55,7 @@ export default function CardapioPage() {
     async function fetchProdutos() {
       setCarregando(true);
       try {
-        const res = await fetch(`/api/cardapio?categoria=0`); // Carrega todos uma vez só
+        const res = await fetch(`/api/cliente/cardapio?categoria=0`); // Carrega todos uma vez só
         const data = await res.json();
         setProdutos(data);
       } catch (err) {

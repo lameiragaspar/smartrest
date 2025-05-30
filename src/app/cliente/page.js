@@ -28,7 +28,7 @@ export default function ClientePage() {
     //Salva a mesa na memória do navegar
     localStorage.setItem('mesa', mesa);
 
-    const res = await fetch('/api/mesa', {
+    const res = await fetch('/api/cliente/mesa', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ mesa }),

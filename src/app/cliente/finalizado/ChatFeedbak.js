@@ -27,7 +27,7 @@ export default function ChatFeedback({ mesa }) {
     setMensagemAtual('');
 
     try {
-      await fetch('/api/chat', {
+      await fetch('/api/cliente/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
