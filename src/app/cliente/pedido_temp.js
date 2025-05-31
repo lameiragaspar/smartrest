@@ -54,6 +54,19 @@ export function adicionarOuAtualizarPedido({ mesa, clienteId, nomeCliente, produ
   }
 }
 
+export function atualizarQuantidadeProduto(clienteId, categoria, index, novaQtd) {
+  const dadosBrutos = localStorage.getItem('pedidos_temp');
+  if (!dadosBrutos) return;
+
+  const pedidos = JSON.parse(dadosBrutos);
+  const pedido = pedidos.find(p => p.clienteId === clienteId);
+  if (!pedido || !pedido.pedidos[categoria]) return;
+
+  if (pedido.pedidos[categoria][index]) {
+    pedido.pedidos[categoria][index].quantidade = novaQtd;
+    localStorage.setItem('pedidos_temp', JSON.stringify(pedidos));
+  }
+}
 
 export function removerProdutoTemp(clienteId, categoria, index) {
   const pedido = pedidosTemporarios.find(p => p.clienteId === clienteId);

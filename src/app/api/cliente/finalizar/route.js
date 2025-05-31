@@ -15,29 +15,31 @@ export async function POST(req) {
         const order_id = formData.get('order_id');
         const amount = formData.get('amount');
         const method = formData.get('method') || 'cash';
-        const comprovativo = formData.get('comprovativo'); // tipo: File
+        const garcom_id = formData.get('garcom_id') || null;
+        const comprovativo = formData.get('comprovativo');
 
         if (!order_id || !amount || (!comprovativo && method !== 'cash' && method !== 'mcexpress')) {
-
             return NextResponse.json({ erro: 'Dados obrigatórios ausentes.' }, { status: 400 });
         }
 
-        // Gera nome único para o comprovativo
-        const fileExt = comprovativo.name.includes('.') ? comprovativo.name.split('.').pop() : 'pdf';
+        let comprovativo_path = null;
 
-        const now = new Date();
-        const timestamp = now.toISOString().replace(/[:.]/g, '-');
-        const fileName = `comprovativo-${timestamp}.${fileExt}`;
-        const filePath = path.join(process.cwd(), 'public/comprovativos', fileName);
+        if (comprovativo) {
+            const fileExt = comprovativo.name.includes('.') ? comprovativo.name.split('.').pop() : 'pdf';
+            const now = new Date();
+            const timestamp = now.toISOString().replace(/[:.]/g, '-');
+            const fileName = `comprovativo-${timestamp}.${fileExt}`;
+            const filePath = path.join(process.cwd(), 'public/comprovativos', fileName);
 
-        // Salva o comprovativo localmente
-        const bytes = await comprovativo.arrayBuffer();
-        await writeFile(filePath, Buffer.from(bytes));
+            const bytes = await comprovativo.arrayBuffer();
+            await writeFile(filePath, Buffer.from(bytes));
 
-        // Insere pagamento com comprovativo
+            comprovativo_path = `/comprovativos/${fileName}`;
+        }
+
         await db.execute(
-            `INSERT INTO payments (order_id, amount, method, comprovativo_arquivo, paid_at) VALUES (?, ?, ?, ?, NOW())`,
-            [order_id, amount, method, `/comprovativos/${fileName}`]
+            `INSERT INTO payments (order_id, amount, method, comprovativo_arquivo, garcom_id, paid_at) VALUES (?, ?, ?, ?, ?, NOW())`,
+            [order_id, amount, method, comprovativo_path, garcom_id]
         );
 
         return NextResponse.json({ mensagem: 'Pagamento registrado com sucesso!' });

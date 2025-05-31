@@ -181,27 +181,6 @@
   border-color: #b02a37;
 }
 
-/* Estilos para o Modal Bootstrap */
-.modalContentCustom {
-  background-color: #3a3a3a;
-  color: #f8f9fa;
-  border: 1px solid #4f4f4f;
-  border-radius: 0.5rem;
-}
-
-.modalHeaderCustom {
-  border-bottom: 1px solid #4f4f4f;
-  color: #ffc107;
-}
-
-.modalHeaderCustom .btn-close { /* Para o botão de fechar do modal */
-  filter: invert(1) grayscale(100%) brightness(200%); /* Deixa o X branco */
-}
-
-.modalFooterCustom {
-  border-top: 1px solid #4f4f4f;
-}
-
 /* Estilo para o ClienteCard */
 .clienteCard {
   background-color: #3a3a3a;

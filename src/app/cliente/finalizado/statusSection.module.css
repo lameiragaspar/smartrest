@@ -183,10 +183,51 @@
   color: #999;
 }
 
-.statusIcon:contains('✓') {
+.statusIcon:contains('✓✓') {
   color: #e0a800;
 }
 
 .statusIcon:contains('❌') {
   color: #343434;
+}
+.primaryButton {
+  width: 100%;
+  max-width: 400px;
+  background-color: #ffc107;
+  color: #1f1f1f;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.primaryButton:hover {
+  background-color: #e0ac06;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
+}
+
+.secondaryButton {
+  width: 100%;
+  max-width: 400px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.secondaryButton:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
 }

@@ -48,17 +48,6 @@ export default function FinalizadoPage() {
 
         setMensagem(mensagens[data.status] || 'Aguardando atualização do pedido...');
 
-        // Se o pedido foi entregue, decidir próxima etapa
-        if (data.status === 'entregue') {
-          const avaliacaoJaFeita = localStorage.getItem('avaliacaoFeita') === 'true';
-
-          // Só altera a etapa se ainda estivermos em "status"
-          if (etapa === 'status') {
-            setTimeout(() => {
-              setEtapa(avaliacaoJaFeita ? 'pagamento' : 'avaliacao');
-            }, 2000);
-          }
-        }
       } else {
         setTimeout(() => {
           setMensagem('Nenhum pedido encontrado para esta mesa.');
