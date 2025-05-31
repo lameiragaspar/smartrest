@@ -52,20 +52,35 @@ export default function CardapioPage() {
   }, [mesa]);
 
   useEffect(() => {
-    async function fetchProdutos() {
-      setCarregando(true);
+    let ignore = false;
+    let primeiraVez = true;
+
+    const fetchProdutos = async () => {
       try {
-        const res = await fetch(`/api/cliente/cardapio?categoria=0`); // Carrega todos uma vez só
+        const res = await fetch(`/api/cliente/cardapio?categoria=0`);
+        if (!res.ok) throw new Error('Erro ao buscar produtos');
         const data = await res.json();
-        setProdutos(data);
+        if (!ignore) setProdutos(data);
       } catch (err) {
         console.error('Erro ao carregar produtos:', err);
       } finally {
-        setCarregando(false);
+        if (primeiraVez) {
+          setCarregando(false);
+          primeiraVez = false;
+        }
       }
-    }
-    fetchProdutos();
+    };
+
+    fetchProdutos(); // Primeira vez
+
+    const interval = setInterval(fetchProdutos, 5000); // Atualiza a cada 5 segundos
+
+    return () => {
+      ignore = true;
+      clearInterval(interval);
+    };
   }, []);
+
 
   useEffect(() => {
     if (!showToast) return;
@@ -101,6 +116,11 @@ export default function CardapioPage() {
     setShowToast(true);
   };
 
+  const iniciarConta = () =>{
+    setCarregando(true)
+    router.push('/cliente/confirmar')
+  }
+
   const produtosFiltrados = useMemo(() => (
     categoriaSelecionada === '0'
       ? produtos
@@ -113,112 +133,117 @@ export default function CardapioPage() {
     produtosFiltrados.slice(indexInicio, indexInicio + CARD_POR_PAGINA)
   ), [produtosFiltrados, indexInicio]);
 
-  if (carregando) {
-    return (
-      <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '70vh' }}>
-        <Spinner animation="border" />
-      </div>
-    );
-  }
-
   return (
-    <Animate>
-      <div className="container mt-4">
-        <MensagensBoasVindas />
-
-        <div className="mb-4 text-center">
-          <div className="d-none d-md-flex justify-content-center flex-wrap gap-2">
-            {categorias.map(cat => (
-              <button
-                key={cat.id}
-                className={`btn btn-sm px-4 py-2 fw-bold rounded-pill shadow-sm transition-all ${categoriaSelecionada === cat.id ? 'btn-warning text-dark' : 'btn-outline-light'
-                  }`}
-                style={{ minWidth: '120px' }}
-                onClick={() => {
-                  setCategoriaSelecionada(cat.id);
-                  setPaginaAtual(1);
-                }}
-              >
-                {cat.nome}
-              </button>
-            ))}
-          </div>
-          <div className="d-md-none">
-            <select
-              className="form-select"
-              value={categoriaSelecionada}
-              onChange={e => {
-                setCategoriaSelecionada(e.target.value);
-                setPaginaAtual(1);
-              }}
-            >
-              {categorias.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.nome}</option>
-              ))}
-            </select>
-          </div>
+    <>
+      {carregando ? (
+        <div
+          className="d-flex flex-column justify-content-center align-items-center text-warning"
+          style={{ minHeight: '70vh' }}
+        >
+          <Spinner animation="border" className="mb-2" />
+          <p className="mb-0">Carregando informações...</p>
         </div>
 
-        {produtos.length === 0 ? (
-          <div className="text-center my-5">
-            <img src="/img/illustrations/no-courses.svg" alt="Sem produtos" style={{ maxWidth: '300px' }} className="mb-3" />
-            <h5 className="mb-2 text-white">🍽️ Nenhum produto encontrado</h5>
-            <p className="text-secondary text-white">O cardápio está vazio no momento. Por favor, aguarde atualizações.</p>
-          </div>
-        ) : (
-          <div className="row">
-            {produtosPaginados.map((produto, index) => (
-              <CardItem
-                key={produto.id}
-                produto={produto}
-                index={index}
-                mesa={mesa}
-                abrirModal={abrirModal}
-              />
-            ))}
-          </div>
-        )}
+      ) : (
+        <Animate>
+          <div className="container mt-4">
+            <MensagensBoasVindas />
 
-        <div className={styles.botaoFlutuante}>
-          <button className="btn btn-success btn-lg shadow" onClick={() => router.push('/cliente/confirmar')}>
-            Iniciar Conta
-          </button>
-        </div>
-
-        <Pagination totalPages={totalPaginas} currentPage={paginaAtual} setCurrentPage={setPaginaAtual} />
-
-        <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} centered>
-          <Modal.Header closeButton className="bg-warning text-dark">
-            <Modal.Title>Adicionar Pedido</Modal.Title>
-          </Modal.Header>
-          <Modal.Body className="bg-dark text-white">
-            <p className="fw-bold">Produto: {produtoSelecionado?.name}</p>
-            <div className="mb-3">
-              <label className="form-label">Escolha o cliente:</label>
-              <select className="form-select" value={clienteSelecionado} onChange={e => setClienteSelecionado(e.target.value)}>
-                <option value="">Selecione</option>
-                {clientes.map(c => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
+            <div className="mb-4 text-center">
+              <div className="d-none d-md-flex justify-content-center flex-wrap gap-2">
+                {categorias.map(cat => (
+                  <button
+                    key={cat.id}
+                    className={`btn btn-sm px-4 py-2 fw-bold rounded-pill shadow-sm transition-all ${categoriaSelecionada === cat.id ? 'btn-warning text-dark' : 'btn-outline-light'
+                      }`}
+                    style={{ minWidth: '120px' }}
+                    onClick={() => {
+                      setCategoriaSelecionada(cat.id);
+                      setPaginaAtual(1);
+                    }}
+                  >
+                    {cat.nome}
+                  </button>
                 ))}
-              </select>
+              </div>
+              <div className="d-md-none">
+                <select
+                  className="form-select"
+                  value={categoriaSelecionada}
+                  onChange={e => {
+                    setCategoriaSelecionada(e.target.value);
+                    setPaginaAtual(1);
+                  }}
+                >
+                  {categorias.map(cat => (
+                    <option key={cat.id} value={cat.id}>{cat.nome}</option>
+                  ))}
+                </select>
+              </div>
             </div>
-          </Modal.Body>
-          <Modal.Footer className="bg-dark">
-            <Button variant="secondary" onClick={() => setMostrarModal(false)}>
-              Cancelar
-            </Button>
-            <Button
-              variant="warning"
-              disabled={!clienteSelecionado}
-              onClick={() => adicionarPedido(clienteSelecionado, produtoSelecionado)}
-            >
-              Adicionar Pedido
-            </Button>
-          </Modal.Footer>
-        </Modal>
 
-        {showToast && <div className={styles.toast}>✅ Pedido adicionado!</div>}
-      </div>
-    </Animate>
+            {produtos.length === 0 ? (
+              <div className="text-center my-5">
+                <img src="/img/illustrations/no-courses.svg" alt="Sem produtos" style={{ maxWidth: '300px' }} className="mb-3" />
+                <h5 className="mb-2 text-white">🍽️ Nenhum produto encontrado</h5>
+                <p className="text-secondary text-white">O cardápio está vazio no momento. Por favor, aguarde atualizações.</p>
+              </div>
+            ) : (
+              <div className="row">
+                {produtosPaginados.map((produto, index) => (
+                  <CardItem
+                    key={produto.id}
+                    produto={produto}
+                    index={index}
+                    mesa={mesa}
+                    abrirModal={abrirModal}
+                  />
+                ))}
+              </div>
+            )}
+
+            <div className={styles.botaoFlutuante}>
+              <button className="btn btn-success btn-lg shadow" 
+              onClick={iniciarConta}>
+                Iniciar Conta
+              </button>
+            </div>
+
+            <Pagination totalPages={totalPaginas} currentPage={paginaAtual} setCurrentPage={setPaginaAtual} />
+
+            <Modal show={mostrarModal} onHide={() => setMostrarModal(false)} centered>
+              <Modal.Header closeButton className="bg-warning text-dark">
+                <Modal.Title>Adicionar Pedido</Modal.Title>
+              </Modal.Header>
+              <Modal.Body className="bg-dark text-white">
+                <p className="fw-bold">Produto: {produtoSelecionado?.name}</p>
+                <div className="mb-3">
+                  <label className="form-label">Escolha o cliente:</label>
+                  <select className="form-select" value={clienteSelecionado} onChange={e => setClienteSelecionado(e.target.value)}>
+                    <option value="">Selecione</option>
+                    {clientes.map(c => (
+                      <option key={c.id} value={c.id}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+              </Modal.Body>
+              <Modal.Footer className="bg-dark">
+                <Button variant="secondary" onClick={() => setMostrarModal(false)}>
+                  Cancelar
+                </Button>
+                <Button
+                  variant="warning"
+                  disabled={!clienteSelecionado}
+                  onClick={() => adicionarPedido(clienteSelecionado, produtoSelecionado)}
+                >
+                  Adicionar Pedido
+                </Button>
+              </Modal.Footer>
+            </Modal>
+
+            {showToast && <div className={styles.toast}>✅ Pedido adicionado!</div>}
+          </div>
+        </Animate>)}
+    </>
   );
 }

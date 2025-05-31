@@ -5,14 +5,15 @@ export async function GET(req) {
   const categoria = searchParams.get('categoria');
 
   try {
-    let query = 'SELECT * FROM products';
+    let query = 'SELECT * FROM products WHERE available = 1';
     let values = [];
 
-    // Verifica se foi passada uma categoria (diferente de 0)
     if (categoria && categoria !== '0') {
-      query += ' WHERE categories = ?';
+      query += ' AND categories = ?';
       values.push(categoria);
     }
+
+    query += ' ORDER BY name ASC';
 
     const [rows] = await db.query(query, values);
 
@@ -28,3 +29,4 @@ export async function GET(req) {
     );
   }
 }
+

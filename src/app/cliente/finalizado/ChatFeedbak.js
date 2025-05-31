@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import styles from './statusSection.module.css';
 
-const mensagensPredefinidas = [
+const mensagensPredefinidasIniciais = [
   'Gostaria de mais guardanapos',
   'A comida está demorando',
   'Preciso de ajuda com o pedido',
@@ -14,48 +14,70 @@ const mensagensPredefinidas = [
 export default function ChatFeedback({ mesa }) {
   const [mensagens, setMensagens] = useState([]);
   const [mensagemAtual, setMensagemAtual] = useState('');
+  const [mostrarPredefinidas, setMostrarPredefinidas] = useState(true);
 
   const enviarMensagem = async (texto) => {
     if (!texto.trim()) return;
 
+    const idTemp = Date.now();
+
     const novaMensagem = {
+      id: idTemp,
       texto,
-      id: Date.now(),
+      status: 'sending', // nova propriedade
     };
 
     setMensagens((prev) => [...prev, novaMensagem]);
+    if (mostrarPredefinidas) setMostrarPredefinidas(false);
     setMensagemAtual('');
 
     try {
-      await fetch('/api/cliente/chat', {
+      const response = await fetch('/api/cliente/chat', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          table_id: mesa,
+          table_number: mesa, // Correto: agora usa o número da mesa
           reason: texto,
           status: 'pendente',
         }),
       });
+
+      if (!response.ok) throw new Error('Erro no envio');
+
+      setMensagens((prev) =>
+        prev.map((msg) =>
+          msg.id === idTemp ? { ...msg, status: 'sent' } : msg
+        )
+      );
     } catch (err) {
-      console.error('Erro ao enviar feedback:', err);
+      console.error('Erro ao enviar mensagem:', err);
+      setMensagens((prev) =>
+        prev.map((msg) =>
+          msg.id === idTemp ? { ...msg, status: 'error' } : msg
+        )
+      );
     }
   };
 
   return (
     <div className={styles.chatWidget}>
-      <div className={styles.chatHeader}>Enviar Feedback</div>
+      <div className={styles.chatHeader}>Enviar Feedback ou Solicitação</div>
+
       <div className={styles.chatBody}>
         {mensagens.map((msg) => (
           <div key={msg.id} className={styles.chatMessage}>
-            {msg.texto}
+            <span>{msg.texto}</span>
+            <span className={styles.statusIcon}>
+              {msg.status === 'sending' && '⌛'} {/* relógio */}
+              {msg.status === 'sent' && '✓✓'}   {/* duplo check */}
+              {msg.status === 'error' && '❌'}  {/* erro */}
+            </span>
           </div>
         ))}
 
-        {mensagemAtual.trim() === '' && (
+        {mostrarPredefinidas && (
           <div className={styles.chatPredefinidos}>
-            {mensagensPredefinidas.map((txt, i) => (
+            {mensagensPredefinidasIniciais.map((txt, i) => (
               <button key={i} onClick={() => enviarMensagem(txt)}>
                 {txt}
               </button>
@@ -63,6 +85,7 @@ export default function ChatFeedback({ mesa }) {
           </div>
         )}
       </div>
+
       <div className={styles.chatInput}>
         <form
           onSubmit={(e) => {

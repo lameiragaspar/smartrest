@@ -3,7 +3,6 @@ import { db } from '@/lib/conetc';
 export async function POST(req) {
   try {
     const data = await req.json();
-
     const mesa = Object.keys(data)[0];
     const clientes = data[mesa];
 
@@ -14,25 +13,51 @@ export async function POST(req) {
       );
     }
 
-    // Verifica pedido existente
-    const [existing] = await db.query(
-      "SELECT id FROM orders WHERE table_id = ? AND status != 'entregue' ORDER BY created_at DESC LIMIT 1",
+    // Busca o ID real da mesa
+    const [mesaExiste] = await db.query(
+      'SELECT id FROM tables WHERE table_number = ?',
       [mesa]
     );
 
-    let pedidoId;
+    if (mesaExiste.length === 0) {
+      return new Response(
+        JSON.stringify({ error: `Mesa ${mesa} não existe.` }),
+        { status: 401, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
 
+    const mesaId = mesaExiste[0].id;
+
+    // Verifica se já existe um pedido pendente
+    const [existing] = await db.query(
+      "SELECT id FROM orders WHERE table_id = ? AND status != 'entregue' ORDER BY created_at DESC LIMIT 1",
+      [mesaId]
+    );
+
+    // Calcula o total
+    let total = 0;
+    for (const clienteId in clientes) {
+      const cliente = clientes[clienteId];
+      for (const categoria in cliente.pedidos) {
+        const produtos = cliente.pedidos[categoria];
+        for (const produto of produtos) {
+          total += (produto.price || 0) * (produto.quantidade || 1);
+        }
+      }
+    }
+
+    let pedidoId;
     if (existing.length > 0) {
       pedidoId = existing[0].id;
     } else {
       const [result] = await db.query(
-        'INSERT INTO orders (table_id, status) VALUES (?, ?)',
-        [mesa, 'pendente']
+        'INSERT INTO orders (table_id, status, total) VALUES (?, ?, ?)',
+        [mesaId, 'pendente', total]
       );
       pedidoId = result.insertId;
     }
 
-    // Loop pelos clientes
+    // Insere os itens
     for (const clienteId in clientes) {
       const cliente = clientes[clienteId];
 
@@ -66,4 +91,3 @@ export async function POST(req) {
     );
   }
 }
-

@@ -1,4 +1,3 @@
-// pasta: finalizado/FinalizadoPage.jsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -48,8 +47,17 @@ export default function FinalizadoPage() {
         };
 
         setMensagem(mensagens[data.status] || 'Aguardando atualização do pedido...');
-        if (data.status === 'entregue' && !localStorage.getItem(`avaliado-${mesa}`)) {
-          setEtapa('avaliacao');
+
+        // Se o pedido foi entregue, decidir próxima etapa
+        if (data.status === 'entregue') {
+          const avaliacaoJaFeita = localStorage.getItem('avaliacaoFeita') === 'true';
+
+          // Só altera a etapa se ainda estivermos em "status"
+          if (etapa === 'status') {
+            setTimeout(() => {
+              setEtapa(avaliacaoJaFeita ? 'pagamento' : 'avaliacao');
+            }, 2000);
+          }
         }
       } else {
         setTimeout(() => {
@@ -64,6 +72,11 @@ export default function FinalizadoPage() {
     }
   };
 
+  const handleFinalizarAvaliacao = () => {
+    localStorage.setItem('avaliacaoFeita', 'true');
+    setEtapa('pagamento');
+  };
+
   return (
     <div className={`container py-5 ${styles.finalizadoContainer}`}>
       {etapa === 'status' && (
@@ -71,18 +84,21 @@ export default function FinalizadoPage() {
           status={status}
           mensagem={mensagem}
           loading={loading}
-          onTerminar={() => setEtapa('avaliacao')}
+          onTerminar={() => {
+            const avaliacaoJaFeita = localStorage.getItem('avaliacaoFeita') === 'true';
+            setEtapa(avaliacaoJaFeita ? 'pagamento' : 'avaliacao');
+          }}
           onNovoPedido={() => router.push('/cardapio')}
-          mesa = {mesaId}
+          mesa={mesaId}
         />
       )}
       {etapa === 'avaliacao' && (
         <AvaliacaoSection
           mesaId={mesaId}
-          onFinalizar={() => setEtapa('pagamento')}
+          onFinalizar={handleFinalizarAvaliacao}
         />
       )}
       {etapa === 'pagamento' && <PagamentoSection mesaId={mesaId} />}
     </div>
   );
-} 
+}

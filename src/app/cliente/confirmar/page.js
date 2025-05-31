@@ -55,6 +55,7 @@ export default function ConfirmarPage() {
 
     const enviarPedidos = async () => {
         const mesa = localStorage.getItem('mesa');
+        const total = localStorage.getItem('total')
         if (!mesa || Object.keys(pedidosPorCliente).length === 0) return;
 
         const payload = { [mesa]: pedidosPorCliente };
@@ -79,7 +80,20 @@ export default function ConfirmarPage() {
     };
 
     if (Object.keys(pedidosPorCliente).length === 0) {
-        return <p className="text-center mt-5 text-white">Nenhum pedido encontrado.</p>;
+        return (
+            <div className={`d-flex flex-column align-items-center justify-content-center ${style.semPedidos}`}>
+                <h4 className="text-white mb-3">Nenhum pedido foi iniciado ainda</h4>
+                <p className="text-light mb-4 text-center" style={{ maxWidth: '400px' }}>
+                    Parece que você ainda não adicionou nenhum item ao seu pedido. Navegue pelo cardápio e escolha seus pratos favoritos!
+                </p>
+                <button
+                    className="btn btn-warning"
+                    onClick={() => router.back()}
+                >
+                    ← Voltar ao Cardápio
+                </button>
+            </div>
+        );
     }
 
     return (

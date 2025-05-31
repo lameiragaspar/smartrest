@@ -1,111 +1,255 @@
-.container {
-  padding: 2rem 1rem;
+.pagamentoContainer {
+  background-color: #2c2c2c;
+  color: #f8f9fa;
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif; 
 }
 
 .sectionTitulo {
-  text-align: center;
-  color: #ffffff;
-  font-size: 1.5rem;
+  color: #ffc107;
+  font-weight: bold;
   margin-bottom: 2rem;
+  display: flex;
+  align-items: center;
+}
+
+.sectionTitulo svg { /* Para o ícone de cartão */
+  margin-right: 0.75rem;
+  fill: #ffc107;
+}
+
+.cardPrincipal {
+  background-color: #3a3a3a8e;
+  border: 1px solid #4f4f4f;
+  border-radius: 0.5rem; 
+  color: #f8f9fa;
+  margin-bottom: 1.5rem;
+}
+
+.cardPrincipal .card-header {
+  background-color: rgba(0,0,0,0.1);
+  border-bottom: 1px solid #4f4f4f;
+  color: #ffc107;
   font-weight: 600;
 }
 
-.totalMesa {
-  text-align: center;
-  font-size: 1.25rem;
-  color: #ffffff;
-  margin-top: 2rem;
-}
-
-.totalMesa strong {
-  color: #ffc107;
-}
-
-.formPagamento {
-  margin-top: 2rem;
-  background-color: #1f1f1f;
+.cardPrincipal .card-body {
   padding: 1.5rem;
-  border-radius: 10px;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
-  box-shadow: 0 0 15px rgba(0, 0, 0, 0.4);
 }
 
-.formPagamento label {
-  color: #f0f0f0;
+.cardTotalMesa {
+  background-color: #3a3a3a;
+  border: 1px solid #4f4f4f;
+  border-radius: 0.5rem;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
-.formPagamento select,
-.inputComprovativo {
-  background-color: #2c2c2c;
-  border: 1px solid #666;
-  color: #f0f0f0;
-  padding: 0.5rem;
-  border-radius: 8px;
-  width: 100%;
+.totalMesaValor {
+  font-size: 2.25rem;
+  font-weight: bold;
+  color: #ffc107; /* Destaque amarelo para o total */
   margin-bottom: 1rem;
 }
 
-.btnConfirmar {
-  width: 100%;
-  padding: 0.6rem;
-  font-weight: bold;
+.qrCodeContainer {
+  background-color: #fff; /* Fundo branco para o QR code */
+  padding: 1rem;
+  border-radius: 0.375rem; /* md */
+  display: inline-block; /* Para centralizar se necessário */
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.alertInfo {
-  margin-top: 1rem;
+.formLabel {
+  color: #f8f9fa; /* Garante que os labels sejam claros */
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+}
+
+.formControl, .formSelect {
+  background-color: #4f4f4f; /* Fundo escuro para inputs */
+  color: #f8f9fa;
+  border: 1px solid #4f4f4f;
+  border-radius: 0.375rem;
+}
+
+.formControl:focus, .formSelect:focus {
+  background-color: #5a5a5a;
+  color: #f8f9fa;
+  border-color: #ffc107;
+  box-shadow: 0 0 0 0.25rem rgba(255, 193, 7, 0.35); /* Sombra amarela no foco */
+}
+
+/* Estilo para o input de arquivo (comprovativo) */
+.inputFile {
+  background-color: #4f4f4f;
+  color: #f8f9fa;
+  border: 1px solid #4f4f4f;
+}
+.inputFile::file-selector-button {
+  background-color: #ffc107;
+  color: #212529;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem 0 0 0.25rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+.inputFile::file-selector-button:hover {
+  background-color: #e0a800; /* Amarelo um pouco mais escuro no hover */
+}
+
+
+.btnAmarelo {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #212529; /* Texto escuro para contraste com amarelo */
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.375rem;
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+}
+
+.btnAmarelo:hover {
+  background-color: #e0a800; /* Amarelo mais escuro */
+  border-color: #d39e00;
+  color: #212529;
+}
+
+.btnAmarelo:disabled {
+  background-color: #a08c5a;
+  border-color: #a08c5a;
+  color: #5b5034;
+}
+
+
+.btnSucesso {
+  background-color:#198754;
+  border-color:#198754;
   color: #fff;
-  background-color: #333;
-  border-left: 5px solid #17a2b8;
-  padding: 1rem;
-  border-radius: 8px;
+  font-weight: 600;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.375rem;
+}
+.btnSucesso:hover {
+  background-color: #157347;
+  border-color: #146c43;
+  color: #fff;
+}
+.btnSucesso:disabled {
+  background-color: #5cb85c5e;
+  border-color: #5cb85c5e;
 }
 
-.qrBox {
-  background-color: #1f1f1f;
-  padding: 1rem;
-  border-radius: 12px;
-  text-align: center;
-  max-width: 280px;
-  margin: auto;
+.btnOutlineLight {
+  color: #f8f9fa;
+  border-color: #f8f9fa;
+  font-weight: 500;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.375rem;
+}
+.btnOutlineLight:hover {
+  color: #212529;
+  background-color: #f8f9fa;
+  border-color: #f8f9fa;
 }
 
-.qrBox p {
+.alert {
+  border-radius: 0.375rem;
+  padding: 1rem 1.25rem;
   margin-top: 1rem;
-  color: #bbb;
-  font-size: 0.9rem;
+  font-weight: 500;
+}
+.alertInfo {
+  color: #212529;
+  background-color: #ffeca7; /* Amarelo claro para info */
+  border-color: #ffc107;
+}
+.alertSucesso {
+  color: #fff;
+  background-color:#198754;
+  border-color: #146c43;
+}
+.alertErro {
+  color: #fff;
+  background-color: #dc3545;
+  border-color: #b02a37;
 }
 
-/* Modal estilizado */
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0,0,0,0.7);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+/* Estilos para o Modal Bootstrap */
+.modalContentCustom {
+  background-color: #3a3a3a;
+  color: #f8f9fa;
+  border: 1px solid #4f4f4f;
+  border-radius: 0.5rem;
 }
 
-.modalBox {
-  background: #2c2c2c;
-  padding: 2rem;
-  border-radius: 12px;
-  text-align: center;
-  max-width: 360px;
-  width: 90%;
-  color: #f0f0f0;
-  box-shadow: 0 0 20px rgba(0,0,0,0.5);
+.modalHeaderCustom {
+  border-bottom: 1px solid #4f4f4f;
+  color: #ffc107;
 }
-/* pagamento.module.css */
-.qrBox {
-  background-color: #534e4e;
-  width: 100%;
+
+.modalHeaderCustom .btn-close { /* Para o botão de fechar do modal */
+  filter: invert(1) grayscale(100%) brightness(200%); /* Deixa o X branco */
+}
+
+.modalFooterCustom {
+  border-top: 1px solid #4f4f4f;
+}
+
+/* Estilo para o ClienteCard */
+.clienteCard {
+  background-color: #3a3a3a;
+  border: 1px solid #4f4f4f;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
   padding: 1rem;
-  border-radius: 10px;
-  text-align: center;
+  color: #f8f9fa;
+}
+
+.clienteCardNome {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffc107;
+  margin-bottom: 0.75rem;
+}
+
+.clienteCardItem {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px dashed #5a5a5a;
+}
+.clienteCardItem:last-child {
+  border-bottom: none;
+}
+
+.clienteCardSubtotal {
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #4f4f4f;
+  text-align: right;
+  font-weight: 500;
+  font-size: 0.95rem;
+}
+.clienteCardSubtotal span{
+  color: #198754;
+}
+.loadingSpinner {
+  width: 3rem;
+  height: 3rem;
+  border-width: 0.3rem;
+  color: #ffc107; /* Amarelo para o spinner */
+}
+
+.mensagemComprovativo {
+  font-size: 0.8rem;
+  color: #ffc107;
+  margin-top: 0.5rem;
 }
