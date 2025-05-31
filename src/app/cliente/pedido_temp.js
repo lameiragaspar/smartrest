@@ -87,6 +87,18 @@ export function removerProdutoTemp(clienteId, categoria, index) {
 }
 
 export function limparPedidos() {
+  // 🧠 Salva o número da mesa antes de apagar tudo
+  const mesa = localStorage.getItem('mesa');
+
+  // 🧹 Limpa todo o localStorage
+  localStorage.clear();
+
+  // 🔁 Restaura apenas a mesa
+  if (mesa) {
+    localStorage.setItem('mesa', mesa);
+  }
+
+  // 🧼 Se usar variável temporária em memória:
   pedidosTemporarios = [];
-  localStorage.removeItem('pedido_temp');
 }
+

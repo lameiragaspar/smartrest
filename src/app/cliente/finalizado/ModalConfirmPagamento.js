@@ -42,7 +42,6 @@ export default function ModalPagamento({
     const garcon = garcons.find(g => g.id === selectedGarconId);
     if (!garcon) return setModalErrorMessage('Por favor, selecione um garçom.');
 
-    if (garcon.senha !== garconSenha) return setModalErrorMessage('Senha do garçom incorreta.');
     if (codigoPagamentoGenerico !== CODIGO_PAGAMENTO_GENERICO_ESPERADO) return setModalErrorMessage('Código genérico inválido.');
     if ((['transfer', 'cartao', 'mcexpress'].includes(metodoPagamento)) && !transactionId) {
       return setModalErrorMessage('ID da Transação é obrigatório.');
@@ -92,8 +91,8 @@ export default function ModalPagamento({
               <label>Garçom:</label>
               <select value={selectedGarconId} onChange={e => setSelectedGarconId(e.target.value)} disabled={confirming}>
                 <option value="" disabled>Selecione o garçom</option>
-                {garcons.map(g => (
-                  <option key={g.id} value={g.id}>{g.nome}</option>
+                {garcons.map(garcon => (
+                  <option key={garcon.id} value={garcon.id}>{garcon.name}</option>
                 ))}
               </select>
 

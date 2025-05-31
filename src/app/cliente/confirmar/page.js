@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Spinner } from 'react-bootstrap';
 import style from './Confirmar.module.css';
 import { getPedidos, atualizarQuantidadeProduto, removerProdutoTemp } from '../pedido_temp';
 

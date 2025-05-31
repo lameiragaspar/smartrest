@@ -4,10 +4,10 @@
 import React, { useState, useEffect } from 'react';
 import { getPedidos, limparPedidos } from '../pedido_temp';
 import { useRouter } from 'next/navigation';
-import styles from './pagamento.module.css'; // Your CSS Module
+import styles from './pagamento.module.css';
 import ModalPagamento from './ModalConfirmPagamento';
 
-const CODIGO_PAGAMENTO_GENERICO_ESPERADO = 'PGTOOK'; // Example generic code
+const CODIGO_PAGAMENTO_GENERICO_ESPERADO = 'PGTOOK';
 
 const CardIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
@@ -87,19 +87,23 @@ export default function PagamentoSection({ mesaId }) {
     }) => {
         setConfirmando(true);
         setMensagem({ text: null, type: 'info' });
-        setShowWaiterAuthModal(false); // Hide the modal
+        setShowWaiterAuthModal(false);
 
         const payload = {
-            order_id: String(mesaId),
+            mesa: String(mesaId),
+            mesa: mesaId,
             amount: totalMesa,
             method: metodoPagamento,
             waiter_name: garconNome,
             waiter_id: selectedGarconId,
             transaction_id: transactionId || null,
+            waiter_password: garconSenha,
+            clientes: totaisClientes,
         };
 
+
         try {
-            const res = await fetch('/api/payments', {
+            const res = await fetch('/api/cliente/payments', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -108,24 +112,31 @@ export default function PagamentoSection({ mesaId }) {
             const data = await res.json();
 
             if (!res.ok) {
-                throw new Error(data.erro || `Erro ${res.status} ao confirmar pagamento.`);
+                throw new Error(); // Remove mensagem vinda do servidor
             }
 
+            // ✅ Somente limpa os dados se o pagamento foi confirmado com sucesso
             limparPedidos();
-            setMensagem({ text: data.mensagem || 'Pagamento confirmado com sucesso!', type: 'success' });
 
-            setTimeout(() => {
-                router.push('/'); // Redirect to homepage
-            }, 60000); // 1 minute redirect
+            setMensagem({
+                text: 'Pagamento confirmado com sucesso! Agradecemos sua visitta e esperamos vê-lo novamente em breve!',
+                type: 'success'
+            });
+
+            setTimeout(() => router.push('/'), 20000); // Redireciona após 20 s
 
         } catch (err) {
             console.error("Erro ao confirmar pagamento:", err);
-            setMensagem({ text: err.message || 'Erro ao confirmar o pagamento. Tente novamente.', type: 'error' });
+            setMensagem({
+                text: 'Não foi possível confirmar o pagamento. Por favor, tente novamente.',
+                type: 'error'
+            });
+
         } finally {
             setConfirmando(false);
         }
-    };
 
+    };
 
     if (pedidos.length === 0 && totalMesa === 0 && !confirmando && mensagem.type !== 'success') {
         return (
