@@ -1,0 +1,15 @@
+/* TableOrdersModal.module.css */
+.modalHeader, .modalFooter {
+    background-color: #1f1f1f;
+    border-color: #444;
+    color: #ffc107;
+}
+
+.modalHeader .btn-close { /* Para o botão de fechar branco */
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+.modalBody {
+    background-color: #212529; /* Exemplo de cor escura para o corpo */
+    color: #f8f9fa; /* Texto claro */
+}

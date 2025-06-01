@@ -134,14 +134,14 @@ export async function POST(req) {
         //setar mesa
         await db.execute(
             `UPDATE tables SET people_count = ?, status = ? WHERE id = ?`,
-            [0, 'usada', mesa]
+            [0, 'usado', mesa]
         );
 
         // 1. Deletar os itens do pedido (filhos)
-        await db.execute('DELETE FROM order_items WHERE order_id = ?', [order_id]);
+        //await db.execute('DELETE FROM order_items WHERE order_id = ?', [order_id]);
 
         // 2. Agora é seguro deletar o pedido
-        await db.execute('DELETE FROM orders WHERE table_id = ?', [mesa]);
+        //await db.execute('DELETE FROM orders WHERE table_id = ?', [mesa]);
 
         // 3. Limpar os clientes da mesa
         await db.execute('DELETE FROM clients WHERE table_number = ?', [mesa]);

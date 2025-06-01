@@ -176,7 +176,7 @@ const OrdersPage = () => {
                                         <th scope="col">Mesa</th>
                                         <th scope="col">Status</th>
                                         <th scope="col">Total (Kz)</th>
-                                        <th scope="col">Hpra</th>
+                                        <th scope="col">Hora</th>
                                         <th scope="col">Opções</th>
                                     </tr>
                                 </thead>

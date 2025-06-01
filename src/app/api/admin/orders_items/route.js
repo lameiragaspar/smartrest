@@ -16,9 +16,13 @@ export async function GET(request) {
                 oi.quantity,
                 p.name AS product_name,
                 p.price AS product_price,
-                c.name AS client_name
+                c.name AS client_name,
+                o.table_id,
+                t.table_number
             FROM order_items oi
             JOIN products p ON oi.product_id = p.id
+            JOIN orders o ON oi.order_id = o.id
+            JOIN tables t ON o.table_id = t.id
             LEFT JOIN clients c ON oi.cliente_id = c.id
             WHERE oi.order_id = ?
         `;

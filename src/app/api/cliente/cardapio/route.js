@@ -8,7 +8,7 @@ export async function GET(req) {
     let query = 'SELECT * FROM products WHERE available = 1';
     let values = [];
 
-    if (categoria && categoria !== '0') {
+    if (categoria && categoria !== '1') {
       query += ' AND categories = ?';
       values.push(categoria);
     }

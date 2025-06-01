@@ -1,0 +1,23 @@
+.modalHeader, .modalFooter {
+    background-color: #1f1f1f;
+    border-color: #444;
+    color: #ffc107;
+}
+.modalHeader .btn-close { /* Botão de fechar branco */
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+.modalBody {
+    background-color: #212529;
+    color: #f8f9fa;
+}
+.formSelectDark { /* Estilo para o <select> no tema escuro */
+    background-color: #343a40;
+    color: white;
+    border-color: #6c757d;
+}
+.formSelectDark:focus {
+    background-color: #343a40;
+    color: white;
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0.2rem rgba(255, 255, 0, 0.25);
+}

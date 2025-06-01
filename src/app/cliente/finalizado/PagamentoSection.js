@@ -202,9 +202,9 @@ export default function PagamentoSection({ mesaId }) {
                                                 disabled={confirmando}
                                             >
                                                 <option value="cash">Dinheiro</option>
-                                                <option value="mcexpress">Multicaixa Express (via Garçom)</option>
-                                                <option value="transfer">Transferência Bancária (via Garçom)</option>
-                                                <option value="cartao">Cartão Multicaixa/TPA (via Garçom)</option>
+                                                <option value="mcexpress">Multicaixa Express </option>
+                                                <option value="transfer">Transferência Bancária </option>
+                                                <option value="cartao">Cartão Multicaixa/TPA </option>
                                             </select>
                                         </div>
 

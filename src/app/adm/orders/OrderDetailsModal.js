@@ -49,7 +49,7 @@ const OrderDetailsModal = ({ show, handleClose, orderId }) => {
     return (
         <Modal show={show} onHide={handleClose} centered size="lg">
             <Modal.Header closeButton className={styles.modalHeader}>
-                <Modal.Title>Detalhes do Pedido #{orderId}</Modal.Title>
+                <Modal.Title>Detalhes do Pedido #{orderId} — Mesa {items[0]?.table_number || ''}</Modal.Title>
             </Modal.Header>
             <Modal.Body className={styles.modalBody}>
                 {loading && (

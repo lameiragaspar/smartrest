@@ -3,7 +3,8 @@
 import { useEffect, useState } from 'react';
 import styles from './Menu.module.css';
 import sharedStyles from '../dashboard/Dashboard.module.css';
-import MenuItemModal from './MenuItemModal'; // Importa o modal
+import { Modal, Button, Form, Col } from 'react-bootstrap';
+import { ConfirmModal, MenuItemModal } from './MenuItemModal'; // Importa o modal
 
 const MenuPage = () => {
     const [menuItems, setMenuItems] = useState([]);
@@ -11,6 +12,10 @@ const MenuPage = () => {
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editingItem, setEditingItem] = useState(null); // Item a ser editado
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [selectedId, setSelectedId] = useState(null);
+    const [actionLoading, setActionLoading] = useState(false);
+    const [error, setError] = useState('');
 
     // Função para buscar dados (Menu e Categorias)
     const fetchData = async () => {
@@ -87,20 +92,33 @@ const MenuPage = () => {
 
 
     // Deleta
-    const handleDelete = async (id) => {
-        if (!confirm('Tem certeza que deseja remover este item?')) return;
+    const handleDeleteClick = (id) => {
+        setSelectedId(id);
+        setShowConfirm(true);
+    };
+
+    const confirmDelete = async () => {
+        setActionLoading(true);
+        setError('');
 
         try {
-            const res = await fetch(`/api/admin/cardapio?id=${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                setMenuItems(prev => prev.filter(item => item.id !== id));
-            } else {
-                console.error('Erro ao remover item');
-                alert('Falha ao remover o item.');
+            const res = await fetch(`/api/admin/cardapio?id=${selectedId}`, {
+                method: 'DELETE',
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                throw new Error(errorData.message || 'Erro ao remover o item.');
             }
+
+            setMenuItems((prev) => prev.filter((item) => item.id !== selectedId));
+            setShowConfirm(false); // fecha o modal
+            setSelectedId(null);   // limpa
         } catch (err) {
             console.error('Erro ao excluir item:', err);
-            alert('Ocorreu um erro ao remover o item.');
+            setError(err.message || 'Erro ao remover o item.');
+        } finally {
+            setActionLoading(false);
         }
     };
 
@@ -158,12 +176,9 @@ const MenuPage = () => {
                                                         >
                                                             <i className="bi bi-pencil-fill"></i> Editar
                                                         </button>
-                                                        <button
-                                                            className="btn btn-sm btn-outline-danger"
-                                                            onClick={() => handleDelete(item.id)}
-                                                        >
-                                                            <i className="bi bi-trash-fill"></i> Remover
-                                                        </button>
+                                                        <Button variant="danger" size="sm" onClick={() => handleDeleteClick(item.id)}>
+                                                            Remover
+                                                        </Button>
                                                     </div>
                                                 </div>
                                             </div>
@@ -184,6 +199,18 @@ const MenuPage = () => {
                 categories={categoriesList}
                 onSave={handleSave}
             />
+            <ConfirmModal
+                show={showConfirm}
+                title="Remover Item"
+                message="Tem certeza que deseja remover este item do cardápio?"
+                onCancel={() => {
+                    setShowConfirm(false);
+                    setSelectedId(null);
+                }}
+                onConfirm={confirmDelete}
+                loading={actionLoading}
+            />
+
         </div>
     );
 };

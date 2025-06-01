@@ -99,8 +99,8 @@ export default function DashboardPage() {
                 </div>
                 <div className="col-12 col-sm-6 col-lg-3">
                     <SummaryCard
-                        title="Mesas Ocupadas"
-                        value={loadingSummary ? '...' : summary?.occupiedTables}
+                        title="Mesas Ocupadas | Usadas"
+                        value={loadingSummary ? '...' : summary?.occupiedTables + ' | ' + summary?.usedTables}
                         link="/adm/tables"
                         icon={<i className="bi bi-people-fill fs-1"></i>}
                     />

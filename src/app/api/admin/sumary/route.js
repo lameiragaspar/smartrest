@@ -10,6 +10,10 @@ export async function GET() {
       `SELECT COUNT(*) AS occupiedTables FROM tables WHERE status = 'ocupado'`
     );
 
+    const [[{ usedTables }]] = await db.query(
+      `SELECT COUNT(*) AS usedTables FROM tables WHERE status = 'usado'`
+    );
+
     const [[{ availableTables }]] = await db.query(
       `SELECT COUNT(*) AS availableTables FROM tables WHERE status = 'livre'`
     );
@@ -19,7 +23,7 @@ export async function GET() {
     );
 
     return new Response(
-      JSON.stringify({ activeOrders, occupiedTables, availableTables, pendingCalls }),
+      JSON.stringify({ activeOrders, occupiedTables, usedTables, availableTables, pendingCalls }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
   } catch (error) {

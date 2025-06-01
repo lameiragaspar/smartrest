@@ -1,6 +1,5 @@
-// components/admin/MenuItemModal.js
 import { useState, useEffect } from 'react';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Modal, Button, Form, Col } from 'react-bootstrap';
 import styles from './MenuItemModal.module.css'; // Criaremos este CSS
 
 const MenuItemModal = ({ show, handleClose, item, categories, onSave }) => {
@@ -11,7 +10,7 @@ const MenuItemModal = ({ show, handleClose, item, categories, onSave }) => {
         price: '',
         category_id: '',
         image_url: '',
-        available: true, // Adicionamos 'available'
+        available: true, 
     };
 
     const [formData, setFormData] = useState(initialFormData);
@@ -158,6 +157,23 @@ const MenuItemModal = ({ show, handleClose, item, categories, onSave }) => {
     );
 };
 
-// Precisamos importar Col do react-bootstrap
-import { Col } from 'react-bootstrap';
-export default MenuItemModal;
+const ConfirmModal = ({ show, title, message, onConfirm, onCancel, loading }) => (
+  <Modal show={show} onHide={onCancel} centered backdrop="static">
+    <Modal.Header closeButton className={styles.modalHeader}>
+      <Modal.Title>{title || 'Confirmar ação'}</Modal.Title>
+    </Modal.Header>
+    <Modal.Body  className={styles.modalBody}>
+      <p>{message || 'Tem certeza que deseja continuar?'}</p>
+    </Modal.Body>
+    <Modal.Footer className={styles.modalFooter}>
+      <Button variant="secondary" onClick={onCancel} disabled={loading}>
+        Cancelar
+      </Button>
+      <Button variant="danger" onClick={onConfirm} disabled={loading}>
+        {loading ? 'Removendo...' : 'Remover'}
+      </Button>
+    </Modal.Footer>
+  </Modal>
+);
+
+export  {ConfirmModal, MenuItemModal}

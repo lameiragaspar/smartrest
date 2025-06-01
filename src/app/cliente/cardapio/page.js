@@ -16,7 +16,7 @@ export default function CardapioPage() {
   const [produtos, setProdutos] = useState([]);
   const [carregando, setCarregando] = useState(true);
   const [mesa, setMesa] = useState(null);
-  const [categoriaSelecionada, setCategoriaSelecionada] = useState('0');
+  const [categoriaSelecionada, setCategoriaSelecionada] = useState('1');
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [produtoSelecionado, setProdutoSelecionado] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
@@ -28,13 +28,13 @@ export default function CardapioPage() {
   const CARD_POR_PAGINA = 9;
 
   const categorias = [
-    { id: '0', nome: 'Todas' },
-    { id: '1', nome: 'Lanches' },
-    { id: '2', nome: 'Massas' },
-    { id: '3', nome: 'Pratos Principais' },
-    { id: '4', nome: 'Entradas' },
-    { id: '5', nome: 'Sobremesas' },
-    { id: '6', nome: 'Bebidas' }
+    { id: '1', nome: 'Todas' },
+    { id: '2', nome: 'Lanches' },
+    { id: '3', nome: 'Massas' },
+    { id: '4', nome: 'Pratos Principais' },
+    { id: '5', nome: 'Entradas' },
+    { id: '6', nome: 'Sobremesas' },
+    { id: '7', nome: 'Bebidas' }
   ];
 
   useEffect(() => {
@@ -57,7 +57,7 @@ export default function CardapioPage() {
 
     const fetchProdutos = async () => {
       try {
-        const res = await fetch(`/api/cliente/cardapio?categoria=0`);
+        const res = await fetch(`/api/cliente/cardapio?categoria=1`);
         if (!res.ok) throw new Error('Erro ao buscar produtos');
         const data = await res.json();
         if (!ignore) setProdutos(data);
@@ -122,7 +122,7 @@ export default function CardapioPage() {
   }
 
   const produtosFiltrados = useMemo(() => (
-    categoriaSelecionada === '0'
+    categoriaSelecionada === '1'
       ? produtos
       : produtos.filter(p => p.category_id?.toString() === categoriaSelecionada)
   ), [produtos, categoriaSelecionada]);

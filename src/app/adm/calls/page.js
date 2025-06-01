@@ -42,17 +42,17 @@ const CallsPage = () => {
             // Atualiza localmente
             setCalls(prevCalls =>
                 prevCalls.map(call =>
-                    call.id === callId ? { ...call, status: 'Resolvido' } : call
+                    call.id === callId ? { ...call, status: 'atendido' } : call
                 )
             );
         } catch (err) {
-            console.error('Erro ao marcar chamado como resolvido:', err);
+            console.error('Erro ao marcar chamado como atendido:', err);
         }
     };
 
 
-    const pendingCalls = calls.filter(call => call.status === 'Pendente');
-    const resolvedCalls = calls.filter(call => call.status === 'Resolvido');
+    const pendingCalls = calls.filter(call => call.status === 'pendente');
+    const resolvedCalls = calls.filter(call => call.status === 'atendido');
 
     return (
         <div className="container-fluid">
