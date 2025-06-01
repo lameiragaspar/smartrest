@@ -17,13 +17,14 @@ export async function GET() {
 
     const formatted = rows.map((call) => ({
       id: call.id,
-      table: call.table,
+      table: call.table_number, // esse campo estava errado também
       reason: call.reason,
-      status: call.status === 'pendente' ? 'atendido' : 'canselado',
+      status: call.status, // <- Corrigido aqui
       time: call.minutesAgo <= 0
         ? 'agora mesmo'
         : `${call.minutesAgo} min atrás`,
     }));
+
 
     return Response.json(formatted);
   } catch (error) {
@@ -41,7 +42,7 @@ export async function PATCH(request) {
     }
 
     const [result] = await db.query(
-      'UPDATE calls SET status = "attended" WHERE id = ?',
+      'UPDATE calls SET status = "atendido" WHERE id = ?',
       [id]
     );
 

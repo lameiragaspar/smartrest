@@ -166,21 +166,26 @@ export default function DashboardPage() {
                 <div className="col-12 col-lg-5">
                     <div className={`card ${styles.cardDark}`}>
                         <div className="card-body">
-                            <h5 className={`card-title ${styles.cardTitle}`}>Chamados Pendentes ({calls.length})</h5>
+                            <h5 className={`card-title ${styles.cardTitle}`}>
+                                Chamados Pendentes ({calls.filter(call => call.status === 'pendente').length})
+                            </h5>
+
                             {loadingCalls ? (
                                 <p>Carregando chamados...</p>
-                            ) : calls.length > 0 ? (
+                            ) : calls.filter(call => call.status === 'pendente').length > 0 ? (
                                 <ul className="list-group list-group-flush">
-                                    {calls.map(call => (
-                                        <li key={call.id} className={`list-group-item ${styles.listItem}`}>
-                                            <div className="d-flex justify-content-between">
-                                                <span>
-                                                    <strong>Mesa {call.table}:</strong> {call.reason}
-                                                </span>
-                                                <small className="text-wharning">{call.time}</small>
-                                            </div>
-                                        </li>
-                                    ))}
+                                    {calls
+                                        .filter(call => call.status === 'pendente')
+                                        .map(call => (
+                                            <li key={call.id} className={`list-group-item ${styles.listItem}`}>
+                                                <div className="d-flex justify-content-between">
+                                                    <span>
+                                                        <strong>Mesa {call.table}:</strong> {call.reason}
+                                                    </span>
+                                                    <small className="text-warning">{call.time}</small>
+                                                </div>
+                                            </li>
+                                        ))}
                                 </ul>
                             ) : (
                                 <p className={styles.noData}>Nenhum chamado pendente.</p>

@@ -9,6 +9,8 @@ const CallsPage = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        //let intervalId;
+
         async function fetchCalls() {
             setLoading(true);
             try {
@@ -22,7 +24,10 @@ const CallsPage = () => {
                 setLoading(false);
             }
         }
-        fetchCalls();
+        fetchCalls(); // Primeira chamada
+        //intervalId = setInterval(fetchCalls, 5000); // Atualiza a cada 5 segundos
+
+        //return () => clearInterval(intervalId); // Limpa ao desmontar
     }, []);
 
 
@@ -76,7 +81,7 @@ const CallsPage = () => {
                                         <li key={call.id} className={`list-group-item d-flex justify-content-between align-items-center ${sharedStyles.listItem} ${styles.pendingItem}`}>
                                             <div>
                                                 <strong>Mesa {call.table}:</strong> {call.reason}
-                                                <small className="d-block text-muted">{call.time}</small>
+                                                <small className="d-block text-wharning">{call.time}</small>
                                             </div>
                                             <button
                                                 className="btn btn-sm btn-success"
@@ -105,7 +110,7 @@ const CallsPage = () => {
                                     {resolvedCalls.length > 0 ? resolvedCalls.map(call => (
                                         <li key={call.id} className={`list-group-item ${sharedStyles.listItem} ${styles.resolvedItem}`}>
                                             <strong>Mesa {call.table}:</strong> {call.reason}
-                                            <small className="d-block text-muted">{call.time}</small>
+                                            <small className="d-block text-wharning">{call.time}</small>
                                         </li>
                                     )) : (
                                         <li className={`${sharedStyles.listItem} text-center`}>Nenhum chamado resolvido.</li>
