@@ -1,4 +1,3 @@
-// src/app/api/dashboard/summary/route.js
 import { db } from '@/lib/conetc';
 
 export async function GET() {
@@ -8,15 +7,15 @@ export async function GET() {
     );
 
     const [[{ occupiedTables }]] = await db.query(
-      `SELECT COUNT(*) AS occupiedTables FROM tables WHERE status = 'occupied'`
+      `SELECT COUNT(*) AS occupiedTables FROM tables WHERE status = 'ocupado'`
     );
 
     const [[{ availableTables }]] = await db.query(
-      `SELECT COUNT(*) AS availableTables FROM tables WHERE status = 'available'`
+      `SELECT COUNT(*) AS availableTables FROM tables WHERE status = 'livre'`
     );
 
     const [[{ pendingCalls }]] = await db.query(
-      `SELECT COUNT(*) AS pendingCalls FROM calls WHERE status = 'waiting'`
+      `SELECT COUNT(*) AS pendingCalls FROM calls WHERE status = 'pendente'`
     );
 
     return new Response(

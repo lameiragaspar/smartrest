@@ -1,5 +1,4 @@
-// app/api/admin/order_items/route.js
-import { db } from "@/lib/conetc"; // Usando a sua conexão
+import { db } from "@/lib/conetc";
 import { NextResponse } from 'next/server';
 
 export async function GET(request) {
@@ -24,10 +23,12 @@ export async function GET(request) {
             WHERE oi.order_id = ?
         `;
         // Ajuste conforme a sua implementação de db.query
-        const items = await db.query(sql, [orderId]);
+        const [items] = await db.query(sql, [orderId]);
         // Se db.query retornar um objeto como { results: [...] }, use items.results
-
-        return NextResponse.json(items);
+        return new Response(JSON.stringify(items), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
+        });
     } catch (error) {
         console.error('API Erro ao buscar itens do pedido:', error);
         return NextResponse.json({ message: 'Erro ao buscar itens do pedido', error: error.message }, { status: 500 });

@@ -39,3 +39,23 @@
   filter: brightness(0.9);
   color: #000;
 }
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    background-color: transparent;
+  }
+  50% {
+    transform: scale(1.05);
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  100% {
+    transform: scale(1);
+    background-color: transparent;
+  }
+}
+
+.pulseValue {
+  animation: pulse 0.6s ease-in-out;
+  display: inline-block;
+  transition: transform 0.3s;
+}

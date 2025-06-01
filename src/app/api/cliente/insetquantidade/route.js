@@ -12,7 +12,7 @@ export async function POST(request) {
 
     const [result] = await db.query(
       'UPDATE tables SET people_count = ?, status = ? WHERE table_number = ?',
-      [quantidade, "occupied" , mesa]
+      [quantidade, "ocupado" , mesa]
     );
 
     if (result.affectedRows === 0) {

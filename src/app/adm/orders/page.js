@@ -24,9 +24,9 @@ const OrdersPage = () => {
 
     const fetchOrders = async () => {
         setLoading(true);
-        console.log(`[DEBUG] Fetching orders with filter: ${filter}`);
+        //console.log(`[DEBUG] Fetching orders with filter: ${filter}`);
         try {
-            const res = await fetch(`/api/admin/orders?status=${filter}`);
+            const res = await fetch(`/api/admin/orders`);
             if (!res.ok) {
                 const errorData = await res.json().catch(() => ({ message: 'Falha ao analisar resposta de erro' }));
                 throw new Error(errorData.message || `Falha ao buscar pedidos: ${res.statusText}`);
@@ -44,18 +44,25 @@ const OrdersPage = () => {
     };
 
     useEffect(() => {
-        console.log(`[DEBUG] Filter changed to: ${filter}. Refetching orders.`);
+        //console.log(`[DEBUG] Filter changed to: ${filter}. Refetching orders.`);
         fetchOrders();
     }, [filter]);
 
     const getStatusBadge = (status) => {
-        switch (status) {
-            case 'pendente': return 'bg-secondary';
-            case 'em preparo': return 'bg-warning text-dark';
-            case 'pronto': return 'bg-info text-dark';
-            case 'entregue': return 'bg-success';
-            case 'cancelado': return 'bg-danger';
-            default: return 'bg-dark';
+        const normalized = status.toLowerCase();
+        switch (normalized) {
+            case 'pendente':
+                return 'badge bg-secondary'; // cinza
+            case 'em preparo':
+                return 'badge bg-warning text-dark'; // amarelo
+            case 'pronto':
+                return 'badge bg-info text-dark'; // azul claro
+            case 'entregue':
+                return 'badge bg-success'; // verde
+            case 'cancelado':
+                return 'badge bg-danger'; // vermelho
+            default:
+                return 'badge bg-dark'; // fallback
         }
     };
 
@@ -70,9 +77,9 @@ const OrdersPage = () => {
     };
 
     const handleSaveStatus = async (orderId, newStatus) => {
-        setActionLoading(true); // Usar para o modal de status se quiser feedback de loading nele
+        setActionLoading(true);
         try {
-            const res = await fetch(`/api/admin/orders?id=${orderId}`, {
+            const res = await fetch(`/api/admin/orderStatus?id=${orderId}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ status: newStatus }),
@@ -128,6 +135,10 @@ const OrdersPage = () => {
         { label: 'Prontos', value: 'pronto' },
         { label: 'Entregues', value: 'entregue' },
     ];
+    const filteredOrders = orders.filter(order => {
+        if (filter === 'Todos') return true;
+        return order.status.toLowerCase() === filter.toLowerCase();
+    });
 
     return (
         <div className="container-fluid">
@@ -160,53 +171,63 @@ const OrdersPage = () => {
                         <div className="table-responsive">
                             <table className={`table table-dark table-hover ${sharedStyles.dataTable}`}>
                                 <thead>
-                                    {/* ... colunas ... */}
+                                    <tr>
+                                        <th scope="col">Pedido ID</th>
+                                        <th scope="col">Mesa</th>
+                                        <th scope="col">Status</th>
+                                        <th scope="col">Total (Kz)</th>
+                                        <th scope="col">Hpra</th>
+                                        <th scope="col">Opções</th>
+                                    </tr>
                                 </thead>
-                                <tbody>
-                                    {orders.map(order => (
-                                        <tr key={order.id} className={styles.orderRow}>
-                                            <td>{order.id}</td>
-                                            <td>{order.table_number}</td>
-                                            <td>
-                                                <span className={`badge ${getStatusBadge(order.status)}`}>
-                                                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                {new Intl.NumberFormat('pt-AO', {
-                                                    style: 'currency',
-                                                    currency: 'AOA'
-                                                }).format(order.total || 0)}
-                                            </td>
-                                            <td>{new Date(order.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</td>
-                                            <td>
-                                                <button
-                                                    className="btn btn-sm btn-outline-light me-2"
-                                                    title="Ver Detalhes"
-                                                    onClick={() => handleViewDetails(order)}
-                                                >
-                                                    <i className="bi bi-eye-fill"></i>
-                                                </button>
-                                                <button
-                                                    className="btn btn-sm btn-outline-warning me-2"
-                                                    title="Alterar Status"
-                                                    onClick={() => handleChangeStatus(order)}
-                                                >
-                                                    <i className="bi bi-pencil-fill"></i>
-                                                </button>
-                                                <button
-                                                    className="btn btn-sm btn-outline-danger"
-                                                    title="Cancelar Pedido"
-                                                    onClick={() => initiateDeleteOrder(order)}
-                                                >
-                                                    <i className="bi bi-trash-fill"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                    {orders.length === 0 && !loading && (
+                                <tbody>{filteredOrders.map(order => (
+                                    <tr key={order.id} className={styles.orderRow}>
+                                        <td>{order.id}</td>
+                                        <td>{order.table_number}</td>
+                                        <td>
+                                            <span className={getStatusBadge(order.status)}>
+                                                {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {new Intl.NumberFormat('pt-AO', {
+                                                style: 'currency',
+                                                currency: 'AOA'
+                                            }).format(order.total || 0)}
+                                        </td>
+                                        <td>
+                                            {new Date(order.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                        </td>
+                                        <td>
+                                            <button
+                                                className="btn btn-sm btn-outline-light me-2"
+                                                title="Ver Detalhes"
+                                                onClick={() => handleViewDetails(order)}
+                                            >
+                                                <i className="bi bi-eye-fill"></i>
+                                            </button>
+                                            <button
+                                                className="btn btn-sm btn-outline-warning me-2"
+                                                title="Alterar Status"
+                                                onClick={() => handleChangeStatus(order)}
+                                            >
+                                                <i className="bi bi-pencil-fill"></i>
+                                            </button>
+                                            {/*<button
+                                                className="btn btn-sm btn-outline-danger"
+                                                title="Cancelar Pedido"
+                                                onClick={() => initiateDeleteOrder(order)}
+                                            >
+                                                <i className="bi bi-trash-fill"></i>
+                                            </button>*/}
+                                        </td>
+                                    </tr>
+                                ))}
+                                    {filteredOrders.length === 0 && !loading && (
                                         <tr>
-                                            <td colSpan="6" className="text-center">Nenhum pedido encontrado para o filtro "{filter}".</td>
+                                            <td colSpan="6" className="text-center">
+                                                Nenhum pedido encontrado para o filtro "{filter}".
+                                            </td>
                                         </tr>
                                     )}
                                 </tbody>

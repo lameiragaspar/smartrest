@@ -14,25 +14,34 @@ export default function DashboardPage() {
     const [loadingOrders, setLoadingOrders] = useState(true);
     const [loadingCalls, setLoadingCalls] = useState(true);
 
-    // Carrega Resumo
+    // Carrega Resumo periodicamente
     useEffect(() => {
+        let intervalId;
+
         async function fetchSummary() {
             try {
                 const res = await fetch('/api/admin/sumary');
                 const data = await res.json();
                 setSummary(data ?? {});
             } catch (err) {
-                //console.error('Erro ao buscar resumo:', err);
+                console.error('Erro ao buscar resumo:', err);
                 setSummary({});
             } finally {
                 setLoadingSummary(false);
             }
         }
-        fetchSummary();
+
+        fetchSummary(); // Primeira chamada
+        intervalId = setInterval(fetchSummary, 5000); // Atualiza a cada 5 segundos
+
+        return () => clearInterval(intervalId); // Limpa ao desmontar
     }, []);
+
 
     // Carrega Pedidos
     useEffect(() => {
+        let intervalId;
+
         async function fetchOrders() {
             try {
                 const res = await fetch('/api/admin/orders');
@@ -45,14 +54,19 @@ export default function DashboardPage() {
                 setLoadingOrders(false);
             }
         }
-        fetchOrders();
+        fetchOrders(); // Primeira chamada
+        intervalId = setInterval(fetchOrders, 5000); // Atualiza a cada 5 segundos
+
+        return () => clearInterval(intervalId); // Limpa ao desmontar
     }, []);
 
     // Carrega Chamados
     useEffect(() => {
+        let intervalId;
+
         async function fetchCalls() {
             try {
-                const res = await fetch('/api/admin/call');
+                const res = await fetch('/api/admin/calls');
                 const data = await res.json();
                 setCalls(Array.isArray(data) ? data : []);
             } catch (err) {
@@ -62,7 +76,11 @@ export default function DashboardPage() {
                 setLoadingCalls(false);
             }
         }
-        fetchCalls();
+
+        fetchCalls(); // Primeira chamada
+        intervalId = setInterval(fetchCalls, 5000); // Atualiza a cada 5 segundos
+
+        return () => clearInterval(intervalId); // Limpa ao desmontar
     }, []);
 
     return (
@@ -112,7 +130,7 @@ export default function DashboardPage() {
                 <div className="col-12 col-lg-7">
                     <div className={`card ${styles.cardDark}`}>
                         <div className="card-body">
-                            <h5 className={`card-title ${styles.cardTitle}`}>Últimos Pedidos Entregues</h5>
+                            <h5 className={`card-title ${styles.cardTitle}`}>Últimos Pedidos</h5>
                             {loadingOrders ? (
                                 <p>Carregando pedidos...</p>
                             ) : (
@@ -120,7 +138,7 @@ export default function DashboardPage() {
                                     <table className={`table table-dark table-hover ${styles.dataTable}`}>
                                         <thead>
                                             <tr>
-                                                <th scope="col">Pedido ID</th>
+                                                {/*<th scope="col">Pedido ID</th> */}
                                                 <th scope="col">Mesa</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Total (Kz)</th>
@@ -129,8 +147,8 @@ export default function DashboardPage() {
                                         <tbody>
                                             {orders.map(order => (
                                                 <tr key={order.id}>
-                                                    <td>{order.id}</td>
-                                                    <td>{order.table}</td>
+                                                    {/*<td>{order.id}</td>*/}
+                                                    <td>{order.table_number}</td>
                                                     <td>
                                                         <span className="badge bg-success">{order.status}</span>
                                                     </td>
@@ -159,7 +177,7 @@ export default function DashboardPage() {
                                                 <span>
                                                     <strong>Mesa {call.table}:</strong> {call.reason}
                                                 </span>
-                                                <small className="text-muted">{call.time}</small>
+                                                <small className="text-wharning">{call.time}</small>
                                             </div>
                                         </li>
                                     ))}

@@ -21,11 +21,13 @@ const OrderDetailsModal = ({ show, handleClose, orderId }) => {
                     }
                     const data = await res.json();
                     setItems(Array.isArray(data) ? data : []);
+                    console.log(items)
                 } catch (err) {
                     setError(err.message);
                     setItems([]);
                 } finally {
                     setLoading(false);
+                    console.log(items)
                 }
             };
             fetchOrderDetails();
@@ -34,7 +36,7 @@ const OrderDetailsModal = ({ show, handleClose, orderId }) => {
             setError('');
         }
     }, [show, orderId]);
-
+    console.log(items)
     const formatCurrency = (value) =>
         new Intl.NumberFormat('pt-AO', {
             style: 'currency',
@@ -68,21 +70,21 @@ const OrderDetailsModal = ({ show, handleClose, orderId }) => {
                                 <th>Subtotal</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            {items.length > 0 ? items.map(item => (
-                                <tr key={item.id}>
-                                    <td>{item.product_name}</td>
-                                    <td>{item.client_name || 'N/A'}</td> {/* API retorna client_name */}
-                                    <td>{item.quantity}</td>
-                                    <td>{formatCurrency(item.product_price)}</td>
-                                    <td>{formatCurrency(item.quantity * item.product_price)}</td>
-                                </tr>
-                            )) : (
-                                <tr>
-                                    <td colSpan="5" className="text-center">Nenhum item encontrado para este pedido.</td>
-                                </tr>
-                            )}
+                        <tbody>{items.length > 0 ? (items.map(item => (
+                            <tr key={item.id}>
+                                <td>{item.product_name}</td>
+                                <td>{item.client_name || 'N/A'}</td>
+                                <td>{item.quantity}</td>
+                                <td>{formatCurrency(item.product_price)}</td>
+                                <td>{formatCurrency(item.quantity * item.product_price)}</td>
+                            </tr>)) ) : (
+                            <tr>
+                                <td colSpan="5" className="text-center">
+                                    Nenhum item encontrado para este pedido.
+                                </td>
+                            </tr>)}
                         </tbody>
+
                         <tfoot>
                             <tr>
                                 <td colSpan="4" className="text-end fw-bold">Total do Pedido:</td>

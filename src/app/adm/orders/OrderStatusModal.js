@@ -1,14 +1,13 @@
-'use client';// components/admin/OrderStatusModal.js
+'use client';
 import { useState, useEffect } from 'react';
 import { Modal, Button, Form } from 'react-bootstrap';
-// import styles from './OrderDetailsModal.module.css'; // Removido se não usado, ou crie/use styles específicos
 
 const OrderStatusModal = ({ show, handleClose, order, onSaveStatus }) => {
     const [newStatus, setNewStatus] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(''); // Para exibir erros da API
 
-    // Lista de status possíveis, conforme ENUM do banco de dados
+
     const statuses = ['pendente', 'em preparo', 'pronto', 'entregue'];
 
     // Atualiza o newStatus quando o 'order' prop mudar (quando um novo pedido é selecionado)
@@ -22,7 +21,7 @@ const OrderStatusModal = ({ show, handleClose, order, onSaveStatus }) => {
 
     const handleSave = async () => {
         setLoading(true);
-        setError(''); // Limpa erro antes de tentar salvar
+        setError(''); 
         try {
             await onSaveStatus(order.id, newStatus);
             handleClose(); // Fecha o modal em caso de sucesso

@@ -134,7 +134,7 @@ export async function POST(req) {
         //setar mesa
         await db.execute(
             `UPDATE tables SET people_count = ?, status = ? WHERE id = ?`,
-            [0, 'used', mesa]
+            [0, 'usada', mesa]
         );
 
         // 1. Deletar os itens do pedido (filhos)
