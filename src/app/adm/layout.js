@@ -13,14 +13,14 @@ export const metadata = {
 
 export default function DashboardLayout({ children }) {
   return (
-    <div className={styles.dashboardContainer}>
+    <div className={`app-container ${styles.dashboardContainer}`}>
       {/* Sidebar está fixa, não precisa estar aqui */}
       <Sidebar />
 
       {/* Área principal que contém Navbar e Conteúdo */}
-      <div className={styles.mainContentArea}>
+      <div className={`main-content ${styles.mainContentArea}`}>
         <Navbar />
-        <main className={styles.main}>
+        <main className={` ${styles.main}`}>
           {/* Wrapper para aplicar o max-width e centralizar */}
           <div className={styles.contentWrapper}>
             {children}

@@ -1,4 +1,5 @@
 import styles from './Navbar.module.css';
+import 'bootstrap-icons/font/bootstrap-icons.css'; // Garanta que os ícones estão importados
 
 const Navbar = () => {
   return (
@@ -11,7 +12,7 @@ const Navbar = () => {
         <i className={`bi bi-person-circle ${styles.userIcon}`}></i>
         <span>Administrador</span>
         <button className={`btn btn-sm ${styles.logoutButton}`}>
-            <i className="bi bi-box-arrow-right"></i> Sair
+          <i className="bi bi-box-arrow-right"></i> Sair
         </button>
       </div>
     </header>

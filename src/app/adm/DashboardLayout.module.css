@@ -1,3 +1,5 @@
+/* DashboardLayout.module.css */
+
 .dashboardContainer {
   display: flex;
   background-color: #2a2a2a; /* Fundo geral um pouco mais claro que a sidebar */
@@ -6,10 +8,17 @@
 
 .mainContentArea {
   flex: 1; /* Ocupa todo o espaço restante */
-  margin-left: 260px; /* A mesma largura da sidebar */
+  margin-left: 260px; /* Largura padrão da sidebar, empurra o conteúdo */
   display: flex;
   flex-direction: column;
-  transition: margin-left 0.3s ease; /* Para futuras animações de 'encolher' */
+  transition: margin-left 0.3s ease, width 0.3s ease; /* Transição para margin-left e width */
+  width: calc(100% - 260px); /* Garante que ocupe o restante da largura */
+}
+
+/* Regra para quando a sidebar estiver "escondida" (no desktop) */
+body.main-content-shifted .mainContentArea {
+  margin-left: 0; /* Move o conteúdo de volta para a esquerda */
+  width: 100%; /* Ocupa toda a largura quando a sidebar está "escondida" */
 }
 
 .main {
@@ -25,9 +34,61 @@
   width: 100%;
 }
 
-/* Ajustes para telas menores se a sidebar for escondida/encolhida */
+/* --- Media Queries para responsividade --- */
+
 @media (max-width: 768px) {
-  /* .mainContentArea {
-    margin-left: 80px;
-  } */
+  .mainContentArea {
+    margin-left: 0; /* Em mobile, a sidebar é overlay, então o conteúdo principal não precisa de margem */
+    width: 100%; /* Ocupa 100% da largura em mobile */
+  }
+
+  /* Opcional: Ajuste o padding do main em mobile */
+  .main {
+    padding: 1rem; /* Reduz o padding em telas menores */
+  }
+}
+
+.appContainer {
+  display: flex; /* Permite que a sidebar e o conteúdo fiquem lado a lado */
+  min-height: 100vh; /* Garante que o container ocupe a altura total da viewport */
+}
+
+.mainContent {
+  flex-grow: 1; /* Permite que o conteúdo principal ocupe todo o espaço restante */
+  margin-left: 260px; /* Largura padrão da sidebar, empurra o conteúdo */
+  transition: margin-left 0.3s ease; /* Transição suave para o margin */
+  display: flex;
+  flex-direction: column;
+  width: calc(100% - 260px); /* Garante que ocupe o restante da largura */
+}
+
+/* Quando a sidebar está fechada (em mobile ou se você tiver um botão de toggle para desktop) */
+.mainContentShifted {
+  margin-left: 0; /* Move o conteúdo de volta para a esquerda */
+  width: 100%; /* Ocupa toda a largura */
+}
+
+
+/* Media Query para telas menores (onde a sidebar se sobrepõe ou é menor) */
+@media (max-width: 768px) {
+  .mainContent {
+    margin-left: 0; /* Em mobile, a sidebar é overlay, então o conteúdo principal não precisa de margem */
+    width: 100%; /* Ocupa 100% da largura */
+  }
+
+  /* Se a sidebar for sobreposta e você quiser um efeito de "escurecer" o fundo */
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Fundo escuro semi-transparente */
+    z-index: 990; /* Abaixo da sidebar, mas acima do main content */
+    display: none; /* Esconde por padrão */
+  }
+
+  .overlay.active {
+    display: block; /* Mostra quando a sidebar está aberta */
+  }
 }

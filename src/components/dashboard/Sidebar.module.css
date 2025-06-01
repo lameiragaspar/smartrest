@@ -9,9 +9,23 @@
   position: fixed; /* Fixa a sidebar */
   left: 0;
   top: 0;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, left 0.3s ease, transform 0.3s ease; /* Adicionado transform para transição suave */
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
   z-index: 1000;
+}
+
+/* Estado da sidebar fechada para telas menores */
+.sidebar.closed {
+  width: 0; /* Oculta a sidebar */
+  overflow: hidden; /* Garante que o conteúdo não seja visível */
+  transform: translateX(-100%); /* Move para fora da tela */
+  box-shadow: none; /* Remove a sombra quando fechada */
+}
+
+/* Estado da sidebar aberta */
+.sidebar.open {
+  width: 260px; /* Largura normal */
+  transform: translateX(0); /* Volta para a posição original */
 }
 
 .brand {
@@ -24,6 +38,11 @@
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+/* Oculta o texto do brand quando a sidebar está fechada ou em telas menores */
+.sidebar.closed .brandText {
+  display: none;
 }
 
 .nav ul {
@@ -41,6 +60,7 @@
   font-size: 1rem;
   transition: background-color 0.2s ease, color 0.2s ease;
   border-left: 4px solid transparent; /* Borda para indicar link ativo */
+  white-space: nowrap; /* Impede que o texto quebre em várias linhas */
 }
 
 .navLink:hover {
@@ -55,6 +75,11 @@
   text-align: center;
 }
 
+/* Oculta o texto do link de navegação quando a sidebar está fechada ou em telas menores */
+.sidebar.closed .navLabel {
+  display: none;
+}
+
 .activeLink {
   background-color: #333;
   color: #ffc107 !important; /* Cor de destaque para o link ativo */
@@ -63,19 +88,69 @@
 }
 
 .sidebarFooter {
-    margin-top: auto; /* Empurra para o final */
-    text-align: center;
-    padding: 1rem;
-    font-size: 0.8rem;
-    color: #666;
+  margin-top: auto; /* Empurra para o final */
+  text-align: center;
+  padding: 1rem;
+  font-size: 0.8rem;
+  color: #666;
 }
 
-/* Adicionar responsividade se necessário */
+/* Oculta o texto do rodapé quando a sidebar está fechada ou em telas menores */
+.sidebar.closed .footerText {
+  display: none;
+}
+
+/* Botão de toggle para a sidebar */
+.sidebarToggle {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  z-index: 1001; /* Acima da sidebar */
+  background-color: #ffc107;
+  color: #1f1f1f;
+  border: none;
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: none; /* Esconde por padrão, mostra apenas em telas menores */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.2s ease;
+}
+
+.sidebarToggle:hover {
+  background-color: #e0a800;
+}
+
+/* Media Query para telas menores */
 @media (max-width: 768px) {
-  /* .sidebar {
-    width: 80px;
+  .sidebar {
+    width: 260px; /* Em telas pequenas, a sidebar tem largura total quando aberta */
+    position: fixed; /* Continua fixa */
+    left: 0;
+    top: 0;
+    height: 100vh;
+    transform: translateX(-100%); /* Oculta a sidebar por padrão */
+    box-shadow: none; /* Remove a sombra quando fechada em mobile */
   }
-  .brand span, .navLink span {
-    display: none;
-  } */
+
+  .sidebar.open {
+    transform: translateX(0); /* Mostra a sidebar */
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5); /* Adiciona sombra quando aberta */
+  }
+
+  /* Exibe o botão de toggle em telas menores */
+  .sidebarToggle {
+    display: block;
+  }
+
+  /* Ajusta o conteúdo principal para não ser coberto pela sidebar */
+  body.sidebar-open { /* Você precisaria adicionar esta classe ao body via JS quando a sidebar estiver aberta */
+    overflow: hidden; /* Impede rolagem do conteúdo principal */
+  }
+
+  /* Ajusta o ícone para ficar centralizado quando o texto está oculto */
+  .sidebar.closed .navIcon {
+    margin-right: 0;
+  }
 }

@@ -1,80 +1,100 @@
-/* app/adm/menu/Menu.module.css */
+.pageTitle {
+  color: #ffc107;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.addDishButton {
+  background-color: #ffc107;
+  border-color: #ffc107;
+  color: #1f1f1f;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  transition: all 0.3s ease;
+}
+
+.addDishButton:hover {
+  background-color: #e0ac00;
+  border-color: #e0ac00;
+  color: #1f1f1f;
+}
+
 .categoryTitle {
-    color: #ffc107;
-    margin: 0;
-    font-size: 1.5rem;
-    padding: 0.5rem 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #ffc107;
+  margin: 0;
 }
 
 .menuItemCard {
-    background-color: #2a2a2a;
-    border: 1px solid #444;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-    color: #fff;
-    border-radius: 8px; /* Cantos arredondados */
-    /* A altura é controlada por h-100, mas podemos definir min-height */
-    min-height: 400px; /* Aumenta a altura mínima */
+  border: 1px solid #444;
+  background-color: #1f1f1f;
+  color: #fff;
+  transition: transform 0.2s ease;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 0 8px rgba(0,0,0,0.3);
 }
 
 .menuItemCard:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+  transform: translateY(-3px);
 }
 
 .menuItemImage {
-    height: 200px; /* Aumenta um pouco a altura da imagem */
-    object-fit: cover;
-    filter: brightness(0.9);
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+  height: 180px;
+  object-fit: cover;
+  border-bottom: 1px solid #333;
 }
 
 .menuItemName {
-    font-size: 1.15rem; /* Ajusta tamanho do nome */
-    font-weight: 600;
-    color: #fff;
-    margin-bottom: 0.5rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #ffc107;
 }
 
 .menuItemDescription {
-    font-size: 0.85rem; /* Tamanho menor para descrição */
-    color: #b0b0b0;
-    flex-grow: 1; /* Faz a descrição ocupar espaço, empurrando o preço/botões */
-    line-height: 1.4;
-    margin-bottom: 1rem;
+  font-size: 0.9rem;
+  color: #ccc;
+  line-height: 1.4;
+  min-height: 60px;
+  overflow: hidden;
 }
 
 .priceTag {
-    font-size: 1.3rem; /* Preço maior */
-    font-weight: bold;
-    color: #ffc107;
-    display: block; /* Garante que fica em sua linha */
-    margin-bottom: 1rem; /* Espaço antes dos botões */
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffc107;
 }
 
-.unavailable .menuItemImage {
-    filter: grayscale(100%) brightness(0.6);
+.unavailable {
+  opacity: 0.5;
 }
 
-.unavailable .card-title,
-.unavailable .priceTag {
-    text-decoration: line-through;
-    color: #6c757d;
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
 }
 
-.card-header {
-    background-color: #1f1f1f;
-    border-bottom: 1px solid #444;
+.buttonGroup button span {
+  margin-left: 0.4rem;
 }
 
-.buttonGroup .btn {
-    font-size: 0.8rem;
-    padding: 0.3rem 0.8rem;
+@media (max-width: 576px) {
+  .menuItemName {
+    font-size: 1rem;
+  }
+
+  .menuItemDescription {
+    font-size: 0.85rem;
+  }
+
+  .priceTag {
+    font-size: 0.95rem;
+  }
 }
-
-/* Reutiliza estilos de botões da página de Pedidos */
-.btn-outline-warning { color: #ffc107; border-color: #ffc107; }
-.btn-outline-warning:hover { color: #1f1f1f; background-color: #ffc107; border-color: #ffc107; }
-.btn-outline-danger { color: #dc3545; border-color: #dc3545; }
-.btn-outline-danger:hover { color: #fff; background-color: #dc3545; border-color: #dc3545; }
-
+.bi {
+  color: #ffc107;
+}
