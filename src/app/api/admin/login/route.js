@@ -1,8 +1,7 @@
-// src/app/api/admin/login/route.js
-
 import { db } from '@/lib/conetc';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'sua_chave_secreta_segura';
@@ -28,11 +27,22 @@ export async function POST(req) {
       return NextResponse.json({ message: 'Senha incorreta' }, { status: 401 });
     }
 
-    const token = jwt.sign({ id: usuario.id, email: usuario.email, role: usuario.role }, JWT_SECRET, {
+    const token = jwt.sign({ id: usuario.id, email: usuario.email }, JWT_SECRET, {
       expiresIn: '2h',
     });
 
-    return NextResponse.json({ token });
+    // Salva o token como cookie HttpOnly
+    const response = NextResponse.json({ message: 'Login realizado com sucesso' });
+    response.cookies.set('token', token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 2, // 2h
+    });
+
+    return response;
+
   } catch (error) {
     console.error('[LOGIN_ERROR]', error);
     return NextResponse.json({ message: 'Erro interno no login' }, { status: 500 });

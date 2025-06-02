@@ -25,12 +25,13 @@ export default function LoginDashboard() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email, password }),
+        credentials: 'include',
       });
 
       const data = await res.json();
 
-      if (res.ok && data.token) {
-        localStorage.setItem('token', data.token);
+      if (res.ok) {
+        //localStorage.setItem('token', data.token);
         router.push('/adm/dashboard');
       } else {
         setError(data.message || 'Credenciais inválidas. Verifique seu e-mail e senha.');
