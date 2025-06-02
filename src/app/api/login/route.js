@@ -27,7 +27,7 @@ export async function POST(req) {
       return NextResponse.json({ message: 'Senha incorreta' }, { status: 401 });
     }
 
-    const token = jwt.sign({ id: usuario.id, email: usuario.email }, JWT_SECRET, {
+    const token = jwt.sign({ id: usuario.id, email: usuario.email, role: usuario.role }, JWT_SECRET, {
       expiresIn: '2h',
     });
 
