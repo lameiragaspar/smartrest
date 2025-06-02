@@ -3,13 +3,13 @@
 import { useEffect, useState } from 'react';
 import styles from './Menu.module.css';
 import sharedStyles from '../dashboard/Dashboard.module.css'; // Mantenha este import
-import { Modal, Button, Form, Col } from 'react-bootstrap';
+import { Modal, Button, Form, Col, Spinner } from 'react-bootstrap';
 import { ConfirmModal, MenuItemModal } from './MenuItemModal'; // Importa o modal
 
 const MenuPage = () => {
     const [menuItems, setMenuItems] = useState([]);
     const [categoriesList, setCategoriesList] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [carregamento, setCarregamento] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [editingItem, setEditingItem] = useState(null);
     const [showConfirm, setShowConfirm] = useState(false);
@@ -18,7 +18,7 @@ const MenuPage = () => {
     const [error, setError] = useState('');
 
     const fetchData = async () => {
-        setLoading(true);
+        setCarregamento(true);
         try {
             const [menuRes, catRes] = await Promise.all([
                 fetch('/api/admin/cardapio'),
@@ -36,7 +36,7 @@ const MenuPage = () => {
             setMenuItems([]);
             setCategoriesList([]);
         } finally {
-            setLoading(false);
+            setCarregamento(false);
         }
     };
 
@@ -50,7 +50,7 @@ const MenuPage = () => {
     };
 
     const handleEditClick = (item) => {
-        setEditingItem(item);
+        setEditingItem(item);c
         setShowModal(true);
     };
 
@@ -136,8 +136,14 @@ const MenuPage = () => {
                 </button>
             </div>
 
-            {loading ? (
-                <p>Carregando cardápio...</p>
+            {carregamento ? (
+                <div
+                    className="d-flex flex-column justify-content-center align-items-center text-warning"
+                    style={{ minHeight: '70vh' }}
+                >
+                    <Spinner animation="border" className="mb-2" />
+                    <p className="mb-0">Carregando cardápio...</p>
+                </div>
             ) : (
                 displayCategories.map(category => (
                     <div key={category} className={`card mb-5 ${sharedStyles.cardDark}`}>

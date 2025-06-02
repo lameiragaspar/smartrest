@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Spinner } from 'react-bootstrap';
 import SummaryCard from '@/components/dashboard/SummaryCard';
 import styles from './Dashboard.module.css';
 
@@ -12,7 +13,7 @@ export default function DashboardPage() {
 
     const [loadingSummary, setLoadingSummary] = useState(true);
     const [loadingOrders, setLoadingOrders] = useState(true);
-    const [loadingCalls, setLoadingCalls] = useState(true);
+    const [carregando, setCarregando] = useState(true);
 
     // Carrega Resumo periodicamente
     useEffect(() => {
@@ -73,7 +74,7 @@ export default function DashboardPage() {
                 //console.error('Erro ao buscar chamados:', err);
                 setCalls([]);
             } finally {
-                setLoadingCalls(false);
+                setCarregando(false);
             }
         }
 
@@ -87,113 +88,124 @@ export default function DashboardPage() {
         <div className="container-fluid">
             <h2 className={`mb-4 ${styles.pageTitle}`}>Visão Geral do Restaurante</h2>
 
-            {/* Linha dos Summary Cards */}
-            <div className="row g-4 mb-5">
-                <div className="col-12 col-sm-6 col-lg-3">
-                    <SummaryCard
-                        title="Pedidos Ativos"
-                        value={loadingSummary ? '...' : summary?.activeOrders}
-                        link="/adm/orders"
-                        icon={<i className="bi bi-basket-fill fs-1"></i>}
-                    />
+            {carregando ? (
+                <div
+                    className="d-flex flex-column justify-content-center align-items-center text-warning"
+                    style={{ minHeight: '70vh' }}
+                >
+                    <Spinner animation="border" className="mb-2" />
+                    <p className="mb-0">Carregando dados...</p>
                 </div>
-                <div className="col-12 col-sm-6 col-lg-3">
-                    <SummaryCard
-                        title="Mesas Ocupadas | Usadas"
-                        value={loadingSummary ? '...' : summary?.occupiedTables + ' | ' + summary?.usedTables}
-                        link="/adm/tables"
-                        icon={<i className="bi bi-people-fill fs-1"></i>}
-                    />
-                </div>
-                <div className="col-12 col-sm-6 col-lg-3">
-                    <SummaryCard
-                        title="Chamados Pendentes"
-                        value={loadingSummary ? '...' : summary?.pendingCalls}
-                        link="/adm/calls"
-                        icon={<i className="bi bi-bell-fill fs-1"></i>}
-                        bgColor="#5a3e00"
-                    />
-                </div>
-                <div className="col-12 col-sm-6 col-lg-3">
-                    <SummaryCard
-                        title="Mesas Livres"
-                        value={loadingSummary ? '...' : summary?.availableTables}
-                        link="/adm/tables"
-                        icon={<i className="bi bi-door-open-fill fs-1"></i>}
-                        bgColor="#444"
-                    />
-                </div>
-            </div>
+            ) : (
+                <>
+                    {/* Linha dos Summary Cards */}
+                    <div className="row g-4 mb-5">
+                        <div className="col-12 col-sm-6 col-lg-3">
+                            <SummaryCard
+                                title="Pedidos Ativos"
+                                value={loadingSummary ? '...' : summary?.activeOrders}
+                                link="/adm/orders"
+                                icon={<i className="bi bi-basket-fill fs-1"></i>}
+                            />
+                        </div>
+                        <div className="col-12 col-sm-6 col-lg-3">
+                            <SummaryCard
+                                title="Mesas Ocupadas | Usadas"
+                                value={loadingSummary ? '...' : summary?.occupiedTables + ' | ' + summary?.usedTables}
+                                link="/adm/tables"
+                                icon={<i className="bi bi-people-fill fs-1"></i>}
+                            />
+                        </div>
+                        <div className="col-12 col-sm-6 col-lg-3">
+                            <SummaryCard
+                                title="Chamados Pendentes"
+                                value={loadingSummary ? '...' : summary?.pendingCalls}
+                                link="/adm/calls"
+                                icon={<i className="bi bi-bell-fill fs-1"></i>}
+                                bgColor="#5a3e00"
+                            />
+                        </div>
+                        <div className="col-12 col-sm-6 col-lg-3">
+                            <SummaryCard
+                                title="Mesas Livres"
+                                value={loadingSummary ? '...' : summary?.availableTables}
+                                link="/adm/tables"
+                                icon={<i className="bi bi-door-open-fill fs-1"></i>}
+                                bgColor="#444"
+                            />
+                        </div>
+                    </div>
 
-            {/* Linha das Tabelas/Listas */}
-            <div className="row g-4">
-                <div className="col-12 col-lg-7">
-                    <div className={`card ${styles.cardDark}`}>
-                        <div className="card-body">
-                            <h5 className={`card-title ${styles.cardTitle}`}>Últimos Pedidos</h5>
-                            {loadingOrders ? (
-                                <p>Carregando pedidos...</p>
-                            ) : (
-                                <div className="table-responsive">
-                                    <table className={`table table-dark table-hover ${styles.dataTable}`}>
-                                        <thead>
-                                            <tr>
-                                                {/*<th scope="col">Pedido ID</th> */}
-                                                <th scope="col">Mesa</th>
-                                                <th scope="col">Status</th>
-                                                <th scope="col">Total (Kz)</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {orders.map(order => (
-                                                <tr key={order.id}>
-                                                    {/*<td>{order.id}</td>*/}
-                                                    <td>{order.table_number}</td>
-                                                    <td>
-                                                        <span className="badge bg-success">{order.status}</span>
-                                                    </td>
-                                                    <td>{Number(order.total).toFixed(2)}</td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
+                    {/* Linha das Tabelas/Listas */}
+                    <div className="row g-4">
+                        <div className="col-12 col-lg-7">
+                            <div className={`card ${styles.cardDark}`}>
+                                <div className="card-body">
+                                    <h5 className={`card-title ${styles.cardTitle}`}>Últimos Pedidos</h5>
+                                    {loadingOrders ? (
+                                        <p>Carregando pedidos...</p>
+                                    ) : (
+                                        <div className="table-responsive">
+                                            <table className={`table table-dark table-hover ${styles.dataTable}`}>
+                                                <thead>
+                                                    <tr>
+                                                        {/*<th scope="col">Pedido ID</th> */}
+                                                        <th scope="col">Mesa</th>
+                                                        <th scope="col">Status</th>
+                                                        <th scope="col">Total (Kz)</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {orders.map(order => (
+                                                        <tr key={order.id}>
+                                                            {/*<td>{order.id}</td>*/}
+                                                            <td>{order.table_number}</td>
+                                                            <td>
+                                                                <span className="badge bg-success">{order.status}</span>
+                                                            </td>
+                                                            <td>{Number(order.total).toFixed(2)}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    )}
                                 </div>
-                            )}
+                            </div>
+                        </div>
+
+                        <div className="col-12 col-lg-5">
+                            <div className={`card ${styles.cardDark}`}>
+                                <div className="card-body">
+                                    <h5 className={`card-title ${styles.cardTitle}`}>
+                                        Chamados Pendentes ({calls.filter(call => call.status === 'pendente').length})
+                                    </h5>
+
+                                    {carregando ? (
+                                        <p className="mb-0">Carregando dados...</p>
+                                    ) : calls.filter(call => call.status === 'pendente').length > 0 ? (
+                                        <ul className="list-group list-group-flush">
+                                            {calls
+                                                .filter(call => call.status === 'pendente')
+                                                .map(call => (
+                                                    <li key={call.id} className={`list-group-item ${styles.listItem}`}>
+                                                        <div className="d-flex justify-content-between">
+                                                            <span>
+                                                                <strong>Mesa {call.table}:</strong> {call.reason}
+                                                            </span>
+                                                            <small className="text-warning">{call.time}</small>
+                                                        </div>
+                                                    </li>
+                                                ))}
+                                        </ul>
+                                    ) : (
+                                        <p className={styles.noData}>Nenhum chamado pendente.</p>
+                                    )}
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
-
-                <div className="col-12 col-lg-5">
-                    <div className={`card ${styles.cardDark}`}>
-                        <div className="card-body">
-                            <h5 className={`card-title ${styles.cardTitle}`}>
-                                Chamados Pendentes ({calls.filter(call => call.status === 'pendente').length})
-                            </h5>
-
-                            {loadingCalls ? (
-                                <p>Carregando chamados...</p>
-                            ) : calls.filter(call => call.status === 'pendente').length > 0 ? (
-                                <ul className="list-group list-group-flush">
-                                    {calls
-                                        .filter(call => call.status === 'pendente')
-                                        .map(call => (
-                                            <li key={call.id} className={`list-group-item ${styles.listItem}`}>
-                                                <div className="d-flex justify-content-between">
-                                                    <span>
-                                                        <strong>Mesa {call.table}:</strong> {call.reason}
-                                                    </span>
-                                                    <small className="text-warning">{call.time}</small>
-                                                </div>
-                                            </li>
-                                        ))}
-                                </ul>
-                            ) : (
-                                <p className={styles.noData}>Nenhum chamado pendente.</p>
-                            )}
-                        </div>
-                    </div>
-                </div>
-            </div>
+                </>)}
         </div>
     );
 }

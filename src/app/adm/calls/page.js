@@ -1,18 +1,19 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { Spinner } from 'react-bootstrap';
 import styles from './Colls.module.css';
 import sharedStyles from '../dashboard/Dashboard.module.css';
 
 const CallsPage = () => {
     const [calls, setCalls] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [carregamento, setCarregamento] = useState(true);
 
     useEffect(() => {
         //let intervalId;
 
         async function fetchCalls() {
-            setLoading(true);
+            setCarregamento(true);
             try {
                 const res = await fetch('/api/admin/calls');
                 const data = await res.json();
@@ -21,7 +22,7 @@ const CallsPage = () => {
                 console.error('Erro ao buscar chamados:', err);
                 setCalls([]);
             } finally {
-                setLoading(false);
+                setCarregamento(false);
             }
         }
         fetchCalls(); // Primeira chamada
@@ -65,8 +66,14 @@ const CallsPage = () => {
                 <i className="bi bi-bell-fill me-2"></i>Chamados das Mesas
             </h2>
 
-            {loading ? (
-                <p>Carregando chamados...</p>
+            {carregamento ? (
+                <div
+                    className="d-flex flex-column justify-content-center align-items-center text-warning"
+                    style={{ minHeight: '70vh' }}
+                >
+                    <Spinner animation="border" className="mb-2" />
+                    <p className="mb-0">Carregando cardápio...</p>
+                </div>
             ) : (
                 <div className="row g-4">
                     {/* Chamados Pendentes */}

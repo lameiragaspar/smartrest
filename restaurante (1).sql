@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 31-Maio-2025 às 13:50
+-- Tempo de geração: 01-Jun-2025 às 23:55
 -- Versão do servidor: 10.4.32-MariaDB
 -- versão do PHP: 8.2.12
 
@@ -21,25 +21,6 @@ SET time_zone = "+00:00";
 -- Banco de dados: `restaurante`
 --
 
-DELIMITER $$
---
--- Procedimentos
---
-CREATE DEFINER=`root`@`localhost` PROCEDURE `ConfirmarPagamentoEEncerrarMesa` (IN `p_table_number` INT)   BEGIN
-  DECLARE v_table_id INT;
-  SELECT id INTO v_table_id FROM tables WHERE table_number = p_table_number;
-
-  DELETE oi FROM order_items oi
-  JOIN orders o ON o.id = oi.order_id
-  WHERE o.table_id = v_table_id;
-
-  DELETE FROM orders WHERE table_id = v_table_id;
-  DELETE FROM clients WHERE table_number = p_table_number;
-  UPDATE tables SET status = 'available', people_count = 0 WHERE table_number = p_table_number;
-END$$
-
-DELIMITER ;
-
 -- --------------------------------------------------------
 
 --
@@ -54,6 +35,15 @@ CREATE TABLE `assessment` (
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Extraindo dados da tabela `assessment`
+--
+
+INSERT INTO `assessment` (`id`, `table_id`, `stars`, `comment`, `created_at`) VALUES
+(1, 1, 5, 'Amei a forma de atendimento, muito inovador', '2025-05-31 20:35:06'),
+(2, 1, 5, 'Metodo original', '2025-05-31 21:05:19'),
+(3, 1, 4, 'Atendimento exelente', '2025-06-01 13:26:53');
+
 -- --------------------------------------------------------
 
 --
@@ -67,6 +57,13 @@ CREATE TABLE `calls` (
   `status` enum('pendente','atendido','cancelado') DEFAULT 'pendente',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Extraindo dados da tabela `calls`
+--
+
+INSERT INTO `calls` (`id`, `table_id`, `reason`, `status`, `created_at`) VALUES
+(3, 1, 'Preciso de ajuda com o pedido', 'atendido', '2025-06-01 19:49:44');
 
 -- --------------------------------------------------------
 
@@ -105,6 +102,47 @@ CREATE TABLE `clients` (
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Extraindo dados da tabela `clients`
+--
+
+INSERT INTO `clients` (`id`, `name`, `table_number`, `created_at`) VALUES
+(6, 'Pedro', 1, '2025-06-01 13:49:59');
+
+-- --------------------------------------------------------
+
+--
+-- Estrutura da tabela `history`
+--
+
+CREATE TABLE `history` (
+  `id` int(11) NOT NULL,
+  `mesa` varchar(10) DEFAULT NULL,
+  `order_id` int(11) DEFAULT NULL,
+  `produtos` text DEFAULT NULL,
+  `quantidade` text DEFAULT NULL,
+  `cliente` varchar(100) DEFAULT NULL,
+  `garcon` varchar(100) DEFAULT NULL,
+  `preco` decimal(10,2) NOT NULL,
+  `preco_total` decimal(10,2) DEFAULT NULL,
+  `data` datetime DEFAULT current_timestamp(),
+  `order_nome` varchar(100) DEFAULT NULL,
+  `garcom_id` int(11) DEFAULT NULL,
+  `garcom_nome` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Extraindo dados da tabela `history`
+--
+
+INSERT INTO `history` (`id`, `mesa`, `order_id`, `produtos`, `quantidade`, `cliente`, `garcon`, `preco`, `preco_total`, `data`, `order_nome`, `garcom_id`, `garcom_nome`) VALUES
+(1, '1', 1, 'Pão com Chouriço', '3', 'Pedro', NULL, 15.00, 98.00, '2025-05-31 20:43:30', '1', 1, NULL),
+(2, '1', 1, 'Massa com Muamba de Galinha', '1', 'Pedro', NULL, 35.00, 98.00, '2025-05-31 20:43:30', '1', 1, NULL),
+(3, '1', 1, 'Ginga com Cuscuz', '1', 'Pedro', NULL, 18.00, 98.00, '2025-05-31 20:43:30', '1', 1, NULL),
+(4, '1', 2, 'Calulu de Peixe', '1', 'Paulo', NULL, 40.00, 40.00, '2025-05-31 21:05:50', '2', 1, NULL),
+(5, '1', 2, 'Funge com Molho de Feijão', '1', 'Guilherme', NULL, 20.00, 20.00, '2025-05-31 21:05:50', '2', 1, NULL),
+(6, '1', 3, 'Calulu de Peixe', '1', 'João', NULL, 40.00, 40.00, '2025-06-01 13:29:28', '3', 1, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -133,6 +171,14 @@ CREATE TABLE `orders` (
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Extraindo dados da tabela `orders`
+--
+
+INSERT INTO `orders` (`id`, `table_id`, `total`, `status`, `created_at`) VALUES
+(3, 1, 40.00, 'entregue', '2025-05-31 23:18:00'),
+(4, 1, 158.00, 'pendente', '2025-06-01 16:16:40');
+
 -- --------------------------------------------------------
 
 --
@@ -147,6 +193,16 @@ CREATE TABLE `order_items` (
   `quantity` int(11) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Extraindo dados da tabela `order_items`
+--
+
+INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `cliente_id`, `quantity`) VALUES
+(6, 3, 5, 4, 1),
+(7, 4, 5, 6, 1),
+(8, 4, 7, 6, 1),
+(9, 4, 13, 6, 1);
+
 -- --------------------------------------------------------
 
 --
@@ -159,8 +215,22 @@ CREATE TABLE `payments` (
   `amount` decimal(10,2) NOT NULL,
   `method` enum('cash','credit','debit','pix') DEFAULT 'cash',
   `paid_at` datetime DEFAULT current_timestamp(),
-  `comprovativo_arquivo` varchar(255) DEFAULT NULL
+  `comprovativo_arquivo` varchar(255) DEFAULT NULL,
+  `transaction_id` varchar(100) DEFAULT NULL,
+  `order_nome` varchar(100) DEFAULT NULL,
+  `garcom_id` int(11) DEFAULT NULL,
+  `garcom_nome` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Extraindo dados da tabela `payments`
+--
+
+INSERT INTO `payments` (`id`, `order_id`, `amount`, `method`, `paid_at`, `comprovativo_arquivo`, `transaction_id`, `order_nome`, `garcom_id`, `garcom_nome`) VALUES
+(1, 1, 98.00, '', '2025-05-31 20:42:21', NULL, '54342644', '1', 1, NULL),
+(2, 1, 98.00, '', '2025-05-31 20:43:30', NULL, '7654326546', '1', 1, NULL),
+(3, 2, 60.00, 'cash', '2025-05-31 21:05:50', NULL, NULL, '2', 1, NULL),
+(4, 3, 40.00, '', '2025-06-01 13:29:28', NULL, '6554364687', '3', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -177,6 +247,24 @@ CREATE TABLE `products` (
   `image_url` varchar(255) DEFAULT NULL,
   `available` tinyint(1) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Extraindo dados da tabela `products`
+--
+
+INSERT INTO `products` (`id`, `name`, `description`, `price`, `category_id`, `image_url`, `available`) VALUES
+(1, 'Pão com Chouriço', 'Pão caseiro recheado com chouriço artesanal angolano', 15.00, 2, 'https://images.unsplash.com/photo-1605478571951-417b2c1b1f05', 1),
+(2, 'Pastel de Carne', 'Pastel frito recheado com carne moída temperada', 12.00, 2, 'https://images.unsplash.com/photo-1611078489935-5e6e053f9021', 0),
+(3, 'Massa com Muamba de Galinha', 'Massa penne acompanhada de muamba tradicional de galinha', 35.00, 3, 'https://images.unsplash.com/photo-1546069901-ba9599a7e63c', 1),
+(4, 'Macarrão com Calulu', 'Massa ao molho leve servida com calulu de peixe seco', 30.00, 4, 'https://images.unsplash.com/photo-1589307004394-04c9be504b07', 0),
+(5, 'Calulu de Peixe', 'Prato tradicional com peixe seco, quiabo e óleo de palma', 40.00, 4, 'https://images.unsplash.com/photo-1631515243343-bd6f26b90286', 1),
+(6, 'Muamba de Galinha', 'Galinha cozida com quiabo e molho de dendê', 42.00, 4, 'https://images.unsplash.com/photo-1625941118446-6f0b0bb1ec2d', 0),
+(7, 'Ginga com Cuscuz', 'Pequenos peixes fritos servidos com cuscuz de milho', 18.00, 5, 'https://images.unsplash.com/photo-1585076804023-716ec1d840ec', 1),
+(8, 'Funge com Molho de Feijão', 'Porção de funge servida com molho de feijão encorpado', 20.00, 4, 'https://images.unsplash.com/photo-1646825464745-cb62b4db5ef4', 1),
+(9, 'Cocada Amarela', 'Doce típico feito com coco, gemas e açúcar', 16.00, 6, 'https://images.unsplash.com/photo-1576789442531-fad8e8a8dcb0', 0),
+(10, 'Doce de Ginguba', 'Pasta doce feita com amendoim caramelizado', 14.00, 6, 'https://images.unsplash.com/photo-1632492098419-5d2c3bb31bb4', 1),
+(12, 'Cuca (Cerveja Nacional)', 'Cerveja tradicional angolana, bem gelada', 250.00, 7, 'https://www.facebook.com/photo/?fbid=2718066068413444&set=a.1519620934924636', 1),
+(13, 'Sumo de Múcua', 'Sumo de Múcua', 100.00, 7, 'https://images.pexels.com/photos/70497/pexels-photo-70497.jpeg', 1);
 
 -- --------------------------------------------------------
 
@@ -203,7 +291,7 @@ CREATE TABLE `tables` (
   `id` int(11) NOT NULL,
   `table_number` int(11) NOT NULL,
   `people_count` int(11) NOT NULL,
-  `status` enum('available','occupied','reserved') DEFAULT 'available'
+  `status` enum('livre','ocupado','reservado','usado') DEFAULT 'livre'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -211,16 +299,16 @@ CREATE TABLE `tables` (
 --
 
 INSERT INTO `tables` (`id`, `table_number`, `people_count`, `status`) VALUES
-(1, 1, 0, 'available'),
-(2, 2, 0, 'available'),
-(3, 3, 0, 'available'),
-(4, 4, 0, 'available'),
-(5, 5, 0, 'available'),
-(6, 6, 0, 'available'),
-(7, 7, 0, 'available'),
-(8, 8, 0, 'available'),
-(9, 9, 0, 'available'),
-(10, 10, 0, 'available');
+(1, 1, 1, 'ocupado'),
+(2, 2, 0, 'livre'),
+(3, 3, 0, 'livre'),
+(4, 4, 0, 'livre'),
+(5, 5, 0, 'livre'),
+(6, 6, 0, 'livre'),
+(7, 7, 0, 'livre'),
+(8, 8, 0, 'livre'),
+(9, 9, 0, 'ocupado'),
+(10, 10, 0, 'ocupado');
 
 -- --------------------------------------------------------
 
@@ -233,9 +321,23 @@ CREATE TABLE `users` (
   `name` varchar(100) NOT NULL,
   `email` varchar(100) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
-  `role` enum('admin','chef') DEFAULT 'chef',
-  `created_at` datetime DEFAULT current_timestamp()
+  `role` enum('admin','chef','garcon') DEFAULT 'chef',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `tel` varchar(20) DEFAULT NULL,
+  `birth_date` date DEFAULT NULL,
+  `photo` varchar(255) DEFAULT NULL,
+  `profession` enum('garcon','cozinheiro','chef') NOT NULL DEFAULT 'garcon',
+  `status` enum('ativo','inativo','suspenso') DEFAULT 'ativo',
+  `notes` text DEFAULT NULL,
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Extraindo dados da tabela `users`
+--
+
+INSERT INTO `users` (`id`, `name`, `email`, `password_hash`, `role`, `created_at`, `tel`, `birth_date`, `photo`, `profession`, `status`, `notes`, `updated_at`) VALUES
+(1, 'João Garçom', 'joao.garcom@restaurante.com', 'senha123', 'garcon', '2025-05-31 20:33:31', NULL, NULL, NULL, 'garcon', 'ativo', NULL, '2025-06-01 22:19:42');
 
 --
 -- Índices para tabelas despejadas
@@ -268,6 +370,15 @@ ALTER TABLE `clients`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Índices para tabela `history`
+--
+ALTER TABLE `history`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_history_mesa` (`mesa`),
+  ADD KEY `fk_history_order` (`order_id`),
+  ADD KEY `fk_history_garcon` (`garcon`);
+
+--
 -- Índices para tabela `notifications`
 --
 ALTER TABLE `notifications`
@@ -294,7 +405,7 @@ ALTER TABLE `order_items`
 --
 ALTER TABLE `payments`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `order_id` (`order_id`);
+  ADD KEY `fk_payments_order` (`order_id`);
 
 --
 -- Índices para tabela `products`
@@ -334,7 +445,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de tabela `assessment`
 --
 ALTER TABLE `assessment`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de tabela `calls`
@@ -352,7 +463,13 @@ ALTER TABLE `categories`
 -- AUTO_INCREMENT de tabela `clients`
 --
 ALTER TABLE `clients`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT de tabela `history`
+--
+ALTER TABLE `history`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de tabela `notifications`
@@ -364,25 +481,25 @@ ALTER TABLE `notifications`
 -- AUTO_INCREMENT de tabela `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT de tabela `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de tabela `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de tabela `status_log`
@@ -394,13 +511,13 @@ ALTER TABLE `status_log`
 -- AUTO_INCREMENT de tabela `tables`
 --
 ALTER TABLE `tables`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de tabela `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Restrições para despejos de tabelas
@@ -436,12 +553,6 @@ ALTER TABLE `orders`
 ALTER TABLE `order_items`
   ADD CONSTRAINT `order_items_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`),
   ADD CONSTRAINT `order_items_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`);
-
---
--- Limitadores para a tabela `payments`
---
-ALTER TABLE `payments`
-  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE;
 
 --
 -- Limitadores para a tabela `products`

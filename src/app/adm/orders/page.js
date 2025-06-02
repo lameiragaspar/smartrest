@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import styles from './Orders.module.css';
+import { Spinner } from 'react-bootstrap';
 import sharedStyles from '../dashboard/Dashboard.module.css';
 import OrderStatusModal from './OrderStatusModal';
 import OrderDetailsModal from './OrderDetailsModal';
@@ -10,7 +11,7 @@ import ConfirmDeleteModal from './ConfirmDeleteModal'; // Importar o novo modal
 const OrdersPage = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true); // Loading da tabela principal
-    const [actionLoading, setActionLoading] = useState(false); // Loading para ações (delete, update status)
+    const [carregando, setCarregando] = useState(false); // Loading para ações (delete, update status)
     const [filter, setFilter] = useState('Todos');
 
     const [showDetails, setShowDetails] = useState(false);
@@ -77,7 +78,7 @@ const OrdersPage = () => {
     };
 
     const handleSaveStatus = async (orderId, newStatus) => {
-        setActionLoading(true);
+        setCarregando(true);
         try {
             const res = await fetch(`/api/admin/orderStatus?id=${orderId}`, {
                 method: 'PUT',
@@ -94,7 +95,7 @@ const OrdersPage = () => {
             console.error(err);
             throw err;
         } finally {
-            setActionLoading(false);
+            setCarregando(false);
         }
     };
 
@@ -107,7 +108,7 @@ const OrdersPage = () => {
     // Executa a exclusão após confirmação no modal
     const executeDeleteOrder = async () => {
         if (!orderToDelete) return;
-        setActionLoading(true);
+        setCarregando(true);
         try {
             const res = await fetch(`/api/admin/orders?id=${orderToDelete.id}`, {
                 method: 'DELETE',
@@ -122,7 +123,7 @@ const OrdersPage = () => {
             console.error(err);
             alert(`Erro ao cancelar pedido: ${err.message}`);
         } finally {
-            setActionLoading(false);
+            setCarregando(false);
             setShowDeleteModal(false);
             setOrderToDelete(null);
         }
@@ -145,124 +146,135 @@ const OrdersPage = () => {
             <h2 className={`mb-4 ${sharedStyles.pageTitle}`}>
                 <i className="bi bi-receipt-cutoff me-2"></i>Gerenciamento de Pedidos
             </h2>
-
-            <div className={`card mb-4 ${sharedStyles.cardDark}`}>
-                <div className="card-body d-flex gap-2 flex-wrap">
-                    {filterButtons.map(btn => (
-                        <button
-                            key={btn.value}
-                            className={`btn ${filter === btn.value ? 'btn-primary' : 'btn-outline-primary'}`}
-                            onClick={() => setFilter(btn.value)}
-                        >
-                            {btn.label}
-                        </button>
-                    ))}
+            {carregando ? (
+                <div
+                    className="d-flex flex-column justify-content-center align-items-center text-warning"
+                    style={{ minHeight: '70vh' }}
+                >
+                    <Spinner animation="border" className="mb-2" />
+                    <p className="mb-0">Carregando pedidos...</p>
                 </div>
-            </div>
-
-            <div className={`card ${sharedStyles.cardDark}`}>
-                <div className="card-body">
-                    <h5 className={`card-title ${sharedStyles.cardTitle}`}>Pedidos ({filter})</h5>
-                    {loading ? (
-                        <div className="text-center p-5">
-                            {/* ... spinner ... */}
+            ) : (
+                <>
+                    <div className={`card mb-4 ${sharedStyles.cardDark}`}>
+                        <div className="card-body d-flex gap-2 flex-wrap">
+                            {filterButtons.map(btn => (
+                                <button
+                                    key={btn.value}
+                                    className={`btn ${filter === btn.value ? 'btn-primary' : 'btn-outline-primary'}`}
+                                    onClick={() => setFilter(btn.value)}
+                                >
+                                    {btn.label}
+                                </button>
+                            ))}
                         </div>
-                    ) : (
-                        <div className="table-responsive">
-                            <table className={`table table-dark table-hover ${sharedStyles.dataTable}`}>
-                                <thead>
-                                    <tr>
-                                        <th scope="col">Pedido ID</th>
-                                        <th scope="col">Mesa</th>
-                                        <th scope="col">Status</th>
-                                        <th scope="col">Total (Kz)</th>
-                                        <th scope="col">Hora</th>
-                                        <th scope="col">Opções</th>
-                                    </tr>
-                                </thead>
-                                <tbody>{filteredOrders.map(order => (
-                                    <tr key={order.id} className={styles.orderRow}>
-                                        <td>{order.id}</td>
-                                        <td>{order.table_number}</td>
-                                        <td>
-                                            <span className={getStatusBadge(order.status)}>
-                                                {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            {new Intl.NumberFormat('pt-AO', {
-                                                style: 'currency',
-                                                currency: 'AOA'
-                                            }).format(order.total || 0)}
-                                        </td>
-                                        <td>
-                                            {new Date(order.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
-                                        </td>
-                                        <td>
-                                            <button
-                                                className="btn btn-sm btn-outline-light me-2"
-                                                title="Ver Detalhes"
-                                                onClick={() => handleViewDetails(order)}
-                                            >
-                                                <i className="bi bi-eye-fill"></i>
-                                            </button>
-                                            <button
-                                                className="btn btn-sm btn-outline-warning me-2"
-                                                title="Alterar Status"
-                                                onClick={() => handleChangeStatus(order)}
-                                            >
-                                                <i className="bi bi-pencil-fill"></i>
-                                            </button>
-                                            {/*<button
+                    </div>
+
+                    <div className={`card ${sharedStyles.cardDark}`}>
+                        <div className="card-body">
+                            <h5 className={`card-title ${sharedStyles.cardTitle}`}>Pedidos ({filter})</h5>
+                            {loading ? (
+                                <div className="text-center p-5">
+                                    {/* ... spinner ... */}
+                                </div>
+                            ) : (
+                                <div className="table-responsive">
+                                    <table className={`table table-dark table-hover ${sharedStyles.dataTable}`}>
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Pedido ID</th>
+                                                <th scope="col">Mesa</th>
+                                                <th scope="col">Status</th>
+                                                <th scope="col">Total (Kz)</th>
+                                                <th scope="col">Hora</th>
+                                                <th scope="col">Opções</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>{filteredOrders.map(order => (
+                                            <tr key={order.id} className={styles.orderRow}>
+                                                <td>{order.id}</td>
+                                                <td>{order.table_number}</td>
+                                                <td>
+                                                    <span className={getStatusBadge(order.status)}>
+                                                        {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    {new Intl.NumberFormat('pt-AO', {
+                                                        style: 'currency',
+                                                        currency: 'AOA'
+                                                    }).format(order.total || 0)}
+                                                </td>
+                                                <td>
+                                                    {new Date(order.created_at).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                                </td>
+                                                <td>
+                                                    <button
+                                                        className="btn btn-sm btn-outline-light me-2"
+                                                        title="Ver Detalhes"
+                                                        onClick={() => handleViewDetails(order)}
+                                                    >
+                                                        <i className="bi bi-eye-fill"></i>
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-sm btn-outline-warning me-2"
+                                                        title="Alterar Status"
+                                                        onClick={() => handleChangeStatus(order)}
+                                                    >
+                                                        <i className="bi bi-pencil-fill"></i>
+                                                    </button>
+                                                    {/*<button
                                                 className="btn btn-sm btn-outline-danger"
                                                 title="Cancelar Pedido"
                                                 onClick={() => initiateDeleteOrder(order)}
                                             >
                                                 <i className="bi bi-trash-fill"></i>
                                             </button>*/}
-                                        </td>
-                                    </tr>
-                                ))}
-                                    {filteredOrders.length === 0 && !loading && (
-                                        <tr>
-                                            <td colSpan="6" className="text-center">
-                                                Nenhum pedido encontrado para o filtro "{filter}".
-                                            </td>
-                                        </tr>
-                                    )}
-                                </tbody>
-                            </table>
+                                                </td>
+                                            </tr>
+                                        ))}
+                                            {filteredOrders.length === 0 && !loading && (
+                                                <tr>
+                                                    <td colSpan="6" className="text-center">
+                                                        Nenhum pedido encontrado para o filtro "{filter}".
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            )}
                         </div>
+                    </div>
+
+                    {selectedOrder && (
+                        <>
+                            <OrderDetailsModal
+                                show={showDetails}
+                                handleClose={() => { setShowDetails(false); setSelectedOrder(null); }}
+                                orderId={selectedOrder.id}
+                            />
+                            <OrderStatusModal
+                                show={showStatus}
+                                handleClose={() => { setShowStatus(false); setSelectedOrder(null); }}
+                                order={selectedOrder}
+                                onSaveStatus={handleSaveStatus}
+                            // Passar carregando para o modal de status se ele precisar desabilitar botões
+                            // loading={carregando} 
+                            />
+                        </>
                     )}
-                </div>
-            </div>
 
-            {selectedOrder && (
-                <>
-                    <OrderDetailsModal
-                        show={showDetails}
-                        handleClose={() => { setShowDetails(false); setSelectedOrder(null); }}
-                        orderId={selectedOrder.id}
-                    />
-                    <OrderStatusModal
-                        show={showStatus}
-                        handleClose={() => { setShowStatus(false); setSelectedOrder(null); }}
-                        order={selectedOrder}
-                        onSaveStatus={handleSaveStatus}
-                    // Passar actionLoading para o modal de status se ele precisar desabilitar botões
-                    // loading={actionLoading} 
-                    />
+                    {orderToDelete && (
+                        <ConfirmDeleteModal
+                            show={showDeleteModal}
+                            handleClose={() => { setShowDeleteModal(false); setOrderToDelete(null); }}
+                            handleConfirm={executeDeleteOrder}
+                            itemName={orderToDelete.id}
+                            loading={carregando}
+                        />
+                    )}
                 </>
-            )}
-
-            {orderToDelete && (
-                <ConfirmDeleteModal
-                    show={showDeleteModal}
-                    handleClose={() => { setShowDeleteModal(false); setOrderToDelete(null); }}
-                    handleConfirm={executeDeleteOrder}
-                    itemName={orderToDelete.id}
-                    loading={actionLoading}
-                />
             )}
         </div>
     );
