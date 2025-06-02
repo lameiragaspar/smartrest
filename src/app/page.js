@@ -25,7 +25,7 @@ export default function Home() {
   const handleAdmin = () => {
     setBloqueado(true);
     setCarregando(true)
-    router.push('/adm/login');
+    router.push('/login');
   };
 
   return (
