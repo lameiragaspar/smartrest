@@ -8,25 +8,23 @@
   border-bottom: 1px solid #444; /* Borda sutil */
   height: 60px; /* Altura fixa */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  position: relative; /* Para posicionar o botão de toggle da sidebar se necessário */
+  position: relative; 
   z-index: 999; /* Garante que fique acima do conteúdo, mas abaixo da sidebar quando aberta */
 }
 
 .pageTitle {
   font-size: 1.2rem;
   font-weight: 500;
-  /* Garante que o título não encurte muito em telas pequenas */
   min-width: 0;
-  white-space: nowrap; /* Impede que o texto quebre */
-  overflow: hidden; /* Oculta o excesso de texto */
-  text-overflow: ellipsis; /* Adiciona "..." se o texto for muito longo */
+  white-space: nowrap; 
+  overflow: hidden; 
+  text-overflow: ellipsis; 
 }
 
 .userInfo {
   display: flex;
   align-items: center;
   color: #ccc;
-  /* Permite que o userInfo se quebre se necessário */
   flex-shrink: 0;
 }
 
@@ -42,9 +40,9 @@
   color: #ffc107;
   margin-left: 1rem;
   transition: background-color 0.2s ease, color 0.2s ease;
-  display: flex; /* Para alinhar o ícone e o texto */
+  display: flex; 
   align-items: center;
-  gap: 0.25rem; /* Espaçamento entre ícone e texto */
+  gap: 0.25rem; 
 }
 
 .logoutButton:hover {
@@ -57,54 +55,52 @@
 /* Para telas menores que 768px (tablets e smartphones) */
 @media (max-width: 768px) {
   .navbar {
-    padding: 0.8rem 1rem; /* Reduz o padding horizontal */
+    padding: 0.8rem 1rem; 
   }
 
   .pageTitle {
-    font-size: 1rem; /* Reduz o tamanho da fonte do título */
+    font-size: 1rem; 
   }
 
   .userInfo {
-    /* Em telas menores, podemos ocultar o nome "Administrador" e manter apenas o ícone */
-    font-size: 0.9rem; /* Reduz a fonte para o texto do usuário */
+    font-size: 0.9rem; 
   }
 
   .userInfo span {
-    display: none; /* Oculta o texto "Administrador" */
+    display: none; 
   }
 
   .userIcon {
-    margin-right: 0; /* Remove a margem à direita do ícone do usuário */
+    margin-right: 0;
   }
 
   .logoutButton {
-    margin-left: 0.75rem; /* Ajusta a margem para o botão de sair */
-    padding: 0.3rem 0.6rem; /* Reduz o padding do botão */
-    font-size: 0.85rem; /* Reduz o tamanho da fonte do botão */
+    margin-left: 0.75rem;
+    padding: 0.3rem 0.6rem; 
+    font-size: 0.85rem;
   }
 }
 
 /* Para telas ainda menores, como smartphones pequenos */
 @media (max-width: 480px) {
   .navbar {
-    padding: 0.6rem 0.75rem; /* Reduz ainda mais o padding */
+    padding: 0.6rem 0.75rem;
   }
 
   .pageTitle {
-    font-size: 0.9rem; /* Mais uma redução na fonte do título */
+    font-size: 0.9rem; 
   }
 
   .userIcon {
-    font-size: 1.3rem; /* Reduz o ícone do usuário */
+    font-size: 1.3rem; 
   }
 
   .logoutButton {
-    /* Em telas muito pequenas, podemos mostrar apenas o ícone de sair no botão */
-    padding: 0.3rem 0.5rem; /* Ajusta o padding para o ícone */
-    margin-left: 0.5rem; /* Ajusta a margem */
+    padding: 0.3rem 0.5rem; 
+    margin-left: 0.5rem; 
   }
 
   .logoutButton span {
-    display: none; /* Oculta o texto "Sair" do botão */
+    display: none; 
   }
 }

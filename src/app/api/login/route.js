@@ -24,7 +24,7 @@ export async function POST(req) {
 
     const senhaCorreta = await bcrypt.compare(password, usuario.password_hash);
     if (!senhaCorreta) {
-      return NextResponse.json({ message: 'Senha incorreta' }, { status: 401 });
+      return NextResponse.json({ message: 'Email ou Senha incorretos' }, { status: 401 });
     }
 
     const token = jwt.sign({ id: usuario.id, email: usuario.email, role: usuario.role }, JWT_SECRET, {

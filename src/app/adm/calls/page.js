@@ -28,7 +28,6 @@ const CallsPage = () => {
         fetchCalls(); // Primeira chamada
         //intervalId = setInterval(fetchCalls, 5000); // Atualiza a cada 5 segundos
 
-        //return () => clearInterval(intervalId); // Limpa ao desmontar
     }, []);
 
 

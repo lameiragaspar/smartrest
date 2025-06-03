@@ -17,7 +17,7 @@ export async function GET() {
                 o.created_at,
                 TIMESTAMPDIFF(MINUTE, o.created_at, NOW()) AS minutesAgo
             FROM orders o
-            JOIN tables t ON o.table_id = t.id
+            JOIN tables t ON o.table_id = t.table_number
             ORDER BY o.created_at DESC
         `);
 

@@ -28,7 +28,7 @@ export async function POST(req) {
 
     const [existingUsers] = await db.execute('SELECT id FROM users WHERE email = ?', [email]);
     if (existingUsers.length > 0) {
-      return Response.json({ message: 'Já existe um usuário com este email.' }, { status: 409 });
+      return Response.json({ message: 'Email já cadastrado' }, { status: 409 });
     }
 
     const password_hash = await bcrypt.hash(password, 10);

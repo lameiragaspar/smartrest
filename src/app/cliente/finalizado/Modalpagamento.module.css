@@ -6,24 +6,24 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(0, 0, 0, 0.6); /* Fundo semi-transparente escuro */
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000; /* Garante que o overlay esteja acima de outros elementos */
-  padding: 20px; /* Espaçamento nas bordas em telas menores */
-  overflow-y: auto; /* Permite scroll no overlay se o conteúdo do modal for muito grande */
+  padding: 20px; 
+  overflow-y: auto; 
 }
 
 .modal {
-  border-radius: 12px; /* Cantos mais arredondados */
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Sombra mais suave */
+  border-radius: 12px; 
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); 
   width: 100%;
-  max-width: 500px; /* Largura máxima para o modal */
-  overflow: hidden; /* Garante que o conteúdo não vaze nas bordas */
+  max-width: 500px; 
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  max-height: calc(100vh - 40px); /* Garante que o modal não exceda a altura da viewport menos o padding do overlay */
+  max-height: calc(100vh - 40px); 
   background-color: #3a3a3a;
   color: #ffffff;
   border: 1px solid #4f4f4f;
@@ -35,37 +35,37 @@
   justify-content: space-between;
   align-items: center;
   text-align: center;
-  padding: 18px 25px; /* Mais padding */
-  border-bottom: 1px solid #e0e0e0; /* Linha divisória sutil, mais clara */
-  background-color: #3a3a3a; /* Fundo levemente off-white para o cabeçalho */
-  color: #ffc107; /* Cor do título cinza escuro */
+  padding: 18px 25px; 
+  border-bottom: 1px solid #e0e0e0; 
+  background-color: #3a3a3a; 
+  color: #ffc107; 
 }
 
 .header h2 {
   margin: 0;
-  font-size: 1.5rem; /* Tamanho da fonte do título */
-  font-weight: 600; /* Mais negrito */
+  font-size: 1.5rem; 
+  font-weight: 600;
 }
 
 .closeBtn {
   background: none;
   border: none;
-  font-size: 2rem; /* Tamanho maior para o 'x' */
+  font-size: 2rem; 
   color: #666;
   cursor: pointer;
   padding: 5px;
-  line-height: 1; /* Alinhamento melhor */
+  line-height: 1; 
   transition: color 0.2s ease;
 }
 
 .closeBtn:hover {
-  color: #ffc107; /* Amarelo no hover para o botão de fechar */
+  color: #ffc107;
 }
 
 .body {
   padding: 25px;
-  flex-grow: 1; /* Permite que o corpo ocupe o espaço restante */
-  overflow-y: auto; /* Adiciona scroll apenas no corpo se o conteúdo for muito longo */
+  flex-grow: 1; 
+  overflow-y: auto; 
   color: #e0e0e0;
 }
 
@@ -76,13 +76,13 @@
 
 .centered p {
   margin-bottom: 15px;
-  color: #e7e7e7; /* Cor do texto cinza escuro */
+  color: #e7e7e7; 
   font-size: 1.1rem;
 }
 
 .centered p.lead {
   font-weight: 500;
-  color: #4f4f4f; /* Cor do texto cinza escuro */
+  color: #4f4f4f; 
 }
 
 .error {
@@ -100,21 +100,21 @@
   text-align: center;
   margin-bottom: 30px;
   padding: 20px;
-  background-color: #fffaf0; /* Fundo amarelo claro para a seção QR */
+  background-color: #fffaf0; 
   border-radius: 10px;
-  border: 1px dashed #ffebcd; /* Borda tracejada amarelada */
+  border: 1px dashed #ffebcd;
 }
 
 .qrSection p {
   margin-bottom: 10px;
   font-size: 1.1rem;
-  color: #4f4f4f; /* Cor do texto cinza escuro */
+  color: #4f4f4f; 
 }
 
 .qrSection p.mt-2 {
   font-weight: 600;
   font-size: 1.2rem;
-  color: #ffc107; /* Amarelo para o valor */
+  color: #ffc107; 
 }
 
 
@@ -123,7 +123,7 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
-  color: #e7e7e7; /* Cor dos labels cinza escuro */
+  color: #e7e7e7; 
   font-size: 0.95rem;
 }
 
@@ -132,40 +132,40 @@
 .body select {
   width: 100%;
   padding: 12px 15px;
-  margin-bottom: 20px; /* Espaço entre os campos */
-  border: 1px solid #d0d0d0; /* Borda mais clara */
-  border-radius: 8px; /* Cantos arredondados */
+  margin-bottom: 20px; 
+  border: 1px solid #d0d0d0;
+  border-radius: 8px;
   font-size: 1rem;
-  color: #e7e7e7; /* Cor do texto dos inputs cinza escuro */
+  color: #e7e7e7; 
   background-color: #3a3a3a;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
-  box-sizing: border-box; /* Garante que padding e border sejam incluídos na largura */
+  box-sizing: border-box; 
 }
 
 .body input[type="text"]:focus,
 .body input[type="password"]:focus,
 .body select:focus {
-  border-color: #ffc107; /* Amarelo ao focar */
-  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25); /* Sombra de foco amarela */
-  outline: none; /* Remove o outline padrão */
+  border-color: #ffc107; 
+  box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25); 
+  outline: none; 
 }
 
 .body input[type="text"]:disabled,
 .body input[type="password"]:disabled,
 .body select:disabled,
 .body button:disabled {
-  background-color: #f0f0f0; /* Fundo mais claro para desabilitado */
+  background-color: #f0f0f0; 
   cursor: not-allowed;
   opacity: 0.7;
 }
 
 .footer {
   display: flex;
-  justify-content: flex-end; /* Alinha os botões à direita */
-  gap: 15px; /* Espaçamento entre os botões */
+  justify-content: flex-end; 
+  gap: 15px; 
   padding-top: 20px;
-  border-top: 1px solid #e0e0e0; /* Linha divisória mais clara */
-  margin-top: 20px; /* Espaço acima do footer */
+  border-top: 1px solid #e0e0e0; 
+  margin-top: 20px;
 }
 
 /* Botões */
@@ -178,27 +178,27 @@
   font-size: 1rem;
   font-weight: 600;
   transition: background-color 0.2s ease, transform 0.1s ease;
-  flex-grow: 1; /* Permite que os botões cresçam */
-  max-width: 200px; /* Limita a largura máxima em telas maiores */
+  flex-grow: 1; 
+  max-width: 200px; 
 }
 
 .btnSucesso {
-  background-color: #ffc107; /* Amarelo */
-  color: #4f4f4f; /* Texto cinza escuro para contraste */
+  background-color: #ffc107; 
+  color: #4f4f4f;
 }
 
 .btnSucesso:hover {
-  background-color: #e0a800; /* Amarelo um pouco mais escuro no hover */
-  transform: translateY(-1px); /* Efeito sutil de levantar */
+  background-color: #e0a800;
+  transform: translateY(-1px); 
 }
 
 .btnCinza {
-  background-color: #4f4f4f; /* Cinza escuro */
-  color: #fff; /* Texto branco */
+  background-color: #4f4f4f; 
+  color: #fff; 
 }
 
 .btnCinza:hover {
-  background-color: #3e3e3e; /* Cinza mais escuro no hover */
+  background-color: #3e3e3e; 
   transform: translateY(-1px);
 }
 
@@ -206,9 +206,9 @@
 /* Responsividade */
 @media (max-width: 576px) {
   .modal {
-    margin: 10px; /* Pequena margem em telas muito pequenas */
+    margin: 10px; 
     border-radius: 8px;
-    max-height: calc(100vh - 20px); /* Ajuste para preencher a tela inteira com um pouco de margem */
+    max-height: calc(100vh - 20px); 
   }
 
   .header {
@@ -224,15 +224,15 @@
   }
 
   .footer {
-    flex-direction: column; /* Botões empilhados em telas pequenas */
+    flex-direction: column; 
     gap: 10px;
-    padding: 15px 20px 20px; /* Ajuste de padding no footer */
+    padding: 15px 20px 20px; 
   }
 
   .btnSucesso,
   .btnCinza {
-    width: 100%; /* Botões ocupam largura total */
-    max-width: none; /* Remove o limite de largura */
+    width: 100%; 
+    max-width: none;
   }
 
   .qrSection {

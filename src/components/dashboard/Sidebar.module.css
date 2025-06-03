@@ -1,7 +1,7 @@
 .sidebar {
-  width: 260px; /* Largura da sidebar */
-  background-color: #1f1f1f; /* Cor de fundo principal */
-  color: #ccc; /* Cor do texto padrão */
+  width: 260px; 
+  background-color: #1f1f1f;
+  color: #ccc; 
   padding: 1.5rem 0;
   display: flex;
   flex-direction: column;
@@ -9,7 +9,7 @@
   position: fixed; /* Fixa a sidebar */
   left: 0;
   top: 0;
-  transition: width 0.3s ease, left 0.3s ease, transform 0.3s ease; /* Adicionado transform para transição suave */
+  transition: width 0.3s ease, left 0.3s ease, transform 0.3s ease; 
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
   z-index: 1000;
 }
@@ -82,7 +82,7 @@
 
 .activeLink {
   background-color: #333;
-  color: #ffc107 !important; /* Cor de destaque para o link ativo */
+  color: #ffc107 !important;
   font-weight: bold;
   border-left: 4px solid #ffc107;
 }
@@ -103,8 +103,8 @@
 /* Botão de toggle para a sidebar */
 .sidebarToggle {
   position: fixed;
-  top: 1rem;
-  left: 1rem;
+  bottom: 1rem;
+  right: 1rem;
   z-index: 1001; /* Acima da sidebar */
   background-color: #ffc107;
   color: #1f1f1f;
@@ -126,17 +126,17 @@
 @media (max-width: 850px) {
   .sidebar {
     width: 260px; /* Em telas pequenas, a sidebar tem largura total quando aberta */
-    position: fixed; /* Continua fixa */
+    position: fixed; 
     left: 0;
     top: 0;
     height: 100vh;
     transform: translateX(-100%); /* Oculta a sidebar por padrão */
-    box-shadow: none; /* Remove a sombra quando fechada em mobile */
+    box-shadow: none; 
   }
 
   .sidebar.open {
-    transform: translateX(0); /* Mostra a sidebar */
-    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5); /* Adiciona sombra quando aberta */
+    transform: translateX(0); 
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5); 
   }
 
   /* Exibe o botão de toggle em telas menores */
@@ -145,8 +145,8 @@
   }
 
   /* Ajusta o conteúdo principal para não ser coberto pela sidebar */
-  body.sidebar-open { /* Você precisaria adicionar esta classe ao body via JS quando a sidebar estiver aberta */
-    overflow: hidden; /* Impede rolagem do conteúdo principal */
+  body.sidebar-open { 
+    overflow: hidden; 
   }
 
   /* Ajusta o ícone para ficar centralizado quando o texto está oculto */

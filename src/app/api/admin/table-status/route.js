@@ -1,5 +1,5 @@
 // src/app/api/admin/table-status/route.js
-import { db } from '@/lib/conetc'; // Certifique-se que o caminho para seu db conector está correto
+import { db } from '@/lib/conetc'; 
 
 export async function PUT(request) {
   try {

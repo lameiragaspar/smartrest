@@ -12,7 +12,7 @@ export async function GET() {
         (
           SELECT COUNT(*) 
           FROM orders o 
-          WHERE o.table_id = t.id AND o.status != 'entregue'
+          WHERE o.table_id = t.table_number AND o.status != 'entregue'
         ) AS orders
       FROM tables t
       ORDER BY t.table_number ASC

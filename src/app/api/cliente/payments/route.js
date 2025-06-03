@@ -98,7 +98,7 @@ export async function POST(req) {
 
         for (const cliente of clientes) {
             for (const item of cliente.itens) {
-                const dataFormatada = new Date(); // usa o formato nativo do MySQL
+                const dataFormatada = new Date(); 
                 console.log({
                     mesa,
                     order_id,

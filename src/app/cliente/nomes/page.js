@@ -62,6 +62,13 @@ export default function NomesPage() {
       return;
     }
 
+    //Limpa tudo do localStorage exceto "mesa"
+    const mesaValue = localStorage.getItem('mesa');
+    localStorage.clear();
+    if (mesaValue) {
+      localStorage.setItem('mesa', mesaValue);
+    }
+
     try {
       const res = await fetch('/api/cliente/nomes', {
         method: 'POST',

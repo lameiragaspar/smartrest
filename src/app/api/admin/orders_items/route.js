@@ -26,9 +26,8 @@ export async function GET(request) {
             LEFT JOIN clients c ON oi.cliente_id = c.id
             WHERE oi.order_id = ?
         `;
-        // Ajuste conforme a sua implementação de db.query
         const [items] = await db.query(sql, [orderId]);
-        // Se db.query retornar um objeto como { results: [...] }, use items.results
+        
         return new Response(JSON.stringify(items), {
             status: 200,
             headers: { 'Content-Type': 'application/json' }

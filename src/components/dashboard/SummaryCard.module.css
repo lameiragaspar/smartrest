@@ -1,5 +1,5 @@
 .summaryCard {
-  color: #fff; /* Texto padrão branco */
+  color: #fff; 
   border: none;
   border-radius: 8px;
   transition: transform 0.2s ease-in-out;
@@ -13,14 +13,14 @@
 .cardTitle {
   font-size: 1rem;
   font-weight: 500;
-  color: #ccc; /* Tonalidade mais clara para o título */
+  color: #ccc; 
   margin-bottom: 0.5rem;
 }
 
 .cardValue {
   font-size: 2.5rem;
   font-weight: bold;
-  color: #fff; /* Valor em branco */
+  color: #fff; 
   margin-bottom: 1rem;
 }
 

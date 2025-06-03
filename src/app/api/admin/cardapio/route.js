@@ -64,7 +64,7 @@ export async function PUT(request) {
   try {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
-    if (!id) return Response.json({ error: 'ID não informado' }, { status: 400 });
+    if (!id) return Response.json({ error: 'Produto não informado' }, { status: 400 });
 
     const { name, price, description, image_url, available, category_id } = await request.json();
 
@@ -87,7 +87,7 @@ export async function DELETE(request) {
     const { searchParams } = new URL(request.url);
     const id = searchParams.get('id');
 
-    if (!id) return Response.json({ error: 'ID não informado' }, { status: 400 });
+    if (!id) return Response.json({ error: 'Produto não informado' }, { status: 400 });
 
     await db.query('DELETE FROM products WHERE id = ?', [id]);
     return Response.json({ success: true });

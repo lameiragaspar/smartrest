@@ -3,17 +3,27 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import styles from './Sidebar.module.css'; // Importe os estilos da Sidebar
+import styles from './Sidebar.module.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 const Sidebar = () => {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(true);
+  const [isClient, setIsClient] = useState(false);
+  const [windowWidth, setWindowWidth] = useState(0);
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
   };
+  useEffect(() => {
+    setIsClient(true);
+    setWindowWidth(window.innerWidth);
 
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
   // Efeito para lidar com o redimensionamento da janela e estado inicial
   useEffect(() => {
     const handleResize = () => {
@@ -72,7 +82,7 @@ const Sidebar = () => {
       </button>
 
       {/* Overlay para escurecer o fundo em mobile quando a sidebar está aberta */}
-      {isOpen && window.innerWidth <= 850 && <div className={styles.sidebarOverlay} onClick={toggleSidebar}></div>}
+      {isClient && isOpen && windowWidth <= 850 &&  <div className={styles.sidebarOverlay} onClick={toggleSidebar}></div>}
 
       <aside className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}>
         <div className={styles.brand}>
@@ -85,11 +95,10 @@ const Sidebar = () => {
               <li key={item.href}>
                 <Link
                   href={item.href}
-                  className={`${styles.navLink} ${
-                    (pathname === item.href || (item.href !== '/adm/dashboard' && pathname.startsWith(item.href)))
+                  className={`${styles.navLink} ${(pathname === item.href || (item.href !== '/adm/dashboard' && pathname.startsWith(item.href)))
                       ? styles.activeLink
                       : ''
-                  }`}
+                    }`}
                   onClick={() => window.innerWidth <= 850 && setIsOpen(false)} // Fecha a sidebar ao clicar em um link em telas pequenas
                 >
                   <i className={`${item.icon} ${styles.navIcon}`}></i>
