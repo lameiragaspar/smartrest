@@ -123,7 +123,7 @@
 }
 
 /* Media Query para telas menores */
-@media (max-width: 768px) {
+@media (max-width: 850px) {
   .sidebar {
     width: 260px; /* Em telas pequenas, a sidebar tem largura total quando aberta */
     position: fixed; /* Continua fixa */

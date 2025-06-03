@@ -12,13 +12,13 @@ export async function POST(req) {
     const email = formData.get('email');
     const password = formData.get('password');
     const birth_date = formData.get('birth_date');
-    const profession = formData.get('profession');
+    const role = formData.get('role');
     const status = formData.get('status') || 'ativo';
     const notes = formData.get('notes');
 
     const photoFile = formData.get('photo');
 
-    if (!name || !email || !password || !profession) {
+    if (!name || !email || !password || !role) {
       return Response.json({ message: 'Nome, Email, Senha e Profissão são obrigatórios.' }, { status: 400 });
     }
 
@@ -47,11 +47,11 @@ export async function POST(req) {
       const filePath = path.join(uploadDir, fileName);
       await fs.writeFile(filePath, bytes);
 
-      photoPath = `/uploads/photos/${fileName}`;
+      photoPath = `${fileName}`;
     }
 
     const [result] = await db.execute(
-      `INSERT INTO users (name, tel, email, password_hash, birth_date, photo, profession, status, notes)
+      `INSERT INTO users (name, tel, email, password_hash, birth_date, photo, role, status, notes)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
       [
         name,
@@ -60,7 +60,7 @@ export async function POST(req) {
         password_hash,
         birth_date || null,
         photoPath,
-        profession,
+        role,
         status,
         notes || null,
       ]

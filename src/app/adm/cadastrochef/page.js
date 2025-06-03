@@ -16,7 +16,7 @@ const RegisterChefPage = () => {
         confirmPassword: '',
         birth_date: '',
         notes: '',
-        profession: 'chef',  // padrão válido
+        role: 'chef',  // padrão válido
         status: 'ativo',      // padrão válido
     });
 
@@ -112,7 +112,7 @@ const RegisterChefPage = () => {
                 confirmPassword: '',
                 birth_date: '',
                 notes: '',
-                profession: '',
+                role: '',
                 status: '',
             });
             Object.entries(formData).forEach(([key, value]) => {
@@ -259,16 +259,17 @@ const RegisterChefPage = () => {
                         </div>
                         <div className="row">
                             <div className="col-md-6 mb-3">
-                                <label htmlFor="profession" className="form-label">Profissão</label>
+                                <label htmlFor="role" className="form-label">Profissão</label>
                                 <select
                                     className={`form-select ${styles.formInput}`}
-                                    id="profession"
-                                    name="profession"
-                                    value={formData.profession}
+                                    id="role"
+                                    name="role"
+                                    value={formData.role}
                                     onChange={handleChange}
                                     required
                                 //disabled // Profissão fixa para 'chef' nesta página
                                 >
+                                    <option value="admin">Adm</option>
                                     <option value="chef">Chef</option>
                                     <option value="cozinheiro">Cozinheiro(a)</option>
                                     <option value="garcon">Garçom</option>

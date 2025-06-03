@@ -17,7 +17,7 @@ const Sidebar = () => {
   // Efeito para lidar com o redimensionamento da janela e estado inicial
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth > 768) {
+      if (window.innerWidth > 850) {
         setIsOpen(true); // Sidebar aberta por padrão em desktop
         document.body.classList.remove('sidebar-open'); // Remove classe de overlay mobile
         document.body.classList.remove('sidebar-overlay-active'); // Remove overlay
@@ -36,7 +36,7 @@ const Sidebar = () => {
 
   // Efeito para adicionar/remover classes do body com base no estado isOpen
   useEffect(() => {
-    if (window.innerWidth <= 768) { // Lógica para telas menores (mobile)
+    if (window.innerWidth <= 850) { // Lógica para telas menores (mobile)
       if (isOpen) {
         document.body.classList.add('sidebar-open'); // Para overflow: hidden no body
         document.body.classList.add('sidebar-overlay-active'); // Para ativar o overlay
@@ -61,7 +61,7 @@ const Sidebar = () => {
     { href: '/adm/menu', icon: 'bi-book-fill', label: 'Cardápio' },
     { href: '/adm/tables', icon: 'bi-grid-3x3-gap-fill', label: 'Mesas' },
     { href: '/adm/calls', icon: 'bi-bell-fill', label: 'Chamados' },
-    { href: '/adm/cadastrochef', icon: 'bi-person-plus-fill', label: 'Cadastrar Chef' },
+    { href: '/adm/cadastrochef', icon: 'bi-person-plus-fill', label: 'Add funcionário' },
   ];
 
   return (
@@ -72,7 +72,7 @@ const Sidebar = () => {
       </button>
 
       {/* Overlay para escurecer o fundo em mobile quando a sidebar está aberta */}
-      {isOpen && window.innerWidth <= 768 && <div className={styles.sidebarOverlay} onClick={toggleSidebar}></div>}
+      {isOpen && window.innerWidth <= 850 && <div className={styles.sidebarOverlay} onClick={toggleSidebar}></div>}
 
       <aside className={`${styles.sidebar} ${isOpen ? styles.open : styles.closed}`}>
         <div className={styles.brand}>
@@ -90,7 +90,7 @@ const Sidebar = () => {
                       ? styles.activeLink
                       : ''
                   }`}
-                  onClick={() => window.innerWidth <= 768 && setIsOpen(false)} // Fecha a sidebar ao clicar em um link em telas pequenas
+                  onClick={() => window.innerWidth <= 850 && setIsOpen(false)} // Fecha a sidebar ao clicar em um link em telas pequenas
                 >
                   <i className={`${item.icon} ${styles.navIcon}`}></i>
                   <span className={styles.navLabel}>{item.label}</span>
@@ -100,7 +100,7 @@ const Sidebar = () => {
           </ul>
         </nav>
         <div className={styles.sidebarFooter}>
-          <small className={styles.footerText}>© 2025 - SmartRest</small>
+          <small className={styles.footerText}>© 2025 - SmartRest | Todos os direitos reservados</small>
         </div>
       </aside>
     </>

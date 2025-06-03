@@ -36,7 +36,7 @@ body.main-content-shifted .mainContentArea {
 
 /* --- Media Queries para responsividade --- */
 
-@media (max-width: 768px) {
+@media (max-width: 850px) {
   .mainContentArea {
     margin-left: 0; /* Em mobile, a sidebar é overlay, então o conteúdo principal não precisa de margem */
     width: 100%; /* Ocupa 100% da largura em mobile */
@@ -70,7 +70,7 @@ body.main-content-shifted .mainContentArea {
 
 
 /* Media Query para telas menores (onde a sidebar se sobrepõe ou é menor) */
-@media (max-width: 768px) {
+@media (max-width: 850px) {
   .mainContent {
     margin-left: 0; /* Em mobile, a sidebar é overlay, então o conteúdo principal não precisa de margem */
     width: 100%; /* Ocupa 100% da largura */

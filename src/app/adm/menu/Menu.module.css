@@ -98,3 +98,61 @@
 .bi {
   color: #ffc107;
 }
+.cardContainer {
+  gap: 1rem;
+  justify-content: start; /* ou space-between */
+}
+
+.cardWrapper {
+  flex: 1 1 calc(25% - 1rem);
+  min-width: 300px;
+  max-width: 300px;
+}
+@media (max-width: 992px) {
+  .cardWrapper {
+    flex: 1 1 calc(50% - 1rem);
+    max-width: 100%;
+    min-width: 0px;
+  }
+}
+
+@media (max-width: 576px) {
+  .cardWrapper {
+    flex: 1 1 100%;
+    max-width: 100%;
+    min-width: 0px;
+  }
+}
+
+.unavailable {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.menuItemImage {
+  object-fit: cover;
+  height: 180px;
+}
+
+.menuItemName {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.menuItemDescription {
+  font-size: 0.9rem;
+  color: #666;
+  max-height: 4.5em;
+  overflow: hidden;
+}
+
+.priceTag {
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}

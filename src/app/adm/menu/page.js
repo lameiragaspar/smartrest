@@ -50,7 +50,7 @@ const MenuPage = () => {
     };
 
     const handleEditClick = (item) => {
-        setEditingItem(item);c
+        setEditingItem(item);
         setShowModal(true);
     };
 
@@ -128,11 +128,11 @@ const MenuPage = () => {
     return (
         <div className="container-fluid">
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h2 className={`${sharedStyles.pageTitle} ${styles.pageTitle} mb-0`}> {/* Adicionei styles.pageTitle aqui */}
+                <h2 className={`${sharedStyles.pageTitle} ${styles.pageTitle} mb-0`}>
                     <i className="bi bi-book-fill me-2"></i>Cardápio Digital
                 </h2>
-                <button className={`btn btn-primary ${styles.addDishButton}`} onClick={handleAddClick}> {/* Adicionei styles.addDishButton aqui */}
-                    <i className="bi bi-plus-circle-fill me-2"></i><span>Adicionar Item</span> {/* Adicionei span para ocultar o texto */}
+                <button className={`btn btn-primary ${styles.addDishButton}`} onClick={handleAddClick}>
+                    <i className="bi bi-plus-circle-fill me-2"></i><span>Adicionar Item</span>
                 </button>
             </div>
 
@@ -150,23 +150,23 @@ const MenuPage = () => {
                         <div className="card-header">
                             <h4 className={styles.categoryTitle}>{category}</h4>
                         </div>
-                        <div className="card-body">
-                            <div className="row g-4">
+                        <div className={`card-body`}>
+                            <div className={`d-flex flex-wrap ${styles.cardContainer}`}>
                                 {menuItems.filter(item => item.category === category).map(item => (
-                                    <div key={item.id} className="col-12 col-sm-6 col-md-4 col-lg-3">
+                                    <div key={item.id} className={`${styles.cardWrapper}`}>
                                         <div className={`card h-100 ${styles.menuItemCard} ${!item.available ? styles.unavailable : ''}`}>
-                                            <img src={item.image_url || 'https://via.placeholder.com/300x200/444/888?Text=Sem+Imagem'} className={`card-img-top ${styles.menuItemImage}`} alt={item.name} />
+                                            <img
+                                                src={item.image_url || 'https://via.placeholder.com/300x200/444/888?Text=Sem+Imagem'}
+                                                className={`card-img-top ${styles.menuItemImage}`}
+                                                alt={item.name}
+                                            />
                                             <div className="card-body d-flex flex-column">
                                                 <h5 className={`card-title ${styles.menuItemName}`}>{item.name}</h5>
-                                                <p
-                                                    className={`card-text ${styles.menuItemDescription}`}
-                                                    title={item.description || 'Sem descrição.'}
-                                                >
+                                                <p className={`card-text ${styles.menuItemDescription}`} title={item.description || 'Sem descrição.'}>
                                                     {item.description && item.description.length > 150
                                                         ? item.description.slice(0, 150) + '...'
                                                         : item.description || 'Sem descrição.'}
                                                 </p>
-
                                                 <div className="mt-auto pt-3">
                                                     <p className={`card-text ${styles.priceTag}`}>
                                                         Kz {new Intl.NumberFormat('pt-AO', { style: 'currency', currency: 'AOA' }).format(item.price)}
@@ -175,14 +175,11 @@ const MenuPage = () => {
                                                         )}
                                                     </p>
                                                     <div className={styles.buttonGroup}>
-                                                        <button
-                                                            className="btn btn-sm btn-outline-warning me-2"
-                                                            onClick={() => handleEditClick(item)}
-                                                        >
-                                                            <i className="bi bi-pencil-fill"></i><span> Editar</span> {/* Adicionei span */}
+                                                        <button className="btn btn-sm btn-outline-warning me-2" onClick={() => handleEditClick(item)}>
+                                                            <i className="bi bi-pencil-fill"></i><span> Editar</span>
                                                         </button>
                                                         <Button variant="danger" size="sm" onClick={() => handleDeleteClick(item.id)}>
-                                                            <i className="bi bi-trash-fill"></i><span> Remover</span> {/* Adicionei span e ícone */}
+                                                            <i className="bi bi-trash-fill"></i><span> Remover</span>
                                                         </Button>
                                                     </div>
                                                 </div>
@@ -192,6 +189,7 @@ const MenuPage = () => {
                                 ))}
                             </div>
                         </div>
+
                     </div>
                 ))
             )}

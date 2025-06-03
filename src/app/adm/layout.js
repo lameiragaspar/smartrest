@@ -14,7 +14,7 @@ export const metadata = {
 export default function DashboardLayout({ children }) {
   return (
     <div className={`app-container ${styles.dashboardContainer}`}>
-      {/* Sidebar está fixa, não precisa estar aqui */}
+      {/* Sidebar está fixa */}
       <Sidebar />
 
       {/* Área principal que contém Navbar e Conteúdo */}
