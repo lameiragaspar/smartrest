@@ -17,7 +17,7 @@ export async function GET() {
 
     const formatted = rows.map((call) => ({
       id: call.id,
-      table: call.table_number, // esse campo estava errado também
+      table: call.table_number,
       reason: call.reason,
       status: call.status, // <- Corrigido aqui
       time: call.minutesAgo <= 0

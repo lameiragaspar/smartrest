@@ -66,7 +66,7 @@ export async function POST(req) {
             const [rows] = await db.execute('SELECT password_hash FROM users WHERE id = ?', [garcom_id]);
 
             if (!rows.length) {
-                return NextResponse.json({ erro: 'Garçom não encontrado.' }, { status: 401 });
+                return NextResponse.json({ erro: 'Garçom não encontrado.' }, { status: 402 });
             }
 
             const senhaBD = rows[0].password_hash;
