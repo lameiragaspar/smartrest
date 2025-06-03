@@ -156,7 +156,7 @@ const MenuPage = () => {
                                     <div key={item.id} className={`${styles.cardWrapper}`}>
                                         <div className={`card h-100 ${styles.menuItemCard} ${!item.available ? styles.unavailable : ''}`}>
                                             <img
-                                                src={item.image_url || 'https://via.placeholder.com/300x200/444/888?Text=Sem+Imagem'}
+                                                src={item.image_url.startsWith('http') ? item.image_url : `/img/${item.image_url}`}
                                                 className={`card-img-top ${styles.menuItemImage}`}
                                                 alt={item.name}
                                             />
